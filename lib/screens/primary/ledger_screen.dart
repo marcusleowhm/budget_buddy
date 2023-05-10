@@ -6,9 +6,10 @@ class LedgerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text ('Ledger')
-      ),
-    );
+        appBar: AppBar(title: const Text('Ledger')),
+        floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () {},
+        ));
   }
 }
