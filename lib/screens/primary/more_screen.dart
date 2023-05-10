@@ -78,6 +78,11 @@ class _MoreScreenState extends State<MoreScreen> {
             children: [
               ListTile(
                 contentPadding: EdgeInsets.only(left: 30, right: 30),
+                leading: Icon(Icons.email_outlined),
+                title: Text('Change Email'),
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.only(left: 30, right: 30),
                 leading: Icon(Icons.lock_outline),
                 title: Text('Change Password'),
               )
