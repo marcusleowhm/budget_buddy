@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:budget_buddy/screens/primary/dashboard_screen.dart';
 import 'package:budget_buddy/screens/primary/statistics_screen.dart';
 import 'package:budget_buddy/screens/primary/ledger_screen.dart';
-import 'package:budget_buddy/screens/primary/account_screen.dart';
+import 'package:budget_buddy/screens/primary/balance_screen.dart';
 
 class RootNavigator extends StatefulWidget {
   const RootNavigator({super.key});
@@ -21,7 +21,7 @@ class _RootNavigatorState extends State<RootNavigator> {
     const DashboardScreen(),
     const StatisticsScreen(),
     const LedgerScreen(),
-    const AccountScreen(),
+    const BalanceScreen(),
     const MoreScreen(),
   ];
 
@@ -33,8 +33,8 @@ class _RootNavigatorState extends State<RootNavigator> {
           type: BottomNavigationBarType.fixed,
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
+              icon: Icon(Icons.monitor),
+              label: 'Dashboard',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.bar_chart),
@@ -46,7 +46,7 @@ class _RootNavigatorState extends State<RootNavigator> {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.account_balance),
-              label: 'Accounts',
+              label: 'Balance',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.more_horiz),

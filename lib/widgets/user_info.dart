@@ -19,8 +19,19 @@ class _UserInfoState extends State<UserInfo> {
           'https://www.w3schools.com/howto/img_avatar.png',
         ),
       ),
-      title: Text(name),
+      title: Text(
+        name,
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+        ),
+      ),
       subtitle: Text(joinDate),
+      trailing: IconButton(
+          icon: const Icon(Icons.edit),
+          onPressed: () {
+            //TODO implement edit feature for user information
+            print('//edit user information');
+          }),
     );
   }
 }

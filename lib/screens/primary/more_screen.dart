@@ -1,11 +1,23 @@
 import 'package:budget_buddy/widgets/menu_group.dart';
-import 'package:budget_buddy/widgets/menu_item.dart';
-import 'package:budget_buddy/widgets/screen_scroll_wrapper.dart';
 import 'package:budget_buddy/widgets/user_info.dart';
 import 'package:flutter/material.dart';
 
-class MoreScreen extends StatelessWidget {
+//Reference https://x-wei.github.io/flutter_catalog/#/minified:a8F
+
+class MoreScreen extends StatefulWidget {
   const MoreScreen({super.key});
+
+  @override
+  State<MoreScreen> createState() => _MoreScreenState();
+}
+
+class _MoreScreenState extends State<MoreScreen> {
+  bool isDarkMode = false;
+  void toggleDarkMode() {
+    setState(() {
+      isDarkMode = !isDarkMode;
+    });
+  }
 
   void navigate(String route) {
     print('Navigate to $route');
@@ -14,34 +26,81 @@ class MoreScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[200], //TODO change the background color here
       appBar: AppBar(title: const Text('More')),
-      body: ScreenScrollWrapper(
+      body: ListView(
+        padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
         children: [
           const UserInfo(),
-          MenuGroup(
-            groupLabel: 'General',
+          const Divider(),
+          const MenuGroup(
+            title: 'General',
             children: [
-              MenuItem(
-                title: 'Item 1',
-                action: () => navigate('route1'),
-              ),
-              MenuItem(
-                title: 'Item 2',
-                action: () => navigate('route2'),
-              ),
+              ListTile(
+                leading: Icon(Icons.settings),
+                title: Text('Settings'),
+              )
             ],
           ),
           MenuGroup(
-            groupLabel: 'Security',
+            title: 'Look and Feel',
             children: [
-              MenuItem(
-                title: 'Item 1',
-                action: () => navigate('route3'),
+              ListTile(
+                leading: const Icon(Icons.dark_mode),
+                title: const Text('Dark Mode'),
+                trailing: Switch(
+                    value: isDarkMode,
+                    onChanged: (value) => {toggleDarkMode()}),
               ),
-              MenuItem(
-                title: 'Item 1',
-                action: () => navigate('route4'),
+              const ListTile(
+                leading: Icon(Icons.brush_outlined),
+                title: Text('Color'),
               ),
+            ],
+          ),
+          const MenuGroup(
+            title: 'Security',
+            children: [
+              ListTile(
+                leading: Icon(Icons.lock_outline),
+                title: Text('Change Password'),
+              )
+            ],
+          ),
+          MenuGroup(
+            title: 'Support',
+            children: [
+              const ListTile(
+                leading: Icon(Icons.bug_report_outlined),
+                title: Text('Report bug'),
+              ),
+              const ListTile(
+                leading: Icon(Icons.feedback_outlined),
+                title: Text('Feedback/Suggestion'),
+              ),
+              const ListTile(
+                leading: Icon(Icons.help_outline),
+                title: Text('Help'),
+              ),
+              ListTile(
+                title: OutlinedButton(
+                  onPressed: () { print('Implement sign out'); }, //TODO implement Sign out
+                  style: ButtonStyle(
+                    shape: MaterialStatePropertyAll<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                          side: const BorderSide(color: Colors.red)),
+                    ),
+                    foregroundColor: MaterialStatePropertyAll<Color>(
+                      Theme.of(context).canvasColor,
+                    ),
+                    backgroundColor: const MaterialStatePropertyAll<Color>(
+                      Colors.red,
+                    ),
+                  ),
+                  child: const Text('Sign Out'),
+                ),
+              )
             ],
           ),
         ],

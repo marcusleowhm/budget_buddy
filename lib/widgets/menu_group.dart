@@ -1,38 +1,32 @@
 import 'package:flutter/material.dart';
 
+//Menu Group will include a title, and a group of ListTile widgets
+//ListTile children comprises of icon, their own title and some contain trailing icon button
 class MenuGroup extends StatelessWidget {
-  const MenuGroup({
-    super.key,
-    this.groupLabel,
-    required this.children,
-  });
+  const MenuGroup({super.key, this.title, required this.children});
 
-  final String? groupLabel;
+  final String? title;
   final List<Widget> children;
-
-  List<Widget> _buildChildren(
-      List<Widget> childrenInput, BuildContext context) {
-    List<Widget> childrenOutput = [];
-
-    if (groupLabel != null) {
-      childrenOutput.add(ListTile(
-        subtitle: Text(groupLabel!,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            )),
-        textColor: Theme.of(context).primaryColor,
-      ));
-    }
-
-    for (int i = 0; i < childrenInput.length; i++) {
-      childrenOutput.add(childrenInput.elementAt(i));
-    }
-    return childrenOutput;
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: _buildChildren(children, context));
+    return Column(
+      children: [
+        ListTile(
+          title: title != null
+              ? Text(
+                  title!,
+                  style: TextStyle(color: Theme.of(context).primaryColor),
+                )
+              : null,
+        ),
+        Container(
+          color: Theme.of(context).canvasColor,
+          child: Column(
+            children: children,
+          ),
+        )
+      ],
+    );
   }
 }
