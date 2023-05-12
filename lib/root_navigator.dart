@@ -1,9 +1,9 @@
-import 'package:budget_buddy/screens/primary/more_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:budget_buddy/screens/primary/dashboard_screen.dart';
-import 'package:budget_buddy/screens/primary/statistics_screen.dart';
-import 'package:budget_buddy/screens/primary/ledger_screen.dart';
-import 'package:budget_buddy/screens/primary/balance_screen.dart';
+import 'package:budget_buddy/features/data/screens/dashboard_screen.dart';
+import 'package:budget_buddy/features/data/screens/statistics_screen.dart';
+import 'package:budget_buddy/features/transactions/screens/primary/ledger_screen.dart';
+import 'package:budget_buddy/features/data/screens/balance_screen.dart';
+import 'package:budget_buddy/features/settings/screens/primary/more_screen.dart';
 
 class RootNavigator extends StatefulWidget {
   const RootNavigator({super.key});

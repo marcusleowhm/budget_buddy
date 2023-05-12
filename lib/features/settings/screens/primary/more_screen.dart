@@ -1,6 +1,5 @@
-import 'package:budget_buddy/widgets/coloriser.dart';
-import 'package:budget_buddy/widgets/menu_group.dart';
-import 'package:budget_buddy/widgets/user_info.dart';
+import 'package:budget_buddy/features/settings/widgets/menu_group.dart';
+import 'package:budget_buddy/features/settings/widgets/user_info.dart';
 import 'package:flutter/material.dart';
 
 //Reference https://x-wei.github.io/flutter_catalog/#/minified:a8F
@@ -57,7 +56,6 @@ class _MoreScreenState extends State<MoreScreen> {
                 trailing: Switch(
                     value: isDarkMode, onChanged: (value) => toggleDarkMode()),
               ),
-              const Coloriser(),
               ListTile(
                 leading: const Icon(Icons.brush_outlined),
                 title: const Text('Color'),
