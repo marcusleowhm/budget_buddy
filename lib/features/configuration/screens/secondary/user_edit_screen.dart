@@ -13,7 +13,7 @@ class _UserEditScreenState extends State<UserEditScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit User Information')
+        title: const Text('User Information')
       )
     );
   }

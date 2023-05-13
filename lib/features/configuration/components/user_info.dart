@@ -1,4 +1,4 @@
-import 'package:budget_buddy/features/settings/screens/secondary/user_edit_screen.dart';
+import 'package:budget_buddy/features/configuration/screens/secondary/user_edit_screen.dart';
 import 'package:flutter/material.dart';
 
 class UserInfo extends StatefulWidget {

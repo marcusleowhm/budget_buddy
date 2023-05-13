@@ -1,5 +1,5 @@
-import 'package:budget_buddy/features/settings/widgets/menu_group.dart';
-import 'package:budget_buddy/features/settings/widgets/menu_item.dart';
+import 'package:budget_buddy/features/configuration/widgets/menu_group.dart';
+import 'package:budget_buddy/features/configuration/widgets/menu_item.dart';
 import 'package:flutter/material.dart';
 
 class StyleGroup extends StatefulWidget {

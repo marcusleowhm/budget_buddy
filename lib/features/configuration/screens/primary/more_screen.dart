@@ -1,9 +1,9 @@
-import 'package:budget_buddy/features/settings/components/general_group.dart';
-import 'package:budget_buddy/features/settings/components/security_group.dart';
-import 'package:budget_buddy/features/settings/components/signout_button.dart';
-import 'package:budget_buddy/features/settings/components/style_group.dart';
-import 'package:budget_buddy/features/settings/components/support_group.dart';
-import 'package:budget_buddy/features/settings/components/user_info.dart';
+import 'package:budget_buddy/features/configuration/components/general_group.dart';
+import 'package:budget_buddy/features/configuration/components/security_group.dart';
+import 'package:budget_buddy/features/configuration/components/signout_button.dart';
+import 'package:budget_buddy/features/configuration/components/style_group.dart';
+import 'package:budget_buddy/features/configuration/components/support_group.dart';
+import 'package:budget_buddy/features/configuration/components/user_info.dart';
 import 'package:flutter/material.dart';
 
 //Reference https://x-wei.github.io/flutter_catalog/#/minified:a8F

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:budget_buddy/features/settings/widgets/menu_group.dart';
-import 'package:budget_buddy/features/settings/widgets/menu_item.dart';
+import 'package:budget_buddy/features/configuration/widgets/menu_group.dart';
+import 'package:budget_buddy/features/configuration/widgets/menu_item.dart';
 
 class GeneralGroup extends StatelessWidget {
   const GeneralGroup({super.key});

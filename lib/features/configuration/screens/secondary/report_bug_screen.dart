@@ -7,7 +7,7 @@ class ReportBugScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Report bug'),
+        title: const Text('Report Bug'),
       ),
     );
   }
