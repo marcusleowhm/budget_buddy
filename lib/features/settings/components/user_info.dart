@@ -14,10 +14,8 @@ class _UserInfoState extends State<UserInfo> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: CircleAvatar(
-        child: Image.network(
-          'https://www.w3schools.com/howto/img_avatar.png',
-        ),
+      leading: const CircleAvatar(
+        child: Text('Just Test'),
       ),
       title: Text(
         name,
