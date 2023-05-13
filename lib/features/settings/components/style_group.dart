@@ -17,27 +17,34 @@ class _StyleGroupState extends State<StyleGroup> {
     });
   }
 
-  final List<MenuItem> data = const <MenuItem>[
-    MenuItem(
-      entry: Entry(
-        leading: Icon(Icons.dark_mode_outlined),
-        title: 'Dark Mode',
+  List<MenuItem> _buildData() {
+    return <MenuItem>[
+      MenuItem(
+        entry: Entry(
+          leading: const Icon(Icons.dark_mode_outlined),
+          trailing: Switch(
+            value: isDarkMode,
+            onChanged: (value) => toggleDarkMode(),
+          ),
+          onTap: () => toggleDarkMode(),
+          title: 'Dark Mode',
+        ),
       ),
-    ),
-    MenuItem(
-      entry: Entry(
-        leading: Icon(Icons.brush_outlined),
-        title: 'Color',
-        children: [Entry(title: 'Test')],
+      const MenuItem(
+        entry: Entry(
+          leading: Icon(Icons.brush_outlined),
+          title: 'Color',
+          children: [Entry(title: 'Test')],
+        ),
       ),
-    )
-  ];
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
     return MenuGroup(
       title: 'Style',
-      children: data,
+      children: _buildData(),
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:budget_buddy/features/settings/screens/secondary/user_edit_screen.dart';
 import 'package:flutter/material.dart';
 
 class UserInfo extends StatefulWidget {
@@ -25,11 +26,16 @@ class _UserInfoState extends State<UserInfo> {
       ),
       subtitle: Text(joinDate),
       trailing: IconButton(
-          icon: const Icon(Icons.edit),
-          onPressed: () {
-            //TODO implement edit feature for user information
-            print('//edit user information');
-          }),
+        icon: const Icon(Icons.edit),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const UserEditScreen(),
+            ),
+          );
+        },
+      ),
     );
   }
 }

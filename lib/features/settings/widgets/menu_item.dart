@@ -6,12 +6,14 @@ class Entry {
     this.title,
     this.leading,
     this.trailing,
+    this.onTap,
     this.children = const <Entry>[],
   });
 
   final String? title;
   final Widget? leading;
   final Widget? trailing;
+  final VoidCallback? onTap;
   final List<Entry> children;
 }
 
@@ -27,6 +29,7 @@ class MenuItem extends StatelessWidget {
         title: Text(root.title!),
         leading: root.leading,
         trailing: root.trailing,
+        onTap: root.onTap,
       );
     }
     return ListTileTheme(
