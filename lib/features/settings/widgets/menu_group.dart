@@ -33,8 +33,11 @@ class MenuGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: _buildGroup(context),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10.0),
+      child: Column(
+        children: _buildGroup(context),
+      ),
     );
   }
 }

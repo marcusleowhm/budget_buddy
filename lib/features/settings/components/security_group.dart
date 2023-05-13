@@ -7,10 +7,10 @@ class SecurityGroup extends StatelessWidget {
 
   final List<MenuItem> data = const <MenuItem>[
     MenuItem(
-      entry: Entry('Change Email'),
+      entry: Entry(title: 'Change Email'),
     ),
     MenuItem(
-      entry: Entry('Change Password'),
+      entry: Entry(title: 'Change Password'),
     )
   ];
 

@@ -3,7 +3,6 @@ import 'package:budget_buddy/features/settings/components/security_group.dart';
 import 'package:budget_buddy/features/settings/components/signout_button.dart';
 import 'package:budget_buddy/features/settings/components/style_group.dart';
 import 'package:budget_buddy/features/settings/components/support_group.dart';
-import 'package:budget_buddy/features/settings/widgets/menu_group.dart';
 import 'package:budget_buddy/features/settings/components/user_info.dart';
 import 'package:flutter/material.dart';
 
