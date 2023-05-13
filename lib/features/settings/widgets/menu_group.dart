@@ -9,25 +9,32 @@ class MenuGroup extends StatelessWidget {
   final String? title;
   final List<MenuItem> children;
 
+  List<Widget> _buildGroup(BuildContext context) {
+    
+    List<Widget> finalChildren = [];
+    if (title != null) {
+      finalChildren.add(ListTile(
+        enabled: false,
+        title: Text(
+          title!,
+          style: TextStyle(color: Theme.of(context).primaryColor),
+        ),
+      ));
+    }
+    finalChildren.add(
+      Container(
+        color: Theme.of(context).canvasColor,
+        child: Column(children: children),
+      ),
+    );
+
+    return finalChildren;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [
-        ListTile(
-          title: title != null
-              ? Text(
-                  title!,
-                  style: TextStyle(color: Theme.of(context).primaryColor),
-                )
-              : null,
-        ),
-        Container(
-          color: Theme.of(context).canvasColor,
-          child: Column(
-            children: children,
-          ),
-        )
-      ],
+      children: _buildGroup(context),
     );
   }
 }

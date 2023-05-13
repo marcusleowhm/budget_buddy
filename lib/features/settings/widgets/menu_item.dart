@@ -9,7 +9,7 @@ class Entry {
 }
 
 class MenuItem extends StatelessWidget {
-  const MenuItem(this.entry, {super.key});
+  const MenuItem({this.entry = const Entry(''), super.key});
 
   final Entry entry;
 

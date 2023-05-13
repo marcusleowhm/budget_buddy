@@ -7,16 +7,16 @@ class SupportGroup extends StatelessWidget {
 
   final List<MenuItem> data = const <MenuItem>[
     MenuItem(
-      Entry('Report Bug'),
+      entry: Entry('Report Bug'),
     ),
     MenuItem(
-      Entry('Feedback/Suggestion'),
+      entry: Entry('Feedback/Suggestion'),
     ),
     MenuItem(
-      Entry('Help'),
+      entry: Entry('Help'),
     ),
     MenuItem(
-      Entry('About'),
+      entry: Entry('About'),
     ),
   ];
 
