@@ -7,11 +7,17 @@ class SecurityGroup extends StatelessWidget {
 
   final List<MenuItem> data = const <MenuItem>[
     MenuItem(
-      entry: Entry(title: 'Change Email'),
+      entry: Entry(
+        leading: Icon(Icons.email_outlined),
+        title: 'Change Email',
+      ),
     ),
     MenuItem(
-      entry: Entry(title: 'Change Password'),
-    )
+      entry: Entry(
+        leading: Icon(Icons.lock_outline),
+        title: 'Change Password',
+      ),
+    ),
   ];
 
   @override

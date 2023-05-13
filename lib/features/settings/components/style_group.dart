@@ -18,9 +18,15 @@ class _StyleGroupState extends State<StyleGroup> {
   }
 
   final List<MenuItem> data = const <MenuItem>[
-    MenuItem(entry: Entry(title: 'Dark Mode')),
     MenuItem(
       entry: Entry(
+        leading: Icon(Icons.dark_mode_outlined),
+        title: 'Dark Mode',
+      ),
+    ),
+    MenuItem(
+      entry: Entry(
+        leading: Icon(Icons.brush_outlined),
         title: 'Color',
         children: [Entry(title: 'Test')],
       ),
