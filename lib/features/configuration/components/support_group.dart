@@ -11,9 +11,10 @@ class SupportGroup extends StatelessWidget {
     return <MenuItem>[
       MenuItem(
         entry: Entry(
-            leading: const Icon(Icons.bug_report_outlined),
-            title: 'Report Bug',
-            onTap: () => context.go('/more/reportbug')),
+          leading: const Icon(Icons.bug_report_outlined),
+          title: 'Report Bug',
+          onTap: () => context.go('/more/reportbug'),
+        ),
       ),
       const MenuItem(
         entry: Entry(

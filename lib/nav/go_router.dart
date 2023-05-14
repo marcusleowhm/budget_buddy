@@ -16,65 +16,69 @@ final _shellNavigatorKey = GlobalKey<NavigatorState>();
 //Reference https://codewithandrea.com/articles/flutter-bottom-navigation-bar-nested-routes-gorouter-beamer/
 //Add more routes here in the future
 final goRouter = GoRouter(
-    initialLocation: '/dashboard',
-    navigatorKey: _rootNavigatorKey,
-    routes: [
-      ShellRoute(
-        navigatorKey: _shellNavigatorKey,
-        builder: (context, state, child) {
-          return TabNavigator(child: child);
-        },
-        routes: <GoRoute>[
-          GoRoute(
-            path: '/',
-            redirect: (context, sttate) => '/dashboard',
+  initialLocation: '/dashboard',
+  navigatorKey: _rootNavigatorKey,
+  routes: <RouteBase>[
+    ShellRoute(
+      navigatorKey: _shellNavigatorKey,
+      builder: (context, state, child) {
+        return TabNavigator(child: child);
+      },
+      routes: <GoRoute>[
+        GoRoute(
+          path: '/',
+          redirect: (context, sttate) => '/dashboard',
+        ),
+        GoRoute(
+          path: '/dashboard',
+          pageBuilder: (context, state) => const NoTransitionPage(
+            child: DashboardScreen(),
           ),
-          GoRoute(
-            path: '/dashboard',
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: DashboardScreen(),
+        ),
+        GoRoute(
+          path: '/statistics',
+          pageBuilder: (context, state) => const NoTransitionPage(
+            child: StatisticsScreen(),
+          ),
+        ),
+        GoRoute(
+          path: '/ledger',
+          pageBuilder: (context, state) => const NoTransitionPage(
+            child: LedgerScreen(),
+          ),
+          routes: [
+            GoRoute(
+              parentNavigatorKey: _rootNavigatorKey,
+              path: 'add',
+              builder: (context, state) => const AddLedgerScreen(),
+            )
+          ],
+        ),
+        GoRoute(
+          path: '/balance',
+          pageBuilder: (context, state) => const NoTransitionPage(
+            child: BalanceScreen(),
+          ),
+        ),
+        GoRoute(
+          path: '/more',
+          pageBuilder: (context, state) => const NoTransitionPage(
+            child: MoreScreen(),
+          ),
+          routes: [
+            GoRoute(
+              parentNavigatorKey: _rootNavigatorKey,
+              path: 'useredit',
+              builder: (context, state) => const UserEditScreen(),
             ),
-          ),
-          GoRoute(
-            path: '/statistics',
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: StatisticsScreen(),
-            ),
-          ),
-          GoRoute(
-            path: '/ledger',
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: LedgerScreen(),
-            ),
-            routes: [
-              GoRoute(
-                path: 'add',
-                builder: (context, state) => const AddLedgerScreen(),
-              )
-            ],
-          ),
-          GoRoute(
-            path: '/balance',
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: BalanceScreen(),
-            ),
-          ),
-          GoRoute(
-            path: '/more',
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: MoreScreen(),
-            ),
-            routes: [
-              GoRoute(
-                path: 'useredit',
-                builder: (context, state) => const UserEditScreen(),
-              ),
-              GoRoute(
-                path: 'reportbug',
-                builder: (context, state) => const ReportBugScreen(),
-              ),
-            ],
-          ),
-        ],
-      )
-    ]);
+            GoRoute(
+              parentNavigatorKey: _rootNavigatorKey,
+              path: 'reportbug',
+              builder: (context, state) => const ReportBugScreen(),
+            )
+          ],
+        ),
+      ],
+    ),
+  ],
+);
