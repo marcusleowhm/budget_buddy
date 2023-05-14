@@ -6,6 +6,7 @@ import 'package:budget_buddy/features/data/screens/dashboard_screen.dart';
 import 'package:budget_buddy/features/data/screens/statistics_screen.dart';
 import 'package:budget_buddy/features/ledger/screens/primary/ledger_screen.dart';
 import 'package:budget_buddy/features/ledger/screens/secondary/add_ledger_screen.dart';
+import 'package:budget_buddy/nav/routes.dart';
 import 'package:budget_buddy/nav/tab_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -15,8 +16,9 @@ final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
 //Reference https://codewithandrea.com/articles/flutter-bottom-navigation-bar-nested-routes-gorouter-beamer/
 //Add more routes here in the future
+
 final goRouter = GoRouter(
-  initialLocation: '/dashboard',
+  initialLocation: '/${routes[MainRoutes.dashboard]}',
   navigatorKey: _rootNavigatorKey,
   routes: <RouteBase>[
     ShellRoute(
@@ -27,53 +29,53 @@ final goRouter = GoRouter(
       routes: <GoRoute>[
         GoRoute(
           path: '/',
-          redirect: (context, sttate) => '/dashboard',
+          redirect: (context, state) => '/${routes[MainRoutes.dashboard]}',
         ),
         GoRoute(
-          path: '/dashboard',
+          path: '/${routes[MainRoutes.dashboard]}',
           pageBuilder: (context, state) => const NoTransitionPage(
             child: DashboardScreen(),
           ),
         ),
         GoRoute(
-          path: '/statistics',
+          path: '/${routes[MainRoutes.statistics]}',
           pageBuilder: (context, state) => const NoTransitionPage(
             child: StatisticsScreen(),
           ),
         ),
         GoRoute(
-          path: '/ledger',
+          path: '/${routes[MainRoutes.ledger]}',
           pageBuilder: (context, state) => const NoTransitionPage(
             child: LedgerScreen(),
           ),
           routes: [
             GoRoute(
               parentNavigatorKey: _rootNavigatorKey,
-              path: 'add',
+              path: '${routes[SubRoutes.addledger]}',
               builder: (context, state) => const AddLedgerScreen(),
             )
           ],
         ),
         GoRoute(
-          path: '/balance',
+          path: '/${routes[MainRoutes.balance]}',
           pageBuilder: (context, state) => const NoTransitionPage(
             child: BalanceScreen(),
           ),
         ),
         GoRoute(
-          path: '/more',
+          path: '/${routes[MainRoutes.more]}',
           pageBuilder: (context, state) => const NoTransitionPage(
             child: MoreScreen(),
           ),
           routes: [
             GoRoute(
               parentNavigatorKey: _rootNavigatorKey,
-              path: 'useredit',
+              path: '${routes[SubRoutes.useredit]}',
               builder: (context, state) => const UserEditScreen(),
             ),
             GoRoute(
               parentNavigatorKey: _rootNavigatorKey,
-              path: 'reportbug',
+              path: '${routes[SubRoutes.reportbug]}',
               builder: (context, state) => const ReportBugScreen(),
             )
           ],

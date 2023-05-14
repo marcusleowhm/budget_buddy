@@ -1,25 +1,26 @@
+import 'package:budget_buddy/nav/routes.dart';
 import 'package:budget_buddy/nav/tab_navigator_item.dart';
 import 'package:flutter/material.dart';
 
-const tabs = [
+List<TabNavigatorItem> tabs = [
   TabNavigatorItem(
-      initialLocation: '/dashboard',
-      icon: Icon(Icons.monitor),
-      label: 'Dashboard'),
+      initialLocation: '/${routes[MainRoutes.dashboard]}',
+      icon: const Icon(Icons.monitor),
+      label: '${labels[MainRoutes.dashboard]}'),
   TabNavigatorItem(
-      initialLocation: '/statistics',
-      icon: Icon(Icons.bar_chart),
-      label: 'Statistics'),
+      initialLocation: '/${routes[MainRoutes.statistics]}',
+      icon: const Icon(Icons.bar_chart),
+      label: '${labels[MainRoutes.statistics]}'),
   TabNavigatorItem(
-      initialLocation: '/ledger',
-      icon: Icon(Icons.edit),
-      label: 'Ledger'),
+      initialLocation: '/${routes[MainRoutes.ledger]}',
+      icon: const Icon(Icons.edit),
+      label: '${labels[MainRoutes.ledger]}}'),
   TabNavigatorItem(
-      initialLocation: '/balance',
-      icon: Icon(Icons.account_balance),
-      label: 'Balance'),
+      initialLocation: '/${routes[MainRoutes.balance]}',
+      icon: const Icon(Icons.account_balance),
+      label: '${labels[MainRoutes.balance]}'),
   TabNavigatorItem(
-      initialLocation: '/more',
-      icon: Icon(Icons.more_horiz),
-      label: 'More'),
+      initialLocation: '/${routes[MainRoutes.more]}',
+      icon: const Icon(Icons.more_horiz),
+      label: '${labels[MainRoutes.more]}'),
 ];

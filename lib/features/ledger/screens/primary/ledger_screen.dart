@@ -1,4 +1,4 @@
-import 'package:budget_buddy/features/ledger/screens/secondary/add_ledger_screen.dart';
+import 'package:budget_buddy/nav/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -11,7 +11,7 @@ class LedgerScreen extends StatelessWidget {
         appBar: AppBar(title: const Text('Ledger')),
         floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.add),
-          onPressed: () => context.go('/ledger/add'),
+          onPressed: () => context.go('/${routes[MainRoutes.ledger]}/${routes[SubRoutes.addledger]}'),
         ));
   }
 }

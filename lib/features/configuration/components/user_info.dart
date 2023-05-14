@@ -2,6 +2,8 @@ import 'package:budget_buddy/features/configuration/screens/secondary/user_edit_
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../nav/routes.dart';
+
 class UserInfo extends StatefulWidget {
   const UserInfo({super.key});
 
@@ -28,7 +30,7 @@ class _UserInfoState extends State<UserInfo> {
       subtitle: Text(joinDate),
       trailing: IconButton(
         icon: const Icon(Icons.edit),
-        onPressed: () => context.go('/more/useredit'),
+        onPressed: () => context.go('/${routes[MainRoutes.more]}/${routes[SubRoutes.useredit]}'),
       ),
     );
   }
