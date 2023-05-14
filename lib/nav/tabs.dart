@@ -14,7 +14,7 @@ List<TabNavigatorItem> tabs = [
   TabNavigatorItem(
       initialLocation: '/${routes[MainRoutes.ledger]}',
       icon: const Icon(Icons.edit),
-      label: '${labels[MainRoutes.ledger]}}'),
+      label: '${labels[MainRoutes.ledger]}'),
   TabNavigatorItem(
       initialLocation: '/${routes[MainRoutes.balance]}',
       icon: const Icon(Icons.account_balance),

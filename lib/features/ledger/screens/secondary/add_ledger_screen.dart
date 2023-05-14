@@ -1,4 +1,4 @@
-import 'package:budget_buddy/features/ledger/components/quantity_picker.dart';
+import 'package:budget_buddy/features/ledger/components/ledger_input.dart';
 import 'package:flutter/material.dart';
 
 class AddLedgerScreen extends StatelessWidget {
@@ -7,14 +7,16 @@ class AddLedgerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add Transaction'),
-      ),
-      body: ListView(
-        children: const [
-          QuantityPicker()
-        ],
-      )
-    );
+        appBar: AppBar(
+          title: const Text('Add Transaction'),
+        ),
+        body: Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: const [
+              LedgerInput()
+            ],
+          ),
+        ));
   }
 }
