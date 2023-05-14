@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:budget_buddy/nav/routes.dart';
 
 class ReportBugScreen extends StatelessWidget {
   const ReportBugScreen({super.key});
@@ -7,7 +8,7 @@ class ReportBugScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Report Bug'),
+        title: Text('${titles[SubRoutes.reportbug]}'),
       ),
     );
   }

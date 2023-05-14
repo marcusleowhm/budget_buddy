@@ -27,14 +27,18 @@ class _StyleGroupState extends State<StyleGroup> {
             onChanged: (value) => toggleDarkMode(),
           ),
           onTap: () => toggleDarkMode(),
-          title: 'Dark Mode',
+          title: const Text('Dark Mode'),
         ),
       ),
       const MenuItem(
         entry: Entry(
           leading: Icon(Icons.brush_outlined),
-          title: 'Color',
-          children: [Entry(title: 'Test')],
+          title: Text('Color'),
+          children: [
+            Entry(
+              title: Text('Test'),
+            ),
+          ],
         ),
       ),
     ];

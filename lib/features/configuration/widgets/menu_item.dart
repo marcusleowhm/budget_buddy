@@ -4,13 +4,15 @@ import 'package:flutter/material.dart';
 class Entry {
   const Entry({
     this.title,
+    this.initiallyExpanded = false,
     this.leading,
     this.trailing,
     this.onTap,
     this.children = const <Entry>[],
   });
 
-  final String? title;
+  final Widget? title;
+  final bool? initiallyExpanded;
   final Widget? leading;
   final Widget? trailing;
   final VoidCallback? onTap;
@@ -26,7 +28,7 @@ class MenuItem extends StatelessWidget {
     if (root.children.isEmpty) {
       return ListTile(
         horizontalTitleGap: 0.0,
-        title: Text(root.title!),
+        title: root.title != null ? root.title! : null,
         leading: root.leading,
         trailing: root.trailing,
         onTap: root.onTap,
@@ -36,7 +38,8 @@ class MenuItem extends StatelessWidget {
       horizontalTitleGap: 0.0,
       child: ExpansionTile(
         key: PageStorageKey<Entry>(root),
-        title: Text(root.title!),
+        title: root.title != null ? root.title! : const Text(''),
+        initiallyExpanded: root.initiallyExpanded!,
         leading: root.leading,
         trailing: root.trailing,
         children: root.children.map(_buildMenuTiles).toList(),

@@ -1,3 +1,4 @@
+import 'package:budget_buddy/nav/routes.dart';
 import 'package:flutter/material.dart';
 
 class BalanceScreen extends StatelessWidget {
@@ -7,7 +8,7 @@ class BalanceScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Balance')
+        title: Text('${titles[MainRoutes.balance]}')
       ),
     );
   }

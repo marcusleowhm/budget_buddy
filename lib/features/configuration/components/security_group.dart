@@ -9,13 +9,13 @@ class SecurityGroup extends StatelessWidget {
     MenuItem(
       entry: Entry(
         leading: Icon(Icons.email_outlined),
-        title: 'Change Email',
+        title: Text('Change Email'),
       ),
     ),
     MenuItem(
       entry: Entry(
         leading: Icon(Icons.lock_outline),
-        title: 'Change Password',
+        title: Text('Change Password'),
       ),
     ),
   ];

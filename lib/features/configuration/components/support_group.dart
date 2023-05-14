@@ -13,20 +13,20 @@ class SupportGroup extends StatelessWidget {
       MenuItem(
         entry: Entry(
           leading: const Icon(Icons.bug_report_outlined),
-          title: 'Report Bug',
+          title: const Text('Report Bug'),
           onTap: () => context.go('/${routes[MainRoutes.more]}/${routes[SubRoutes.reportbug]}'),
         ),
       ),
       const MenuItem(
         entry: Entry(
           leading: Icon(Icons.feedback_outlined),
-          title: 'Feedback/Suggestion',
+          title: Text('Feedback/Suggestion'),
         ),
       ),
       const MenuItem(
         entry: Entry(
           leading: Icon(Icons.help_outline),
-          title: 'Help',
+          title: Text('Help'),
         ),
       ),
     ];

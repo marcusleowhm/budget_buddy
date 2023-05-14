@@ -1,3 +1,4 @@
+import 'package:budget_buddy/nav/routes.dart';
 import 'package:flutter/material.dart';
 
 class UserEditScreen extends StatefulWidget {
@@ -13,7 +14,7 @@ class _UserEditScreenState extends State<UserEditScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('User Information')
+        title: Text('${titles[SubRoutes.useredit]}')
       )
     );
   }

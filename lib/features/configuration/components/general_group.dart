@@ -9,7 +9,7 @@ class GeneralGroup extends StatelessWidget {
     MenuItem(
       entry: Entry(
         leading: Icon(Icons.settings_outlined),
-        title: 'Settings',
+        title: Text('Settings'),
       ),
     ),
   ];

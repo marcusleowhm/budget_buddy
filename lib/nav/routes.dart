@@ -2,6 +2,17 @@ enum MainRoutes { dashboard, statistics, ledger, balance, more }
 
 enum SubRoutes { useredit, reportbug, addledger }
 
+const titles = <Object, String> {
+  MainRoutes.dashboard: 'Dashboard',
+  MainRoutes.statistics: 'Statistics',
+  MainRoutes.ledger: 'Ledger',
+  MainRoutes.balance: 'Balance',
+  MainRoutes.more: 'More',
+  SubRoutes.addledger: 'Add Transactions',
+  SubRoutes.useredit: 'User Information',
+  SubRoutes.reportbug: 'Report Bug',
+};
+
 const routes = <Object, String> {
   MainRoutes.dashboard: 'dashboard',
   MainRoutes.statistics: 'statistics',
