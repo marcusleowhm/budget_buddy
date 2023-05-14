@@ -1,5 +1,5 @@
+import 'package:budget_buddy/nav/go_router.dart';
 import 'package:flutter/material.dart';
-import 'root_navigator.dart';
 
 void main() => runApp(const MyApp());
 
@@ -8,9 +8,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      home: RootNavigator()
+      routerConfig: goRouter,
     );
   }
 }

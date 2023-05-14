@@ -1,5 +1,6 @@
-import 'package:budget_buddy/features/transactions/screens/secondary/add_transaction_screen.dart';
+import 'package:budget_buddy/features/ledger/screens/secondary/add_ledger_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class LedgerScreen extends StatelessWidget {
   const LedgerScreen({super.key});
@@ -10,14 +11,7 @@ class LedgerScreen extends StatelessWidget {
         appBar: AppBar(title: const Text('Ledger')),
         floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.add),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const AddTransactionScreen(),
-              ),
-            );
-          },
+          onPressed: () => context.go('/ledger/add'),
         ));
   }
 }

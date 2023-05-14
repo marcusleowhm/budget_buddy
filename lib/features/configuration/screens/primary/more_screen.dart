@@ -23,10 +23,6 @@ class _MoreScreenState extends State<MoreScreen> {
     });
   }
 
-  void navigate(String route) {
-    print('Navigate to $route');
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
