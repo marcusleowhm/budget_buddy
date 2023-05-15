@@ -7,7 +7,7 @@ class GeneralGroup extends StatelessWidget {
 
   final List<MenuItem> data = const <MenuItem>[
     MenuItem(
-      entry: Entry(
+      entry: ListEntry(
         leading: Icon(Icons.settings_outlined),
         title: Text('Settings'),
       ),

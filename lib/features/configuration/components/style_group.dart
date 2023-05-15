@@ -20,7 +20,7 @@ class _StyleGroupState extends State<StyleGroup> {
   List<MenuItem> _buildData() {
     return <MenuItem>[
       MenuItem(
-        entry: Entry(
+        entry: ListEntry(
           leading: const Icon(Icons.dark_mode_outlined),
           trailing: Switch(
             value: isDarkMode,
@@ -31,11 +31,11 @@ class _StyleGroupState extends State<StyleGroup> {
         ),
       ),
       const MenuItem(
-        entry: Entry(
+        entry: ListEntry(
           leading: Icon(Icons.brush_outlined),
           title: Text('Color'),
           children: [
-            Entry(
+            ListEntry(
               title: Text('Test'),
             ),
           ],

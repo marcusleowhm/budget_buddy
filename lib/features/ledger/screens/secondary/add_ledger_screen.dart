@@ -12,12 +12,31 @@ class AddLedgerScreen extends StatefulWidget {
 }
 
 class _AddLedgerScreenState extends State<AddLedgerScreen> {
-  List<LedgerInput> entries = [const LedgerInput()];
+  List<LedgerInput> entries = [];
+
+  LedgerInput newLedger() {
+    ExpansionTileController expansionTileController = ExpansionTileController();
+    return LedgerInput(expansionTileController: expansionTileController);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    entries.add(newLedger());
+  }
+
+  void closeOtherRow() {
+    for (LedgerInput input in entries) {
+      if (input.expansionTileController.isExpanded) {
+        input.expansionTileController.collapse();
+      }
+    }
+  }
 
   void addRow() {
+    closeOtherRow();
     setState(() {
-      LedgerInput newInput = const LedgerInput();
-      entries.add(newInput);
+      entries.add(newLedger());
     });
   }
 
@@ -33,9 +52,11 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
         padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
         children: [
           ...entries,
-          AddRowButton(
-            action: addRow,
-          ),
+          if (entries.length < 9) ...[
+            AddRowButton(
+              action: addRow,
+            )
+          ],
           SubmitButton(
             action: _handleSubmit,
           )

@@ -12,6 +12,7 @@ class MenuGroup extends StatelessWidget {
   List<Widget> _buildGroup(BuildContext context) {
     
     List<Widget> finalChildren = [];
+    //If the title is not null, create a tile to represent the title
     if (title != null) {
       finalChildren.add(ListTile(
         enabled: false,
