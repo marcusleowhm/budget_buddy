@@ -13,6 +13,7 @@ class AddLedgerScreen extends StatefulWidget {
 
 class _AddLedgerScreenState extends State<AddLedgerScreen> {
   List<LedgerInput> entries = [];
+  final bottomSpacerKey = GlobalKey();
 
   LedgerInput newLedger() {
     ExpansionTileController expansionTileController = ExpansionTileController();
@@ -25,19 +26,20 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     entries.add(newLedger());
   }
 
-  void closeOtherRow() {
-    for (LedgerInput input in entries) {
-      if (input.expansionTileController.isExpanded) {
-        input.expansionTileController.collapse();
-      }
+  void _addRow() {
+    //Close the latest input before adding a new one
+    if (entries.last.expansionTileController.isExpanded) {
+      entries.last.expansionTileController.collapse();
     }
-  }
 
-  void addRow() {
-    closeOtherRow();
+    //Add new ledger to the array
+    LedgerInput nextLedger = newLedger();
     setState(() {
-      entries.add(newLedger());
+      entries = [...entries, nextLedger];
     });
+
+    //Scroll to the bottom after adding new ledger
+    Scrollable.ensureVisible(bottomSpacerKey.currentContext!);
   }
 
   void _handleSubmit() {}
@@ -48,19 +50,26 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
       appBar: AppBar(
         title: Text('${titles[SubRoutes.addledger]}'),
       ),
-      body: ListView(
-        padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
-        children: [
-          ...entries,
-          if (entries.length < 8) ...[
-            AddRowButton(
-              action: addRow,
-            )
-          ],
-          SubmitButton(
-            action: _handleSubmit,
-          )
-        ],
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
+          child: Column(
+            children: [
+              ...entries,
+              AddRowButton(
+                action: _addRow,
+              ),
+              SubmitButton(
+                action: _handleSubmit,
+              ),
+              SizedBox(
+                key: bottomSpacerKey,
+                height: 96.0,
+                width: double.infinity,
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

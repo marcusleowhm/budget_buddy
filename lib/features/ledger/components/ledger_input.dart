@@ -13,37 +13,7 @@ class LedgerInput extends StatefulWidget {
 }
 
 class _LedgerInputState extends State<LedgerInput> {
-  
-  //To be passed into the subsequent FormEntry
-  final TextEditingController _dateController = TextEditingController();
   final TextEditingController _accountController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _dateController.dispose();
-    _accountController.dispose();
-    super.dispose();
-  }
-
-  Column _buildDate() {
-    //TODO get date and return for display
-    String day;
-    String month;
-    String year;
-
-    return const Column(
-      children: [],
-    );
-  }
-
-  Text _buildTitle() {
-    return Text(_accountController.text);
-  }
 
   List<ExpansionFormItem> _buildData() {
     return <ExpansionFormItem>[
@@ -57,13 +27,12 @@ class _LedgerInputState extends State<LedgerInput> {
               Text('2023'),
             ],
           ),
-          title: _buildTitle(),
+          title: Text(widget.key.toString()),
           subtitle: const Text('example subtitle'),
           children: [
-            FormEntry(
+            const FormEntry(
               title: TextField(
-                controller: _dateController,
-                decoration: const InputDecoration(labelText: 'Date'),
+                decoration: InputDecoration(labelText: 'Date'),
               ),
             ),
             FormEntry(

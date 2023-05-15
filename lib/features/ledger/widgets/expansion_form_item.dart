@@ -32,7 +32,7 @@ class ExpansionFormItem extends StatelessWidget {
 
   ListTile _buildListTile(FormEntry formEntry) {
     return ListTile(
-        key: PageStorageKey<int>(formEntry.hashCode),
+        key: PageStorageKey<FormEntry>(formEntry),
         horizontalTitleGap: 16.0,
         title: formEntry.title,
         subtitle: formEntry.subtitle,
@@ -44,8 +44,9 @@ class ExpansionFormItem extends StatelessWidget {
     return ListTileTheme(
       horizontalTitleGap: 16.0,
       child: ExpansionTile(
-        key: PageStorageKey<int>(formEntry.hashCode),
         controller: formEntry.expansionTileController,
+        key: PageStorageKey<FormEntry>(formEntry),
+        maintainState: true,
         title: formEntry.title,
         subtitle: formEntry.subtitle,
         leading: formEntry.leading,
