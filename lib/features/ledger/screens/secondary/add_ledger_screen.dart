@@ -1,5 +1,6 @@
-import 'package:budget_buddy/features/ledger/components/add_input_button.dart';
+import 'package:budget_buddy/features/ledger/components/add_row_button.dart';
 import 'package:budget_buddy/features/ledger/components/ledger_input.dart';
+import 'package:budget_buddy/features/ledger/components/submit_button.dart';
 import 'package:budget_buddy/nav/routes.dart';
 import 'package:flutter/material.dart';
 
@@ -11,17 +12,16 @@ class AddLedgerScreen extends StatefulWidget {
 }
 
 class _AddLedgerScreenState extends State<AddLedgerScreen> {
-  
-  List<LedgerInput> entries = [
-    const LedgerInput()
-  ];
+  List<LedgerInput> entries = [const LedgerInput()];
 
-  void addInput() {
+  void addRow() {
     setState(() {
       LedgerInput newInput = const LedgerInput();
       entries.add(newInput);
     });
-  } 
+  }
+
+  void _handleSubmit() {}
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +33,11 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
         padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
         children: [
           ...entries,
-          AddInputButton(
-            action: addInput,
+          AddRowButton(
+            action: addRow,
+          ),
+          SubmitButton(
+            action: _handleSubmit,
           )
         ],
       ),
