@@ -8,7 +8,7 @@ class SubmitButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: OutlinedButton(
+      title: ElevatedButton(
         onPressed: action,
         child: const Text('Submit'),
       ),

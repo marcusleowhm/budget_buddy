@@ -52,7 +52,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
         padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
         children: [
           ...entries,
-          if (entries.length < 9) ...[
+          if (entries.length < 8) ...[
             AddRowButton(
               action: addRow,
             )
