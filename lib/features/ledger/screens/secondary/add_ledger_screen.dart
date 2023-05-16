@@ -17,21 +17,44 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
   @override
   void initState() {
     super.initState();
-    entries.add(const LedgerInput());
+    if (entries.isEmpty) {
+      entries.add(const LedgerInput());
+    }
   }
 
   void _addRow() {
     //Add new ledger to the array
-    setState(() {
-      entries = [...entries, const LedgerInput()];
-    });
+    setState(() => entries = [...entries, const LedgerInput()]);
   }
 
-  void _removeRowAt(int index) {
-    
+  void _handleSubmit() {
+    //TODO implement logic to handle form submission
+    print(entries.length);
   }
 
-  void _handleSubmit() {}
+  Widget _buildDismissableExpandableTile(int index) {
+
+    LedgerInput input = entries.elementAt(index);
+    return Dismissible(
+      key: PageStorageKey<int>(index),
+      //Show a red background when the tile is swiped from left to right
+      background: Container(
+        color: Colors.red,
+        alignment: Alignment.centerLeft,
+        child: const Icon(Icons.delete),
+      ),
+      //Show a red background when the tile is swiped from right to left
+      secondaryBackground: Container(
+          color: Colors.red,
+          alignment: Alignment.centerRight,
+          child: const Icon(Icons.delete)),
+      onDismissed: (DismissDirection direction) {
+        setState(() => entries.removeAt(index));
+        
+      },
+      child: input,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,23 +63,22 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
         title: Text('${titles[SubRoutes.addledger]}'),
       ),
       backgroundColor: Colors.grey[200], //TODO change this color
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
-          child: Column(
-            children: [
-              ...entries,
-              AddRowButton(onPressed: _addRow),
-              SubmitButton(
-                action: _handleSubmit,
-              ),
-              const SizedBox(
-                height: 96.0,
-                width: double.infinity,
-              )
-            ],
-          ),
-        ),
+      body: ListView.builder(
+        itemCount: entries.length + 2,
+        itemBuilder: (context, index) {
+          //The second last item in the list
+          if (index == entries.length) {
+            return AddRowButton(onPressed: _addRow);
+          }
+          //The last item in the list
+          if (index > entries.length) {
+            return SubmitButton(
+              action: _handleSubmit,
+            );
+          }
+          //The rest of the dismissable expandable tile
+          return _buildDismissableExpandableTile(index);
+        },
       ),
     );
   }

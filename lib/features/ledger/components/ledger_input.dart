@@ -21,40 +21,43 @@ class _LedgerInputState extends State<LedgerInput> {
     });
   }
 
-  List<ExpansionFormItem> _buildData() {
-    return <ExpansionFormItem>[
-      ExpansionFormItem(
-        formEntry: FormEntry(
-          leading: const Column(
-            children: [Text('14'), Text('May'), Text('2023')],
-          ),
-          title: const Text('Example Title'),
-          subtitle: const Text('example subtitle'),
-          children: [
-            FormEntry(
-              title: TypePicker(type: transactionType, setType: _changeType),
-            ),
-            const FormEntry(
-              title: TextField(
-                decoration: InputDecoration(labelText: 'Date'),
-              ),
-            ),
-            FormEntry(
-                title: TextField(
-              controller: _accountController,
-              decoration: const InputDecoration(labelText: 'Account'),
-            )),
-            const FormEntry(title: Text('Category')),
-            const FormEntry(title: Text('Amount')),
-            const FormEntry(title: Text('Additional Note')),
-          ],
+  ExpansionFormItem _buildData() {
+    return ExpansionFormItem(
+      formEntry: FormEntry(
+        leading: const Column(
+          children: [Text('14'), Text('May'), Text('2023')],
         ),
+        title: const Text('Example Title'),
+        subtitle: const Text('example subtitle'),
+        children: [
+          //SegmentedButton for picking the type of transaction
+          FormEntry(
+            title: TypePicker(type: transactionType, setType: _changeType),
+          ),
+          //Input for date
+          //TODO refactor this to date picker
+          const FormEntry(
+            title: TextField(
+              decoration: InputDecoration(labelText: 'Date'),
+            ),
+          ),
+          //Input for account.s
+          //TODO refactor this to a select widget
+          FormEntry(
+              title: TextField(
+            controller: _accountController,
+            decoration: const InputDecoration(labelText: 'Account'),
+          )),
+          const FormEntry(title: Text('Category')),
+          const FormEntry(title: Text('Amount')),
+          const FormEntry(title: Text('Additional Note')),
+        ],
       ),
-    ];
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return ExpansionFormGroup(children: _buildData());
+    return ExpansionFormGroup(child: _buildData());
   }
 }

@@ -31,20 +31,22 @@ class ExpansionFormItem extends StatelessWidget {
 
   final FormEntry formEntry;
 
-  ListTile _buildListTile(FormEntry formEntry) {
+  //Only execute when the FormEntry does not have children widgets
+  Widget _buildListTile(FormEntry formEntry) {
     return ListTile(
-        key: PageStorageKey<FormEntry>(formEntry),
-        horizontalTitleGap: 16.0,
-        title: formEntry.title,
-        subtitle: formEntry.subtitle,
-        leading: formEntry.leading,
-        trailing: formEntry.trailing);
+      key: PageStorageKey<FormEntry>(formEntry),
+      horizontalTitleGap: 16.0,
+      title: formEntry.title,
+      subtitle: formEntry.subtitle,
+      leading: formEntry.leading,
+      trailing: formEntry.trailing,
+    );
   }
 
-  ListTileTheme _buildExpansionTile(FormEntry formEntry) {
+  //Only execute when the FormEntry has children widgets
+  Widget _buildExpansionTile(FormEntry formEntry) {
     return ListTileTheme(
       horizontalTitleGap: 16.0,
-      key: PageStorageKey<FormEntry>(formEntry),
       child: ExpansionTile(
         key: PageStorageKey<FormEntry>(formEntry),
         maintainState: true,

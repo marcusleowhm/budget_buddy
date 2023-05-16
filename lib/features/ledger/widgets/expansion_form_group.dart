@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'expansion_form_item.dart';
 
 class ExpansionFormGroup extends StatelessWidget {
-  const ExpansionFormGroup({super.key, required this.children});
+  const ExpansionFormGroup({super.key, required this.child});
 
-  final List<ExpansionFormItem> children;
+  final ExpansionFormItem child;
 
-  List<ExpansionFormItem> _buildGroup(BuildContext context) {
-    return children;
+  ExpansionFormItem _buildGroup(BuildContext context) {
+    return child;
   }
 
   @override
@@ -16,9 +16,7 @@ class ExpansionFormGroup extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 10.0),
       color: Theme.of(context).canvasColor,
-      child: Column(
-        children: _buildGroup(context),
-      ),
+      child: _buildGroup(context),
     );
   }
 }
