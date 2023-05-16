@@ -33,7 +33,6 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
   }
 
   Widget _buildDismissableExpandableTile(int index) {
-
     LedgerInput input = entries.elementAt(index);
     return Dismissible(
       key: PageStorageKey<int>(index),
@@ -50,7 +49,6 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
           child: const Icon(Icons.delete)),
       onDismissed: (DismissDirection direction) {
         setState(() => entries.removeAt(index));
-        
       },
       child: input,
     );
@@ -63,22 +61,31 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
         title: Text('${titles[SubRoutes.addledger]}'),
       ),
       backgroundColor: Colors.grey[200], //TODO change this color
-      body: ListView.builder(
-        itemCount: entries.length + 2,
-        itemBuilder: (context, index) {
-          //The second last item in the list
-          if (index == entries.length) {
-            return AddRowButton(onPressed: _addRow);
-          }
-          //The last item in the list
-          if (index > entries.length) {
-            return SubmitButton(
-              action: _handleSubmit,
-            );
-          }
-          //The rest of the dismissable expandable tile
-          return _buildDismissableExpandableTile(index);
-        },
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: entries.length + 2,
+                itemBuilder: (context, index) {
+                  //The second last item in the list
+                  if (index == entries.length)
+                    return AddRowButton(onPressed: _addRow);
+                  //The last item in the list
+                  if (index > entries.length)
+                    return SubmitButton(action: _handleSubmit);
+                  // The rest of the dismissable expandable tile
+                  return _buildDismissableExpandableTile(index);
+                },
+              ),
+              //Adding widgets as subsequent children of the column will result in unwanted margin spacings
+            ],
+          ),
+        ),
       ),
     );
   }
