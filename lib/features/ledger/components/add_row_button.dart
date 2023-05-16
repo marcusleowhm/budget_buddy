@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 class AddRowButton extends StatelessWidget {
-  const AddRowButton({super.key, this.action});
+  const AddRowButton({super.key, required this.onPressed});
 
-  final VoidCallback? action;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       title: OutlinedButton(
-        onPressed: action,
+        onPressed: onPressed,
         child: const Text('Add'),
       ),
     );

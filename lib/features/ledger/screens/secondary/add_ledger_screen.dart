@@ -13,33 +13,22 @@ class AddLedgerScreen extends StatefulWidget {
 
 class _AddLedgerScreenState extends State<AddLedgerScreen> {
   List<LedgerInput> entries = [];
-  final bottomSpacerKey = GlobalKey();
-
-  LedgerInput newLedger() {
-    ExpansionTileController expansionTileController = ExpansionTileController();
-    return LedgerInput(expansionTileController: expansionTileController);
-  }
 
   @override
   void initState() {
     super.initState();
-    entries.add(newLedger());
+    entries.add(const LedgerInput());
   }
 
   void _addRow() {
-    //Close the latest input before adding a new one
-    if (entries.last.expansionTileController.isExpanded) {
-      entries.last.expansionTileController.collapse();
-    }
-
     //Add new ledger to the array
-    LedgerInput nextLedger = newLedger();
     setState(() {
-      entries = [...entries, nextLedger];
+      entries = [...entries, const LedgerInput()];
     });
+  }
 
-    //Scroll to the bottom after adding new ledger
-    Scrollable.ensureVisible(bottomSpacerKey.currentContext!);
+  void _removeRowAt(int index) {
+    
   }
 
   void _handleSubmit() {}
@@ -50,20 +39,18 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
       appBar: AppBar(
         title: Text('${titles[SubRoutes.addledger]}'),
       ),
+      backgroundColor: Colors.grey[200], //TODO change this color
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
           child: Column(
             children: [
               ...entries,
-              AddRowButton(
-                action: _addRow,
-              ),
+              AddRowButton(onPressed: _addRow),
               SubmitButton(
                 action: _handleSubmit,
               ),
-              SizedBox(
-                key: bottomSpacerKey,
+              const SizedBox(
                 height: 96.0,
                 width: double.infinity,
               )

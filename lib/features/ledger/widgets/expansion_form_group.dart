@@ -15,6 +15,7 @@ class ExpansionFormGroup extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10.0),
+      color: Theme.of(context).canvasColor,
       child: Column(
         children: _buildGroup(context),
       ),

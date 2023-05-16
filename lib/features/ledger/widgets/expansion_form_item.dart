@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 class FormEntry {
   const FormEntry({
-    this.expansionTileController,
     this.title = const Text(''),
     this.subtitle,
     this.leading,
@@ -10,7 +9,6 @@ class FormEntry {
     this.children = const <FormEntry>[],
   });
 
-  final ExpansionTileController? expansionTileController;
   final Widget title;
   final Widget? subtitle;
   final Widget? leading;
@@ -19,10 +17,13 @@ class FormEntry {
 
   @override
   int get hashCode => Object.hash(title, subtitle, children);
-  
-  @override
-  bool operator ==(Object other) => other is FormEntry && title == other.title && subtitle == other.subtitle && children == other.children;
 
+  @override
+  bool operator ==(Object other) =>
+      other is FormEntry &&
+      title == other.title &&
+      subtitle == other.subtitle &&
+      children == other.children;
 }
 
 class ExpansionFormItem extends StatelessWidget {
@@ -43,8 +44,8 @@ class ExpansionFormItem extends StatelessWidget {
   ListTileTheme _buildExpansionTile(FormEntry formEntry) {
     return ListTileTheme(
       horizontalTitleGap: 16.0,
+      key: PageStorageKey<FormEntry>(formEntry),
       child: ExpansionTile(
-        controller: formEntry.expansionTileController,
         key: PageStorageKey<FormEntry>(formEntry),
         maintainState: true,
         title: formEntry.title,
