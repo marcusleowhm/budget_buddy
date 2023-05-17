@@ -10,24 +10,32 @@ class TypePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SegmentedButton<TransactionType>(
-      segments: const <ButtonSegment<TransactionType>>[
-        ButtonSegment<TransactionType>(
-          value: TransactionType.income,
-          label: Text('Income'),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      child: SegmentedButton<TransactionType>(
+        style: const ButtonStyle(
+          side: MaterialStatePropertyAll<BorderSide>(
+            BorderSide(width: 1),
+          ),
         ),
-        ButtonSegment<TransactionType>(
-          value: TransactionType.expense,
-          label: Text('Expense'),
-        ),
-        ButtonSegment<TransactionType>(
-          value: TransactionType.transfer,
-          label: Text('Transfer'),
-        ),
-      ],
-      selected: <TransactionType>{type},
-      onSelectionChanged: (Set<TransactionType> newSelection) =>
-          setType(newSelection),
+        segments: const <ButtonSegment<TransactionType>>[
+          ButtonSegment<TransactionType>(
+            value: TransactionType.income,
+            label: Text('Income'),
+          ),
+          ButtonSegment<TransactionType>(
+            value: TransactionType.expense,
+            label: Text('Expense'),
+          ),
+          ButtonSegment<TransactionType>(
+            value: TransactionType.transfer,
+            label: Text('Transfer'),
+          ),
+        ],
+        selected: <TransactionType>{type},
+        onSelectionChanged: (Set<TransactionType> newSelection) =>
+            setType(newSelection),
+      ),
     );
   }
 }
