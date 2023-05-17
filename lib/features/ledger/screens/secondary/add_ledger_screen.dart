@@ -1,4 +1,6 @@
+import 'package:budget_buddy/features/configuration/components/user_info.dart';
 import 'package:budget_buddy/features/ledger/components/add_row_button.dart';
+import 'package:budget_buddy/features/ledger/components/type_picker.dart';
 import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
 import 'package:budget_buddy/features/ledger/components/submit_button.dart';
 import 'package:budget_buddy/features/ledger/widgets/expansion_group.dart';
@@ -41,7 +43,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
 
   void _handleSubmit() {
     //TODO implement logic to handle form submission
-    print(entries);
+    entries.forEach((e) => print(e));
   }
 
   @override
@@ -60,8 +62,15 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
               int index = entry.key;
               LedgerInput input = entry.value;
 
+              Key typeKey = const Key('type');
+              Key dateKey = const Key('date');
+              Key accountKey = const Key('account');
+              Key categoryKey = const Key('category');
+              Key amountKey = const Key('amount');
+              Key noteKey = const Key('additionalNote');
+
               return Dismissible(
-                key: Key(input.id),
+                key: PageStorageKey<String>(input.id),
                 //Show red background when swiped left to right
                 background: Container(
                   color: Colors.red,
@@ -77,23 +86,63 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                 child: ExpansionGroup(
                   ledger: input,
                   children: [
-                    const TextField(
-                      decoration: InputDecoration(labelText: 'Date'),
+                    TypePicker(
+                      type: input.type,
+                      setType: (Set<TransactionType> newSelection) => setState(
+                          () => entries.elementAt(index).type =
+                              newSelection.first),
                     ),
                     TextField(
-                      onChanged: (value) => setState(
-                          () => entries.elementAt(index).account = value),
+                      key: dateKey,
+                      decoration: const InputDecoration(labelText: 'Date'),
+                    ),
+                    TextField(
+                      key: accountKey,
+                      onChanged: (userInput) => setState(
+                          () => entries.elementAt(index).account = userInput),
                       decoration: const InputDecoration(labelText: 'Account'),
                     ),
                     TextField(
-                      onChanged: (value) => setState(
-                          () => entries.elementAt(index).category = value),
+                      key: categoryKey,
+                      onChanged: (userInput) => setState(
+                          () => entries.elementAt(index).category = userInput),
                       decoration: const InputDecoration(labelText: 'Category'),
                     ),
+                    TextField(
+                      key: amountKey,
+                      onChanged: (userInput) {
+                        double number = double.tryParse(userInput) ?? 0.0;
+                        setState(
+                            () => entries.elementAt(index).amount = number);
+                      },
+                      decoration: const InputDecoration(labelText: 'Amount'),
+                    ),
+                    TextField(
+                        key: noteKey,
+                        onChanged: (userInput) => setState(() => entries
+                            .elementAt(index)
+                            .additionalNotes = userInput),
+                        decoration: const InputDecoration(
+                            hintText: 'Additional Notes')),
                   ],
                 ),
                 onDismissed: (direction) {
-                  setState(() => entries.removeAt(index));
+                  setState(() {
+                    entries.removeAt(index);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text('Transaction removed'),
+                        action: SnackBarAction(
+                          label: 'UNDO',
+                          onPressed: () {
+                            setState(
+                              () => entries.insert(index, input),
+                            );
+                          },
+                        ),
+                      ),
+                    );
+                  });
                 },
               );
             }).toList(),

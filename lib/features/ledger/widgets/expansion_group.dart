@@ -12,7 +12,10 @@ class ExpansionGroup extends StatelessWidget {
   final List<Widget> children;
 
   Widget _buildChildrenTiles(Widget child) {
-    return ListTile(title: child);
+    return ListTile(
+      title: child,
+      key: PageStorageKey(child.key),
+    );
   }
 
   @override

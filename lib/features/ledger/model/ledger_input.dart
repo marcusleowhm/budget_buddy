@@ -1,17 +1,18 @@
-import 'package:flutter/material.dart';
+import 'package:budget_buddy/features/ledger/components/type_picker.dart';
 
 class LedgerInput {
   LedgerInput({
     required this.id,
-    this.dateTime = '',
+    this.type = TransactionType.expense,
     this.account = '',
     this.category = '',
     this.amount = 0.0,
     this.additionalNotes = '',
   });
-
+  
   String id;
-  String dateTime;
+  TransactionType type;
+  DateTime dateTime = DateTime.now();
   String account;
   String category;
   double amount;

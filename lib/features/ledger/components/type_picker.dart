@@ -2,17 +2,11 @@ import 'package:flutter/material.dart';
 
 enum TransactionType { income, expense, transfer }
 
-class TypePicker extends StatefulWidget {
+class TypePicker extends StatelessWidget {
   const TypePicker({super.key, required this.type, required this.setType});
 
   final TransactionType type;
   final void Function(Set<TransactionType> newSelection) setType;
-
-  @override
-  State<TypePicker> createState() => _TypePickerState();
-}
-
-class _TypePickerState extends State<TypePicker> {
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +25,9 @@ class _TypePickerState extends State<TypePicker> {
           label: Text('Transfer'),
         ),
       ],
-      selected: <TransactionType>{widget.type},
-      onSelectionChanged: (Set<TransactionType> newSelection) => widget.setType(newSelection),
+      selected: <TransactionType>{type},
+      onSelectionChanged: (Set<TransactionType> newSelection) =>
+          setType(newSelection),
     );
   }
 }
