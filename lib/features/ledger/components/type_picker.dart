@@ -15,7 +15,7 @@ class TypePicker extends StatelessWidget {
       child: SegmentedButton<TransactionType>(
         style: const ButtonStyle(
           side: MaterialStatePropertyAll<BorderSide>(
-            BorderSide(width: 1),
+            BorderSide(width: 0.5),
           ),
         ),
         segments: const <ButtonSegment<TransactionType>>[

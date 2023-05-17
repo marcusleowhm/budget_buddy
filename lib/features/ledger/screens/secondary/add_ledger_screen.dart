@@ -21,23 +21,70 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
   void initState() {
     super.initState();
     if (entries.isEmpty) {
-      entries.add(
-        LedgerInput(
-          id: const Uuid().v4(),
-        ),
-      );
+      _addRow();
     }
   }
 
+  @override
+  void dispose() {
+    for (LedgerInput input in entries) {
+      input
+        ..accountOrAccountFromController.dispose()
+        ..categoryOrAccountToController.dispose()
+        ..amountController.dispose()
+        ..noteController.dispose()
+        ..additionalNoteController.dispose();
+    }
+    super.dispose();
+  }
+
   void _addRow() {
-    //Add new ledger to the array
-    setState(
-      () => entries.add(
-        LedgerInput(
-          id: const Uuid().v4(),
-        ),
+    //Init controllers first
+    TextEditingController accountOrAccountFromController =
+        TextEditingController();
+    TextEditingController categoryOrAccountToController =
+        TextEditingController();
+    TextEditingController amountController = TextEditingController();
+    TextEditingController noteController = TextEditingController();
+    TextEditingController additionalNoteController = TextEditingController();
+
+    //Create a ledger and add controllers
+    LedgerInput newLedger = LedgerInput(
+      id: const Uuid().v4(),
+      accountOrAccountFromController: accountOrAccountFromController,
+      categoryOrAccountToController: categoryOrAccountToController,
+      amountController: amountController,
+      noteController: noteController,
+      additionalNoteController: additionalNoteController,
+    );
+
+    //Add listeners to controllers
+    accountOrAccountFromController.addListener(
+      () => setState(() =>
+          newLedger.accountOrAccountFrom = accountOrAccountFromController.text),
+    );
+    categoryOrAccountToController.addListener(
+      () => setState(() =>
+          newLedger.categoryOrAccountTo = categoryOrAccountToController.text),
+    );
+    amountController.addListener(
+      () => setState(
+        () {
+          double number = double.tryParse(amountController.text) ?? 0.0;
+          newLedger.amount = number;
+        },
       ),
     );
+    noteController.addListener(
+      () => setState(() => newLedger.note = noteController.text),
+    );
+    additionalNoteController.addListener(
+      () => setState(
+          () => newLedger.additionalNote = additionalNoteController.text),
+    );
+
+    //Finally add new ledger into entries
+    setState(() => entries.add(newLedger));
   }
 
   void _handleSubmit() {
@@ -73,8 +120,9 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
 
                   Key typeKey = const Key('type');
                   Key dateKey = const Key('date');
-                  Key accountKey = const Key('account');
-                  Key categoryOrToKey = const Key('categoryOrTo');
+                  Key accountOrAccountFromKey =
+                      const Key('accountOrAccountFrom');
+                  Key categoryOrAccountToKey = const Key('categoryOrAccountTo');
                   Key amountKey = const Key('amount');
                   Key noteKey = const Key('note');
                   Key dividerKey = const Key('divider');
@@ -108,40 +156,35 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                   newSelection.first),
                         ),
                         TextField(
-                          key: dateKey,
+                          key: dateKey, //TODO implement datetime input
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: 'Date',
                           ),
                         ),
                         TextField(
-                          key: accountKey,
-                          onChanged: (userInput) => setState(() =>
-                              entries.elementAt(index).account = userInput),
-                          decoration: const InputDecoration(
-                            labelText: 'Account',
-                            border: OutlineInputBorder(),
+                          key: accountOrAccountFromKey,
+                          controller: input.accountOrAccountFromController,
+                          decoration: InputDecoration(
+                            labelText: input.type == TransactionType.transfer
+                                ? 'Account From'
+                                : 'Account',
+                            border: const OutlineInputBorder(),
                           ),
                         ),
                         TextField(
-                          key: categoryOrToKey,
-                          onChanged: (userInput) => setState(() => entries
-                              .elementAt(index)
-                              .categoryOrTo = userInput),
+                          key: categoryOrAccountToKey,
+                          controller: input.categoryOrAccountToController,
                           decoration: InputDecoration(
                             labelText: input.type == TransactionType.transfer
-                                ? 'To'
+                                ? 'Account To'
                                 : 'Category',
                             border: const OutlineInputBorder(),
                           ),
                         ),
                         TextField(
                           key: amountKey,
-                          onChanged: (userInput) {
-                            double number = double.tryParse(userInput) ?? 0.0;
-                            setState(
-                                () => entries.elementAt(index).amount = number);
-                          },
+                          controller: input.amountController,
                           decoration: const InputDecoration(
                             labelText: 'Amount',
                             border: OutlineInputBorder(),
@@ -150,8 +193,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                         ),
                         TextField(
                           key: noteKey,
-                          onChanged: (userInput) => setState(
-                              () => entries.elementAt(index).note = userInput),
+                          controller: input.noteController,
                           decoration: const InputDecoration(
                             labelText: 'Note',
                             border: OutlineInputBorder(),
@@ -161,9 +203,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                         Divider(key: dividerKey),
                         TextField(
                           key: additionalNoteKey,
-                          onChanged: (userInput) => setState(() => entries
-                              .elementAt(index)
-                              .additionalNotes = userInput),
+                          controller: input.additionalNoteController,
                           decoration: const InputDecoration(
                             hintText: 'Additional Notes',
                             border: OutlineInputBorder(),
@@ -178,7 +218,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                         entries.removeAt(index);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('${input.amount} removed'),
+                            content: const Text('Record removed'),
                             action: SnackBarAction(
                               label: 'UNDO',
                               onPressed: () {

@@ -36,7 +36,7 @@ class ExpansionGroup extends StatelessWidget {
 
   Widget _buildTitle() {
     return Text(
-      ledger.account,
+      ledger.accountOrAccountFrom,
       style: const TextStyle(fontSize: 14),
     );
   }
@@ -52,7 +52,7 @@ class ExpansionGroup extends StatelessWidget {
           children: [
             //Category to display beside the price
             Text(
-              ledger.categoryOrTo,
+              ledger.categoryOrAccountTo,
               style: TextStyle(
                 fontSize: 14,
                 color: ledger.type == TransactionType.income
