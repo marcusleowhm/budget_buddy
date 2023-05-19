@@ -29,6 +29,7 @@ class AddSummary extends StatelessWidget {
       ),
       child: Column(
         children: [
+          //Text for summary
           const Text('Summary',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -36,6 +37,7 @@ class AddSummary extends StatelessWidget {
           const Divider(),
           Text('Total Transactions: $totalTransactions'),
           const Divider(),
+          //Total value of income, expense and, transfer
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [

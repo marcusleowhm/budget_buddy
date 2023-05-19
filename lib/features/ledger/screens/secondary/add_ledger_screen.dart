@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../utilities/date_formatter.dart';
+import '../../components/account_picker.dart';
 
 class AddLedgerScreen extends StatefulWidget {
   const AddLedgerScreen({super.key});
@@ -22,6 +23,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
   double totalIncome = 0.0;
   double totalExpense = 0.0;
   double totalTransfer = 0.0;
+
+  DateTime now = DateTime.now();
 
   @override
   void initState() {
@@ -68,7 +71,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
 
     //Init the date time to be displayed at the start
     newLedger.dateTimeController.text =
-        dateFormatter.format(newLedger.dateTime);
+        dateLongFormatter.format(newLedger.dateTime);
 
     //Add listeners to controllers
     accountOrAccountFromController.addListener(
@@ -110,15 +113,15 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
             action: SnackBarAction(
               label: 'UNDO',
               onPressed: () {
-                setState(
-                  () => entries.insert(index, input),
-                );
+                setState(() => entries.insert(index, input));
+                _tallyAll();
               },
             ),
           ),
         );
       },
     );
+    _tallyAll();
   }
 
   void _selectDate(BuildContext context, LedgerInput input) async {
@@ -126,7 +129,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
       context: context,
       initialDate: input.dateTime.toLocal(),
       firstDate: DateTime(1970),
-      lastDate: DateTime.now().add(
+      lastDate: now.add(
         const Duration(days: 365 * 10),
       ),
     );
@@ -142,50 +145,65 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
           //Convert to string just for the display in the TextField
           //Underlying data type in the LedgerInput class is still a DateTime
           input.dateTimeController.text =
-              dateFormatter.format(selectedDate.toLocal());
+              dateLongFormatter.format(selectedDate.toLocal());
         },
       );
     }
   }
 
-  void _selectAccount() {}
+  void _resetDateToToday(LedgerInput input, DateTime now) {
+    setState(() => input.dateTime = now);
+  }
+
+  void _selectAccount(BuildContext context, LedgerInput input) {
+    showDialog<String>(
+      context: context,
+      builder: (context) => AccountPicker(
+        context: context,
+        onPressed: (String? value) {
+          if (value != null) {
+            //Set value and close the dialog
+            setState(() => input.accountOrAccountFrom = value);
+            Navigator.pop(context);
+            input.accountOrAccountFromController.text =
+                input.accountOrAccountFrom;
+            return;
+          }
+          //Close the dialog without selecting any account
+          Navigator.pop(context);
+        },
+      ),
+    );
+  }
+
   void _selectCategory() {}
 
-  void _tallyIncome() {
-    double value = 0.0;
-    for (LedgerInput element in entries) {
-      if (element.type == TransactionType.income) {
-        value += element.amount;
-      }
-    }
-    totalIncome = value;
-  }
-
-  void _tallyExpense() {
-    double value = 0.0;
-    for (LedgerInput element in entries) {
-      if (element.type == TransactionType.expense) {
-        value += element.amount;
-      }
-    }
-    totalExpense = value;
-  }
-
-  void _tallyTransfer() {
-    double value = 0.0;
-    for (LedgerInput element in entries) {
-      if (element.type == TransactionType.transfer) {
-        value += element.amount;
-      }
-    }
-    totalTransfer = value;
-  }
-
-  //To be called when changing amount and type
+  //To be called when
+  //1. Editing the amount in each transaction,
+  //2. Changing TransactionType,
+  //3. Removing rows and
+  //4. Undoing removal
   void _tallyAll() {
-    _tallyIncome();
-    _tallyExpense();
-    _tallyTransfer();
+    double incomeSum = 0.0;
+    double expenseSum = 0.0;
+    double transferSum = 0.0;
+
+    for (LedgerInput element in entries) {
+      switch (element.type) {
+        case TransactionType.income:
+          incomeSum += element.amount;
+          break;
+        case TransactionType.expense:
+          expenseSum += element.amount;
+          break;
+        case TransactionType.transfer:
+          transferSum += element.amount;
+          break;
+      }
+    }
+    totalIncome = incomeSum;
+    totalExpense = expenseSum;
+    totalTransfer = transferSum;
   }
 
   void _handleSubmit() {
@@ -263,27 +281,46 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                             }),
                           ),
                           TextField(
-                            key: dateKey, //TODO implement datetime input
+                            key: dateKey,
                             controller: input.dateTimeController,
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
+                            decoration: InputDecoration(
+                              border: const OutlineInputBorder(),
                               labelText: 'Date',
+                              suffixIcon: dateLongFormatter
+                                          .format(input.dateTime.toLocal()) !=
+                                      dateLongFormatter.format(now)
+                                  ? IconButton(
+                                      onPressed: () {
+                                        input.dateTimeController.text =
+                                            dateLongFormatter.format(now);
+                                        _resetDateToToday(input, now);
+                                      },
+                                      icon: const Icon(Icons.refresh),
+                                    )
+                                  : null,
                             ),
                             readOnly: true,
                             showCursor: true,
-                            //TODO to open datepicker
+                            cursorHeight: 0.0,
+                            cursorWidth: 0.0,
                             onTap: () => _selectDate(context, input),
                           ),
                           TextField(
-                            key: accountOrAccountFromKey,
-                            controller: input.accountOrAccountFromController,
-                            decoration: InputDecoration(
-                              labelText: input.type == TransactionType.transfer
-                                  ? 'Account From'
-                                  : 'Account',
-                              border: const OutlineInputBorder(),
-                            ),
-                          ),
+                              key: accountOrAccountFromKey,
+                              autofocus: true,
+                              controller: input.accountOrAccountFromController,
+                              decoration: InputDecoration(
+                                labelText:
+                                    input.type == TransactionType.transfer
+                                        ? 'Account From'
+                                        : 'Account',
+                                border: const OutlineInputBorder(),
+                              ),
+                              readOnly: true,
+                              showCursor: true,
+                              cursorHeight: 0.0,
+                              cursorWidth: 0.0,
+                              onTap: () => _selectAccount(context, input)),
                           TextField(
                             key: categoryOrAccountToKey,
                             controller: input.categoryOrAccountToController,
@@ -293,6 +330,10 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                   : 'Category',
                               border: const OutlineInputBorder(),
                             ),
+                            readOnly: true,
+                            showCursor: true,
+                            cursorHeight: 0.0,
+                            cursorWidth: 0.0,
                           ),
                           TextField(
                             key: amountKey,

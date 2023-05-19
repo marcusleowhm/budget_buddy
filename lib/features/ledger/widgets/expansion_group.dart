@@ -42,7 +42,8 @@ class ExpansionGroup extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               //Whenever displaying the date time, use Local date time
-              Text(dayFormatter.format(ledger.dateTime.toLocal())),
+              Text(dayFormatter.format(ledger.dateTime.toLocal()),
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
               Text(monthNameFormatter.format(ledger.dateTime.toLocal())),
               Text(yearLongFormatter.format(ledger.dateTime.toLocal())),
             ],
@@ -143,7 +144,7 @@ class ExpansionGroup extends StatelessWidget {
           key: PageStorageKey<String>(ledger.id),
           maintainState: true,
           initiallyExpanded: true,
-          leading: _buildLeading(), //TODO to add dates here
+          leading: _buildLeading(),
           title: ListTile(
             title: _buildTitle(),
             subtitle: _buildSubtitle(),

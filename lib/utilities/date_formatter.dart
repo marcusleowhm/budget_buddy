@@ -1,6 +1,7 @@
   import 'package:intl/intl.dart';
   
-  final DateFormat dateFormatter = DateFormat('dd/MMM/yyyy');
+  final DateFormat dateFormatter = DateFormat('dd-MMM-yyyy');
+  final DateFormat dateLongFormatter = DateFormat('dd-MMM-yyyy (EEEE)');
   final DateFormat dayFormatter = DateFormat('dd');
   final DateFormat monthNameFormatter = DateFormat('MMM');
   final DateFormat monthNumFormatter = DateFormat('MM');
