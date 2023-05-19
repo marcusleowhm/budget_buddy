@@ -1,6 +1,7 @@
 import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
+import 'package:budget_buddy/utilities/currency_formatter.dart';
+import 'package:budget_buddy/utilities/date_formatter.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../components/type_picker.dart';
 
@@ -34,78 +35,93 @@ class ExpansionGroup extends StatelessWidget {
     );
   }
 
-  Widget _buildTitle() {
-    return Text(
-      ledger.accountOrAccountFrom,
-      style: const TextStyle(fontSize: 14),
-    );
+  Widget? _buildLeading() {
+    return isExpanded
+        ? null
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              //Whenever displaying the date time, use Local date time
+              Text(dayFormatter.format(ledger.dateTime.toLocal())),
+              Text(monthNameFormatter.format(ledger.dateTime.toLocal())),
+              Text(yearLongFormatter.format(ledger.dateTime.toLocal())),
+            ],
+          );
   }
 
-  Widget _buildSubtitle() {
-    NumberFormat decimalFormatter = NumberFormat('#,###,###.00');
+  Widget _buildTitle() {
+    return isExpanded
+        ? const Icon(Icons.library_books_rounded)
+        : Text(
+            ledger.accountOrAccountFrom,
+            style: const TextStyle(fontSize: 14),
+          );
+  }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            //Category to display beside the price
-            Text(
-              ledger.categoryOrAccountTo,
-              style: TextStyle(
-                fontSize: 14,
-                color: ledger.type == TransactionType.income
-                    ? Colors.blue[700]!
-                    : ledger.type == TransactionType.expense
-                        ? Colors.red
-                        : Colors.grey,
+  Widget? _buildSubtitle() {
+    return isExpanded
+        ? null
+        : Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    ledger.categoryOrAccountTo,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: ledger.type == TransactionType.income
+                          ? Colors.blue[700]!
+                          : ledger.type == TransactionType.expense
+                              ? Colors.red
+                              : Colors.grey,
+                    ),
+                  ),
+                  Text(
+                    ledger.note,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: ledger.type == TransactionType.income
+                          ? Colors.blue[700]!
+                          : ledger.type == TransactionType.expense
+                              ? Colors.red
+                              : Colors.grey,
+                    ),
+                  ),
+                ],
               ),
-            ),
-            Text(
-              ledger.note,
-              style: TextStyle(
-                fontSize: 14,
-                color: ledger.type == TransactionType.income
-                    ? Colors.blue[700]!
-                    : ledger.type == TransactionType.expense
-                        ? Colors.red
-                        : Colors.grey,
-              ),
-            ),
-          ],
-        ),
 
-        //Display the amount keyed in by the user
-        if (!isExpanded && ledger.amount != 0.0)
-          Container(
-            padding: const EdgeInsets.all(5.0),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-                border: Border.all(
-                  color: ledger.type == TransactionType.income
-                      ? Colors.blue[700]!
-                      : ledger.type == TransactionType.expense
-                          ? Colors.red
-                          : Colors.grey,
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.circular(10.0)),
-            child: Text(
-              //The price to be displayed when expansion tile is collapsed
-              decimalFormatter.format(ledger.amount),
-              style: TextStyle(
-                fontSize: 12,
-                color: ledger.type == TransactionType.income
-                    ? Colors.blue[700]!
-                    : ledger.type == TransactionType.expense
-                        ? Colors.red
-                        : Colors.grey,
-              ),
-            ),
-          )
-      ],
-    );
+              //Display the amount keyed in by the user
+              if (!isExpanded && ledger.amount != 0.0)
+                Container(
+                  padding: const EdgeInsets.all(5.0),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                        color: ledger.type == TransactionType.income
+                            ? Colors.blue[700]!
+                            : ledger.type == TransactionType.expense
+                                ? Colors.red
+                                : Colors.grey,
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(10.0)),
+                  child: Text(
+                    //The price to be displayed when expansion tile is collapsed
+                    currencyFormatter.format(ledger.amount),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: ledger.type == TransactionType.income
+                          ? Colors.blue[700]!
+                          : ledger.type == TransactionType.expense
+                              ? Colors.red
+                              : Colors.grey,
+                    ),
+                  ),
+                )
+            ],
+          );
   }
 
   @override
@@ -127,15 +143,11 @@ class ExpansionGroup extends StatelessWidget {
           key: PageStorageKey<String>(ledger.id),
           maintainState: true,
           initiallyExpanded: true,
-          leading: const Icon(Icons.abc),
-          title: isExpanded
-              ? const Text('')
-              : ListTile(
-                  //TODO maybe implement a long tap event to reorder list
-                  // onLongPress: () => print('long tapped!'),
-                  title: _buildTitle(),
-                  subtitle: _buildSubtitle(),
-                ),
+          leading: _buildLeading(), //TODO to add dates here
+          title: ListTile(
+            title: _buildTitle(),
+            subtitle: _buildSubtitle(),
+          ),
           children: children.map(_buildChildrenTiles).toList(),
         ),
       ),

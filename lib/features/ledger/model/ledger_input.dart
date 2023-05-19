@@ -11,6 +11,7 @@ class LedgerInput {
     this.note = '',
     this.additionalNote = '',
     this.isExpanded = true,
+    required this.dateTimeController,
     required this.accountOrAccountFromController,
     required this.categoryOrAccountToController,
     required this.amountController,
@@ -20,7 +21,7 @@ class LedgerInput {
   
   String id;
   TransactionType type;
-  DateTime dateTime = DateTime.now();
+  DateTime dateTime = DateTime.now().toUtc();
   String accountOrAccountFrom;
   String categoryOrAccountTo;
   double amount;
@@ -28,6 +29,9 @@ class LedgerInput {
   String additionalNote;
   bool isExpanded;
 
+  //Not instantiated in this class
+  //Will be instantiated in the add_ledeger_screen
+  final TextEditingController dateTimeController;
   final TextEditingController accountOrAccountFromController;
   final TextEditingController categoryOrAccountToController;
   final TextEditingController amountController;

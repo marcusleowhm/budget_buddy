@@ -7,6 +7,8 @@ import 'package:budget_buddy/nav/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../../utilities/date_formatter.dart';
+
 class AddLedgerScreen extends StatefulWidget {
   const AddLedgerScreen({super.key});
 
@@ -15,6 +17,7 @@ class AddLedgerScreen extends StatefulWidget {
 }
 
 class _AddLedgerScreenState extends State<AddLedgerScreen> {
+  //State managed by the screen
   List<LedgerInput> entries = <LedgerInput>[];
 
   @override
@@ -40,6 +43,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
 
   void _addRow() {
     //Init controllers first
+    TextEditingController dateTimeController = TextEditingController();
     TextEditingController accountOrAccountFromController =
         TextEditingController();
     TextEditingController categoryOrAccountToController =
@@ -51,12 +55,17 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     //Create a ledger and add controllers
     LedgerInput newLedger = LedgerInput(
       id: const Uuid().v4(),
+      dateTimeController: dateTimeController,
       accountOrAccountFromController: accountOrAccountFromController,
       categoryOrAccountToController: categoryOrAccountToController,
       amountController: amountController,
       noteController: noteController,
       additionalNoteController: additionalNoteController,
     );
+
+    //Init the date time to be displayed at the start
+    newLedger.dateTimeController.text =
+        dateFormatter.format(newLedger.dateTime);
 
     //Add listeners to controllers
     accountOrAccountFromController.addListener(
@@ -86,6 +95,57 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     //Finally add new ledger into entries
     setState(() => entries.add(newLedger));
   }
+
+  void _removeRowAt(LedgerInput input, int index) {
+    setState(
+      () {
+        entries.removeAt(index);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Record removed'),
+            action: SnackBarAction(
+              label: 'UNDO',
+              onPressed: () {
+                setState(
+                  () => entries.insert(index, input),
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _selectDate(BuildContext context, LedgerInput input) async {
+    final DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: input.dateTime.toLocal(),
+      firstDate: DateTime(1970),
+      lastDate: DateTime.now().add(
+            const Duration(days: 365 * 10),
+          ),
+      
+    );
+
+    if (selectedDate != null) {
+      setState(
+        () {
+          //Set state of the LedgerInput
+          //Note: Whenever setting the date time state, use UTC
+          input.dateTime = selectedDate.toUtc();
+
+          //Note: Whenever setting the date time to display, use Local
+          //Convert to string just for the display in the TextField
+          //Underlying data type in the LedgerInput class is still a DateTime
+          input.dateTimeController.text = dateFormatter.format(selectedDate.toLocal());
+        },
+      );
+    }
+  }
+
+  void _selectAccount() {}
+  void _selectCategory() {}
 
   void _handleSubmit() {
     //TODO implement logic to handle form submission
@@ -157,10 +217,15 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                         ),
                         TextField(
                           key: dateKey, //TODO implement datetime input
+                          controller: input.dateTimeController,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: 'Date',
                           ),
+                          readOnly: true,
+                          showCursor: true,
+                          //TODO to open datepicker
+                          onTap: () => _selectDate(context, input),
                         ),
                         TextField(
                           key: accountOrAccountFromKey,
@@ -198,7 +263,6 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                             labelText: 'Note',
                             border: OutlineInputBorder(),
                           ),
-                          keyboardType: TextInputType.number,
                         ),
                         Divider(key: dividerKey),
                         TextField(
@@ -206,6 +270,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                           controller: input.additionalNoteController,
                           decoration: const InputDecoration(
                             hintText: 'Additional Notes',
+                            helperText:
+                                ' Write notes here for transactions that require more details',
                             border: OutlineInputBorder(),
                           ),
                           maxLines: 5,
@@ -214,22 +280,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                       ],
                     ),
                     onDismissed: (direction) {
-                      setState(() {
-                        entries.removeAt(index);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: const Text('Record removed'),
-                            action: SnackBarAction(
-                              label: 'UNDO',
-                              onPressed: () {
-                                setState(
-                                  () => entries.insert(index, input),
-                                );
-                              },
-                            ),
-                          ),
-                        );
-                      });
+                      _removeRowAt(input, index);
                     },
                   );
                 }).toList(),
