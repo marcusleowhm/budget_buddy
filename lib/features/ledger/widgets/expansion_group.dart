@@ -119,7 +119,7 @@ class ExpansionGroup extends StatelessWidget {
                               : Colors.grey,
                     ),
                   ),
-                )
+                ),
             ],
           );
   }

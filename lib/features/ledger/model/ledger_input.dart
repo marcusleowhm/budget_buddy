@@ -40,6 +40,6 @@ class LedgerInput {
 
   @override
   String toString() {
-    return 'LedgerInput{id=$id, dateTime=$dateTime, account=$accountOrAccountFrom, note=$note, additionalNote=$additionalNote}';
+    return 'LedgerInput{id=$id, dateTime=$dateTime, account=$accountOrAccountFrom, category=$categoryOrAccountTo, amount=$amount, note=$note, additionalNote=$additionalNote}';
   }
 }

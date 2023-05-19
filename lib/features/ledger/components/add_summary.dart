@@ -1,0 +1,97 @@
+import 'package:budget_buddy/features/ledger/components/submit_button.dart';
+import 'package:budget_buddy/utilities/currency_formatter.dart';
+import 'package:flutter/material.dart';
+
+class AddSummary extends StatelessWidget {
+  const AddSummary(
+      {super.key,
+      required this.onSubmitPressed,
+      required this.totalTransactions,
+      required this.totalIncome,
+      required this.totalExpense,
+      required this.totalTransfer});
+
+  final VoidCallback onSubmitPressed;
+  final int totalTransactions;
+  final double totalIncome;
+  final double totalExpense;
+  final double totalTransfer;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.only(top: 10),
+      margin: const EdgeInsets.all(10.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).canvasColor,
+        border: Border.all(color: Theme.of(context).dividerColor),
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: Column(
+        children: [
+          const Text('Summary',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              )),
+          const Divider(),
+          Text('Total Transactions: $totalTransactions'),
+          const Divider(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Column(
+                children: [
+                  Text(
+                    'Income',
+                    style: TextStyle(
+                      color: Colors.blue[700],
+                    ),
+                  ),
+                  Text(
+                    currencyFormatter.format(totalIncome),
+                    style: TextStyle(
+                      color: Colors.blue[700],
+                    ),
+                  )
+                ],
+              ),
+              Column(
+                children: [
+                  const Text(
+                    'Expense',
+                    style: TextStyle(
+                      color: Colors.red,
+                    ),
+                  ),
+                  Text(
+                    currencyFormatter.format(totalExpense),
+                    style: const TextStyle(
+                      color: Colors.red,
+                    ),
+                  )
+                ],
+              ),
+              Column(
+                children: [
+                  const Text(
+                    'Transfer',
+                    style: TextStyle(
+                      color: Colors.grey,
+                    ),
+                  ),
+                  Text(
+                    currencyFormatter.format(totalTransfer),
+                    style: const TextStyle(
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          SubmitButton(action: onSubmitPressed)
+        ],
+      ),
+    );
+  }
+}
