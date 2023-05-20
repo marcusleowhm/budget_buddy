@@ -1,4 +1,4 @@
-import 'package:budget_buddy/features/ledger/components/account_picker2.dart';
+import 'package:budget_buddy/features/ledger/components/account_picker.dart';
 import 'package:budget_buddy/features/ledger/components/add_row_button.dart';
 import 'package:budget_buddy/features/ledger/components/add_summary.dart';
 import 'package:budget_buddy/features/ledger/components/category_picker.dart';
@@ -27,8 +27,10 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
 
   DateTime now = DateTime.now();
 
-  // Key to get Scaffold and show bottom sheet
+  // Key to get Scaffold and show bottom sheet.
+  // Also a controller to close the bottom sheet when tapped outside
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  PersistentBottomSheetController? controller;
 
   @override
   void initState() {
@@ -179,20 +181,16 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     }
   }
 
-  void _selectAccount2(BuildContext context, LedgerInput input) {
-    _scaffoldKey.currentState?.showBottomSheet<void>((context) {
-      return AccountPicker2(
+  void _selectAccount(BuildContext context, LedgerInput input) {
+    controller = _scaffoldKey.currentState?.showBottomSheet<void>((context) {
+      return AccountPicker(
         onPressed: (selectedAccount) {
           if (selectedAccount != null) {
             //Set value and close the dialog
             setState(() => input.accountOrAccountFrom = selectedAccount);
-            Navigator.pop(context);
             input.accountOrAccountFromController.text =
                 input.accountOrAccountFrom;
-            return;
           }
-          //Close the dialog without selecting any account
-          Navigator.pop(context);
         },
       );
     });
@@ -262,6 +260,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
 
   //TODO remove below two functions and just use declarative way to build the input
   Widget _buildEditableTextField({
+    required BuildContext context,
     Key? key,
     TextEditingController? controller,
     String? label,
@@ -286,12 +285,14 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
   }
 
   Widget _buildReadOnlyTextField({
+    required BuildContext context,
     Key? key,
     String? label,
     Widget? suffixIcon,
-    LedgerInput? input,
+    required LedgerInput input,
     TextEditingController? controller,
-    void Function(BuildContext, LedgerInput)? onTap,
+    required void Function(BuildContext, LedgerInput) onTap,
+    required void Function() onTapOutside,
   }) {
     return TextField(
         key: key,
@@ -303,7 +304,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
         ),
         readOnly: true,
         showCursor: false,
-        onTap: () => onTap!(context, input!));
+        onTap: () => onTap(context, input),
+        onTapOutside: (event) => onTapOutside());
   }
 
   @override
@@ -371,66 +373,80 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                             }),
                           ),
                           _buildReadOnlyTextField(
-                            key: dateKey,
-                            label: 'Date',
-                            suffixIcon: dateLongFormatter
-                                        .format(input.dateTime.toLocal()) !=
-                                    dateLongFormatter.format(now)
-                                ? IconButton(
-                                    onPressed: () {
-                                      input.dateTimeController.text =
-                                          dateLongFormatter.format(now);
-                                      _resetDateToToday(input, now);
-                                    },
-                                    icon: const Icon(Icons.refresh),
-                                  )
-                                : null,
-                            input: input,
-                            controller: input.dateTimeController,
-                            onTap: _selectDate,
-                          ),
+                              //Date
+                              context: context,
+                              key: dateKey,
+                              label: 'Date',
+                              suffixIcon: dateLongFormatter
+                                          .format(input.dateTime.toLocal()) !=
+                                      dateLongFormatter.format(now)
+                                  ? IconButton(
+                                      onPressed: () {
+                                        input.dateTimeController.text =
+                                            dateLongFormatter.format(now);
+                                        _resetDateToToday(input, now);
+                                      },
+                                      icon: const Icon(Icons.refresh),
+                                    )
+                                  : null,
+                              input: input,
+                              controller: input.dateTimeController,
+                              onTap: _selectDate,
+                              onTapOutside: () {} 
+                              ),
                           _buildReadOnlyTextField(
-                            key: accountOrAccountFromKey,
-                            label: input.type == TransactionType.transfer
-                                ? 'Account From'
-                                : 'Account',
-                            suffixIcon: input
-                                    .accountOrAccountFromController.text.isEmpty
-                                ? null
-                                : IconButton(
-                                    onPressed: () {
-                                      input.accountOrAccountFromController
-                                          .clear();
-                                      _clearAccount(input);
-                                    },
-                                    icon: const Icon(Icons.cancel_outlined),
-                                  ),
-                            input: input,
-                            controller: input.accountOrAccountFromController,
-                            onTap: (context, input) =>
-                                _selectAccount2(context, input),
-                          ),
+                              //Account
+                              context: context,
+                              key: accountOrAccountFromKey,
+                              label: input.type == TransactionType.transfer
+                                  ? 'Account From'
+                                  : 'Account',
+                              suffixIcon: input.accountOrAccountFromController
+                                      .text.isEmpty
+                                  ? null
+                                  : IconButton(
+                                      onPressed: () {
+                                        input.accountOrAccountFromController
+                                            .clear();
+                                        _clearAccount(input);
+                                      },
+                                      icon: const Icon(Icons.cancel_outlined),
+                                    ),
+                              input: input,
+                              controller: input.accountOrAccountFromController,
+                              onTap: (context, input) =>
+                                  _selectAccount(context, input),
+                              onTapOutside: () {
+                                if (controller != null) {
+                                  controller?.close();
+                                }
+                                controller = null;
+                              }),
                           _buildReadOnlyTextField(
-                            key: categoryOrAccountToKey,
-                            label: input.type == TransactionType.transfer
-                                ? 'Account To'
-                                : 'Category',
-                            suffixIcon:
-                                input.categoryOrAccountToController.text.isEmpty
-                                    ? null
-                                    : IconButton(
-                                        onPressed: () {
-                                          input.categoryOrAccountToController
-                                              .clear();
-                                          _clearCategory(input);
-                                        },
-                                        icon: const Icon(Icons.cancel_outlined),
-                                      ),
-                            input: input,
-                            controller: input.categoryOrAccountToController,
-                            onTap: _selectCategory,
-                          ),
+                              //Category
+                              context: context,
+                              key: categoryOrAccountToKey,
+                              label: input.type == TransactionType.transfer
+                                  ? 'Account To'
+                                  : 'Category',
+                              suffixIcon: input.categoryOrAccountToController
+                                      .text.isEmpty
+                                  ? null
+                                  : IconButton(
+                                      onPressed: () {
+                                        input.categoryOrAccountToController
+                                            .clear();
+                                        _clearCategory(input);
+                                      },
+                                      icon: const Icon(Icons.cancel_outlined),
+                                    ),
+                              input: input,
+                              controller: input.categoryOrAccountToController,
+                              onTap: _selectCategory,
+                              onTapOutside: () {}),
                           _buildEditableTextField(
+                              //Amount
+                              context: context,
                               key: amountKey,
                               controller: input.amountController,
                               label: 'Amount',
@@ -445,6 +461,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                     ),
                               inputType: TextInputType.number),
                           _buildEditableTextField(
+                            //Note
+                            context: context,
                             key: noteKey,
                             controller: input.noteController,
                             label: 'Note',
@@ -460,6 +478,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                           ),
                           Divider(key: dividerKey),
                           _buildEditableTextField(
+                              //Additional Note
+                              context: context,
                               key: additionalNoteKey,
                               controller: input.additionalNoteController,
                               suffixIcon: input

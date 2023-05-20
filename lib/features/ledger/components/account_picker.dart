@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 
 import '../../../mock/account.dart';
 
-class AccountPicker2 extends StatefulWidget {
-  const AccountPicker2({super.key, required this.onPressed});
+class AccountPicker extends StatefulWidget {
+  const AccountPicker({super.key, required this.onPressed});
 
   final void Function(String? selectedAccount) onPressed;
 
   @override
-  State<AccountPicker2> createState() => _AccountPicker2State();
+  State<AccountPicker> createState() => _AccountPickerState();
 }
 
-class _AccountPicker2State extends State<AccountPicker2> {
+class _AccountPickerState extends State<AccountPicker> {
   bool isGridView = true;
 
   @override
