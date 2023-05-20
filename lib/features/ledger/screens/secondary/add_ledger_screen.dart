@@ -1,5 +1,6 @@
 import 'package:budget_buddy/features/ledger/components/add_row_button.dart';
 import 'package:budget_buddy/features/ledger/components/add_summary.dart';
+import 'package:budget_buddy/features/ledger/components/category_picker.dart';
 import 'package:budget_buddy/features/ledger/components/type_picker.dart';
 import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
 import 'package:budget_buddy/features/ledger/widgets/expansion_group.dart';
@@ -137,7 +138,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     if (selectedDate != null) {
       setState(
         () {
-          //Set state of the LedgerInput
+          //Set state of the LedgerInput to the user selected date
           //Note: Whenever setting the date time state, use UTC
           input.dateTime = selectedDate.toUtc();
 
@@ -176,7 +177,26 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     );
   }
 
-  void _selectCategory() {}
+  void _selectCategory(BuildContext context, LedgerInput input) {
+    showDialog<String>(
+      context: context,
+      builder: (context) => CategoryPicker(
+        context: context,
+        onPressed: (String? value) {
+          if (value != null) {
+            //Set value and close the dialog
+            setState(() => input.categoryOrAccountTo = value);
+            Navigator.pop(context);
+            input.categoryOrAccountToController.text =
+                input.categoryOrAccountTo;
+            return;
+          }
+          //Close the dialog without selecting any account
+          Navigator.pop(context);
+        },
+      ),
+    );
+  }
 
   //To be called when
   //1. Editing the amount in each transaction,
@@ -209,6 +229,14 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
   void _handleSubmit() {
     //TODO implement logic to handle form submission
     entries.forEach((e) => print(e));
+  }
+
+  Widget _buildDismissibleBackground(Alignment alignment) {
+    return Container(
+      color: Colors.red,
+      alignment: alignment,
+      child: const Icon(Icons.delete),
+    );
   }
 
   @override
@@ -253,17 +281,11 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                     return Dismissible(
                       key: PageStorageKey<String>(input.id),
                       //Show red background when swiped left to right
-                      background: Container(
-                        color: Colors.red,
-                        alignment: Alignment.centerLeft,
-                        child: const Icon(Icons.delete),
-                      ),
+                      background:
+                          _buildDismissibleBackground(Alignment.centerLeft),
                       //Show red background when swiped right to left
-                      secondaryBackground: Container(
-                        color: Colors.red,
-                        alignment: Alignment.centerRight,
-                        child: const Icon(Icons.delete),
-                      ),
+                      secondaryBackground:
+                          _buildDismissibleBackground(Alignment.centerRight),
                       child: ExpansionGroup(
                         isExpanded: input.isExpanded,
                         onExpand: (value) =>
@@ -322,19 +344,20 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                               cursorWidth: 0.0,
                               onTap: () => _selectAccount(context, input)),
                           TextField(
-                            key: categoryOrAccountToKey,
-                            controller: input.categoryOrAccountToController,
-                            decoration: InputDecoration(
-                              labelText: input.type == TransactionType.transfer
-                                  ? 'Account To'
-                                  : 'Category',
-                              border: const OutlineInputBorder(),
-                            ),
-                            readOnly: true,
-                            showCursor: true,
-                            cursorHeight: 0.0,
-                            cursorWidth: 0.0,
-                          ),
+                              key: categoryOrAccountToKey,
+                              controller: input.categoryOrAccountToController,
+                              decoration: InputDecoration(
+                                labelText:
+                                    input.type == TransactionType.transfer
+                                        ? 'Account To'
+                                        : 'Category',
+                                border: const OutlineInputBorder(),
+                              ),
+                              readOnly: true,
+                              showCursor: true,
+                              cursorHeight: 0.0,
+                              cursorWidth: 0.0,
+                              onTap: () => _selectCategory(context, input)),
                           TextField(
                             key: amountKey,
                             controller: input.amountController,

@@ -52,7 +52,14 @@ class ExpansionGroup extends StatelessWidget {
 
   Widget _buildTitle() {
     return isExpanded
-        ? const Icon(Icons.library_books_rounded)
+        ? const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.library_books_rounded),
+              SizedBox(width: 10),
+              Text('Click to collapse', style: TextStyle()),
+            ],
+          )
         : Text(
             ledger.accountOrAccountFrom,
             style: const TextStyle(fontSize: 14),

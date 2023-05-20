@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../mock/account.dart';
 
-class AccountPicker extends StatefulWidget {
-  const AccountPicker({
+class CategoryPicker extends StatefulWidget {
+  const CategoryPicker({
     super.key,
     required this.context,
     required this.onPressed,
@@ -13,12 +13,10 @@ class AccountPicker extends StatefulWidget {
   final void Function(String? selectedAccount) onPressed;
 
   @override
-  State<AccountPicker> createState() => _AccountPickerState();
+  State<CategoryPicker> createState() => _CategoryPickerState();
 }
 
-class _AccountPickerState extends State<AccountPicker> {
-  bool isGridView = true;
-
+class _CategoryPickerState extends State<CategoryPicker> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -36,12 +34,6 @@ class _AccountPickerState extends State<AccountPicker> {
                   icon: const Icon(Icons.mode_edit_outline_outlined),
                 ),
                 IconButton(
-                  onPressed: () => setState(() => isGridView = !isGridView),
-                  icon: isGridView
-                      ? const Icon(Icons.list)
-                      : const Icon(Icons.window_rounded),
-                ),
-                IconButton(
                   onPressed: () => widget.onPressed(null),
                   icon: const Icon(Icons.cancel_rounded),
                 ),
@@ -51,7 +43,7 @@ class _AccountPickerState extends State<AccountPicker> {
               child: GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3),
-                itemCount: accounts.length,
+                itemCount: categories.length,
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     child: Container(
@@ -61,11 +53,11 @@ class _AccountPickerState extends State<AccountPicker> {
                           color: Theme.of(context).canvasColor,
                           border: Border.all()),
                       child: Text(
-                        accounts[index],
+                        categories[index],
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    onTap: () => widget.onPressed(accounts[index]),
+                    onTap: () => widget.onPressed(categories[index]),
                   );
                 },
               ),

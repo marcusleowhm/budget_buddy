@@ -3,3 +3,9 @@ final List<String> accounts = [
   'Citibank Premier Miles',
   'Standard Chartered Unlimited Cashback'
 ];
+
+final List<String> categories = [
+  'Food & Beverage',
+  'Holiday',
+  'Transport'
+];
