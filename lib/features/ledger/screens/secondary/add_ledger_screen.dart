@@ -154,8 +154,11 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     setState(() => input.additionalNote = '');
   }
 
+  //This function will be called 
+  //1. Each time the user clicks outside the textfield,
+  //2. Each time the user clicks on textfields that require the keyboard
+  //3. Each time the user clicks on the X button in the custom textfield
   void _closeBottomSheet() {
-    //TODO fix the bug related to clicking outside and the bottom sheet disappears
     if (controller != null) {
       controller?.close();
     }
@@ -199,6 +202,9 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
             input.accountOrAccountFromController.text =
                 input.accountOrAccountFrom;
           }
+          else {
+            _closeBottomSheet();
+          }
         },
       );
     });
@@ -213,6 +219,9 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
             setState(() => input.categoryOrAccountTo = selectedCategory);
             input.categoryOrAccountToController.text =
                 input.categoryOrAccountTo;
+          }
+          else {
+            _closeBottomSheet();
           }
         },
       );
@@ -271,8 +280,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
           if (!currentFocus.hasPrimaryFocus) {
             currentFocus.focusedChild?.unfocus();
           }
-
-          if (currentFocus.hasFocus) _closeBottomSheet();
+          _closeBottomSheet();
         },
         child: Scaffold(
           key: _scaffoldKey,
@@ -433,6 +441,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                       icon: const Icon(Icons.cancel_outlined),
                                     ),
                             ),
+                            onTap: _closeBottomSheet,
                           ),
                           Divider(key: dividerKey),
                           TextField(
@@ -456,6 +465,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                     'Write notes here for transactions that require more details'),
                             maxLines: 5,
                             keyboardType: TextInputType.multiline,
+                            onTap: _closeBottomSheet,
                           ),
                         ],
                       ),

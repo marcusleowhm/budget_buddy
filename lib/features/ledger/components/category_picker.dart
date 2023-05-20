@@ -17,7 +17,13 @@ class _CategoryPickerState extends State<CategoryPicker> {
     return FractionallySizedBox(
         heightFactor: 0.4,
         child: Container(
-          color: Colors.grey,
+          decoration: BoxDecoration(
+            color: Theme.of(context).canvasColor,
+            border: Border.all(
+              width: 0.5,
+              color: Theme.of(context).dividerColor,
+            ),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
