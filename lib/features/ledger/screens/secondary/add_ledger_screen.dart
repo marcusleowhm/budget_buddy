@@ -154,8 +154,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     setState(() => input.additionalNote = '');
   }
 
-
-  void _closeBottomSheet(PointerDownEvent e) {
+  void _closeBottomSheet() {
     //TODO fix the bug related to clicking outside and the bottom sheet disappears
     if (controller != null) {
       controller?.close();
@@ -272,6 +271,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
           if (!currentFocus.hasPrimaryFocus) {
             currentFocus.focusedChild?.unfocus();
           }
+
+          if (currentFocus.hasFocus) _closeBottomSheet();
         },
         child: Scaffold(
           key: _scaffoldKey,
@@ -372,7 +373,6 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                             readOnly: true,
                             showCursor: false,
                             onTap: () => _selectAccount(context, input),
-                            onTapOutside: _closeBottomSheet,
                           ),
                           TextField(
                             key: categoryOrAccountToKey,
@@ -397,7 +397,6 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                             readOnly: true,
                             showCursor: false,
                             onTap: () => _selectCategory(context, input),
-                            onTapOutside: _closeBottomSheet,
                           ),
                           TextField(
                             key: amountKey,
@@ -440,6 +439,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                             key: additionalNoteKey,
                             controller: input.additionalNoteController,
                             decoration: InputDecoration(
+                                border: const OutlineInputBorder(),
                                 suffixIcon: input
                                         .additionalNoteController.text.isEmpty
                                     ? null

@@ -54,11 +54,11 @@ class _AccountPickerState extends State<AccountPicker> {
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       child: Container(
-                        padding: const EdgeInsets.all(5.0),
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                            color: Theme.of(context).canvasColor,
-                            border: Border.all()),
+                          color: Theme.of(context).canvasColor,
+                          border: Border.all(),
+                        ),
                         child: Text(
                           accounts[index],
                           textAlign: TextAlign.center,
