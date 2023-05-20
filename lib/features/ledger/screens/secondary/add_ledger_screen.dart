@@ -156,6 +156,26 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     setState(() => input.dateTime = now);
   }
 
+  void _clearAccount(LedgerInput input) {
+    setState(() => input.accountOrAccountFrom = '');
+  }
+
+  void _clearCategory(LedgerInput input) {
+    setState(() => input.categoryOrAccountTo = '');
+  }
+
+  void _clearAmount(LedgerInput input) {
+    setState(() => input.amount = 0.0);
+  }
+
+  void _clearNote(LedgerInput input) {
+    setState(() => input.note = '');
+  }
+
+  void _clearAdditionalNote(LedgerInput input) {
+    setState(() => input.additionalNote = '');
+  }
+
   void _selectAccount(BuildContext context, LedgerInput input) {
     showDialog<String>(
       context: context,
@@ -239,6 +259,52 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     );
   }
 
+  //TODO remove below two functions and just use declarative way to build the input
+  Widget _buildEditableTextField({
+    Key? key,
+    TextEditingController? controller,
+    String? label,
+    Widget? suffixIcon,
+    String? hintText,
+    String? helperText,
+    int? maxLines,
+    TextInputType? inputType,
+  }) {
+    return TextField(
+      key: key,
+      controller: controller,
+      decoration: InputDecoration(
+          hintText: hintText,
+          labelText: label,
+          border: const OutlineInputBorder(),
+          suffixIcon: suffixIcon,
+          helperText: helperText),
+      maxLines: maxLines,
+      keyboardType: inputType,
+    );
+  }
+
+  Widget _buildReadOnlyTextField({
+    Key? key,
+    String? label,
+    Widget? suffixIcon,
+    LedgerInput? input,
+    TextEditingController? controller,
+    void Function(BuildContext, LedgerInput)? onTap,
+  }) {
+    return TextField(
+        key: key,
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          border: const OutlineInputBorder(),
+          suffixIcon: suffixIcon,
+        ),
+        readOnly: true,
+        showCursor: false,
+        onTap: () => onTap!(context, input!));
+  }
+
   @override
   Widget build(BuildContext context) {
     //(WillPopScope) For handling when user clicks back on the app bar, remove the displayed snack bar
@@ -302,92 +368,111 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                               _tallyAll();
                             }),
                           ),
-                          TextField(
+                          _buildReadOnlyTextField(
                             key: dateKey,
+                            label: 'Date',
+                            suffixIcon: dateLongFormatter
+                                        .format(input.dateTime.toLocal()) !=
+                                    dateLongFormatter.format(now)
+                                ? IconButton(
+                                    onPressed: () {
+                                      input.dateTimeController.text =
+                                          dateLongFormatter.format(now);
+                                      _resetDateToToday(input, now);
+                                    },
+                                    icon: const Icon(Icons.refresh),
+                                  )
+                                : null,
+                            input: input,
                             controller: input.dateTimeController,
-                            decoration: InputDecoration(
-                              border: const OutlineInputBorder(),
-                              labelText: 'Date',
-                              suffixIcon: dateLongFormatter
-                                          .format(input.dateTime.toLocal()) !=
-                                      dateLongFormatter.format(now)
-                                  ? IconButton(
+                            onTap: _selectDate,
+                          ),
+                          _buildReadOnlyTextField(
+                            key: accountOrAccountFromKey,
+                            label: input.type == TransactionType.transfer
+                                ? 'Account From'
+                                : 'Account',
+                            suffixIcon: input
+                                    .accountOrAccountFromController.text.isEmpty
+                                ? null
+                                : IconButton(
+                                    onPressed: () {
+                                      input.accountOrAccountFromController.clear();
+                                      _clearAccount(input);
+                                    },
+                                    icon: const Icon(Icons.cancel),
+                                  ),
+                            input: input,
+                            controller: input.accountOrAccountFromController,
+                            onTap: _selectAccount,
+                          ),
+                          _buildReadOnlyTextField(
+                            key: categoryOrAccountToKey,
+                            label: input.type == TransactionType.transfer
+                                ? 'Account To'
+                                : 'Category',
+                            suffixIcon:
+                                input.categoryOrAccountToController.text.isEmpty
+                                    ? null
+                                    : IconButton(
+                                        onPressed: () {
+                                          input.categoryOrAccountToController
+                                              .clear();
+                                          _clearCategory(input);
+                                        },
+                                        icon: const Icon(Icons.cancel),
+                                      ),
+                            input: input,
+                            controller: input.categoryOrAccountToController,
+                            onTap: _selectCategory,
+                          ),
+                          _buildEditableTextField(
+                              key: amountKey,
+                              controller: input.amountController,
+                              label: 'Amount',
+                              suffixIcon: input.amountController.text.isEmpty
+                                  ? null
+                                  : IconButton(
                                       onPressed: () {
-                                        input.dateTimeController.text =
-                                            dateLongFormatter.format(now);
-                                        _resetDateToToday(input, now);
+                                        input.amountController.clear();
+                                        _clearAmount(input);
                                       },
-                                      icon: const Icon(Icons.refresh),
-                                    )
-                                  : null,
-                            ),
-                            readOnly: true,
-                            showCursor: true,
-                            cursorHeight: 0.0,
-                            cursorWidth: 0.0,
-                            onTap: () => _selectDate(context, input),
-                          ),
-                          TextField(
-                              key: accountOrAccountFromKey,
-                              autofocus: true,
-                              controller: input.accountOrAccountFromController,
-                              decoration: InputDecoration(
-                                labelText:
-                                    input.type == TransactionType.transfer
-                                        ? 'Account From'
-                                        : 'Account',
-                                border: const OutlineInputBorder(),
-                              ),
-                              readOnly: true,
-                              showCursor: true,
-                              cursorHeight: 0.0,
-                              cursorWidth: 0.0,
-                              onTap: () => _selectAccount(context, input)),
-                          TextField(
-                              key: categoryOrAccountToKey,
-                              controller: input.categoryOrAccountToController,
-                              decoration: InputDecoration(
-                                labelText:
-                                    input.type == TransactionType.transfer
-                                        ? 'Account To'
-                                        : 'Category',
-                                border: const OutlineInputBorder(),
-                              ),
-                              readOnly: true,
-                              showCursor: true,
-                              cursorHeight: 0.0,
-                              cursorWidth: 0.0,
-                              onTap: () => _selectCategory(context, input)),
-                          TextField(
-                            key: amountKey,
-                            controller: input.amountController,
-                            decoration: const InputDecoration(
-                              labelText: 'Amount',
-                              border: OutlineInputBorder(),
-                            ),
-                            keyboardType: TextInputType.number,
-                          ),
-                          TextField(
+                                      icon: const Icon(Icons.cancel),
+                                    ),
+                              inputType: TextInputType.number),
+                          _buildEditableTextField(
                             key: noteKey,
                             controller: input.noteController,
-                            decoration: const InputDecoration(
-                              labelText: 'Note',
-                              border: OutlineInputBorder(),
-                            ),
+                            label: 'Note',
+                            suffixIcon: input.noteController.text.isEmpty
+                                ? null
+                                : IconButton(
+                                    onPressed: () {
+                                      input.noteController.clear();
+                                      _clearNote(input);
+                                    },
+                                    icon: const Icon(Icons.cancel),
+                                  ),
                           ),
                           Divider(key: dividerKey),
-                          TextField(
-                            key: additionalNoteKey,
-                            controller: input.additionalNoteController,
-                            decoration: const InputDecoration(
+                          _buildEditableTextField(
+                              key: additionalNoteKey,
+                              controller: input.additionalNoteController,
+                              suffixIcon: input
+                                      .additionalNoteController.text.isEmpty
+                                  ? null
+                                  : IconButton(
+                                      onPressed: () {
+                                        input.additionalNoteController.clear();
+                                        _clearAdditionalNote(input);
+                                      },
+                                      icon: const Icon(Icons.cancel),
+                                    ),
                               hintText: 'Additional Notes',
                               helperText:
-                                  ' Write notes here for transactions that require more details',
-                              border: OutlineInputBorder(),
-                            ),
-                            maxLines: 5,
-                            keyboardType: TextInputType.multiline,
-                          ),
+                                  'Write notes here for transactions that require more details',
+                              maxLines: 5,
+                              inputType: TextInputType.multiline),
                         ],
                       ),
                       onDismissed: (direction) {
