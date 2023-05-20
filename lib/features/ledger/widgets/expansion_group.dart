@@ -138,7 +138,8 @@ class ExpansionGroup extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).canvasColor,
         borderRadius: const BorderRadius.all(
-          Radius.circular(10),
+          //Edit this to change the border radius for the ExpansionTile
+          Radius.circular(0),
         ),
       ),
       margin: const EdgeInsets.only(bottom: 10.0),

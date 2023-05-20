@@ -1,3 +1,4 @@
+import 'package:budget_buddy/features/ledger/components/account_picker2.dart';
 import 'package:budget_buddy/features/ledger/components/add_row_button.dart';
 import 'package:budget_buddy/features/ledger/components/add_summary.dart';
 import 'package:budget_buddy/features/ledger/components/category_picker.dart';
@@ -9,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../utilities/date_formatter.dart';
-import '../../components/account_picker.dart';
 
 class AddLedgerScreen extends StatefulWidget {
   const AddLedgerScreen({super.key});
@@ -26,6 +26,9 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
   double totalTransfer = 0.0;
 
   DateTime now = DateTime.now();
+
+  // Key to get Scaffold and show bottom sheet
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -125,6 +128,30 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     _tallyAll();
   }
 
+  void _resetDateToToday(LedgerInput input, DateTime now) {
+    setState(() => input.dateTime = now);
+  }
+
+  void _clearAccount(LedgerInput input) {
+    setState(() => input.accountOrAccountFrom = '');
+  }
+
+  void _clearCategory(LedgerInput input) {
+    setState(() => input.categoryOrAccountTo = '');
+  }
+
+  void _clearAmount(LedgerInput input) {
+    setState(() => input.amount = 0.0);
+  }
+
+  void _clearNote(LedgerInput input) {
+    setState(() => input.note = '');
+  }
+
+  void _clearAdditionalNote(LedgerInput input) {
+    setState(() => input.additionalNote = '');
+  }
+
   void _selectDate(BuildContext context, LedgerInput input) async {
     final DateTime? selectedDate = await showDatePicker(
       context: context,
@@ -152,39 +179,13 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     }
   }
 
-  void _resetDateToToday(LedgerInput input, DateTime now) {
-    setState(() => input.dateTime = now);
-  }
-
-  void _clearAccount(LedgerInput input) {
-    setState(() => input.accountOrAccountFrom = '');
-  }
-
-  void _clearCategory(LedgerInput input) {
-    setState(() => input.categoryOrAccountTo = '');
-  }
-
-  void _clearAmount(LedgerInput input) {
-    setState(() => input.amount = 0.0);
-  }
-
-  void _clearNote(LedgerInput input) {
-    setState(() => input.note = '');
-  }
-
-  void _clearAdditionalNote(LedgerInput input) {
-    setState(() => input.additionalNote = '');
-  }
-
-  void _selectAccount(BuildContext context, LedgerInput input) {
-    showDialog<String>(
-      context: context,
-      builder: (context) => AccountPicker(
-        context: context,
-        onPressed: (String? value) {
-          if (value != null) {
+  void _selectAccount2(BuildContext context, LedgerInput input) {
+    _scaffoldKey.currentState?.showBottomSheet<void>((context) {
+      return AccountPicker2(
+        onPressed: (selectedAccount) {
+          if (selectedAccount != null) {
             //Set value and close the dialog
-            setState(() => input.accountOrAccountFrom = value);
+            setState(() => input.accountOrAccountFrom = selectedAccount);
             Navigator.pop(context);
             input.accountOrAccountFromController.text =
                 input.accountOrAccountFrom;
@@ -193,8 +194,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
           //Close the dialog without selecting any account
           Navigator.pop(context);
         },
-      ),
-    );
+      );
+    });
   }
 
   void _selectCategory(BuildContext context, LedgerInput input) {
@@ -318,6 +319,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
           }
         },
         child: Scaffold(
+          key: _scaffoldKey,
           appBar: AppBar(
             title: Text('${titles[SubRoutes.addledger]}'),
           ),
@@ -397,14 +399,16 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                 ? null
                                 : IconButton(
                                     onPressed: () {
-                                      input.accountOrAccountFromController.clear();
+                                      input.accountOrAccountFromController
+                                          .clear();
                                       _clearAccount(input);
                                     },
-                                    icon: const Icon(Icons.cancel),
+                                    icon: const Icon(Icons.cancel_outlined),
                                   ),
                             input: input,
                             controller: input.accountOrAccountFromController,
-                            onTap: _selectAccount,
+                            onTap: (context, input) =>
+                                _selectAccount2(context, input),
                           ),
                           _buildReadOnlyTextField(
                             key: categoryOrAccountToKey,
@@ -420,7 +424,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                               .clear();
                                           _clearCategory(input);
                                         },
-                                        icon: const Icon(Icons.cancel),
+                                        icon: const Icon(Icons.cancel_outlined),
                                       ),
                             input: input,
                             controller: input.categoryOrAccountToController,
@@ -437,7 +441,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                         input.amountController.clear();
                                         _clearAmount(input);
                                       },
-                                      icon: const Icon(Icons.cancel),
+                                      icon: const Icon(Icons.cancel_outlined),
                                     ),
                               inputType: TextInputType.number),
                           _buildEditableTextField(
@@ -451,7 +455,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                       input.noteController.clear();
                                       _clearNote(input);
                                     },
-                                    icon: const Icon(Icons.cancel),
+                                    icon: const Icon(Icons.cancel_outlined),
                                   ),
                           ),
                           Divider(key: dividerKey),
@@ -466,7 +470,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                         input.additionalNoteController.clear();
                                         _clearAdditionalNote(input);
                                       },
-                                      icon: const Icon(Icons.cancel),
+                                      icon: const Icon(Icons.cancel_outlined),
                                     ),
                               hintText: 'Additional Notes',
                               helperText:
