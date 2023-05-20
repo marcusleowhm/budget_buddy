@@ -41,7 +41,9 @@ class _CategoryPickerState extends State<CategoryPicker> {
               Expanded(
                 child: GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3),
+                    mainAxisExtent: 64,
+                    crossAxisCount: 3,
+                  ),
                   itemCount: categories.length,
                   itemBuilder: (context, index) {
                     return GestureDetector(
@@ -49,8 +51,12 @@ class _CategoryPickerState extends State<CategoryPicker> {
                         padding: const EdgeInsets.all(5.0),
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                            color: Theme.of(context).canvasColor,
-                            border: Border.all()),
+                          color: Theme.of(context).canvasColor,
+                          border: Border.all(
+                            width: 0.5,
+                            color: Theme.of(context).dividerColor,
+                          ),
+                        ),
                         child: Text(
                           categories[index],
                           textAlign: TextAlign.center,
