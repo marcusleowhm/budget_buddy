@@ -1,8 +1,10 @@
 import 'package:budget_buddy/features/ledger/components/account_picker.dart';
 import 'package:budget_buddy/features/ledger/components/add_row_button.dart';
 import 'package:budget_buddy/features/ledger/components/add_summary.dart';
+import 'package:budget_buddy/features/ledger/components/amount_typer.dart';
 import 'package:budget_buddy/features/ledger/components/category_picker.dart';
 import 'package:budget_buddy/features/ledger/components/type_picker.dart';
+import 'package:budget_buddy/features/ledger/model/keyset.dart';
 import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
 import 'package:budget_buddy/features/ledger/widgets/expansion_group.dart';
 import 'package:budget_buddy/nav/routes.dart';
@@ -30,13 +32,25 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
   // Key to get Scaffold and show bottom sheet.
   // Also a controller to close the bottom sheet when tapped outside
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  PersistentBottomSheetController? controller;
+  late PersistentBottomSheetController? _bottomSheetController;
+
+  //Keys for the TextFields
+  Key typeKey = const Key('type');
+  Key dateKey = const Key('date');
+  Key accountOrAccountFromKey = const Key('accountOrAccountFrom');
+  Key categoryOrAccountToKey = const Key('categoryOrAccountTo');
+  Key amountKey = const Key('amount');
+  Key noteKey = const Key('note');
+  Key dividerKey = const Key('divider');
+  Key additionalNoteKey = const Key('additionalNote');
 
   @override
   void initState() {
     super.initState();
     if (entries.isEmpty) {
       _addRow();
+      _moveFocusTo(entries.first.accountOrAccountFromFocus);
+      _selectAccount(entries.first);
     }
   }
 
@@ -44,11 +58,18 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
   void dispose() {
     for (LedgerInput input in entries) {
       input
+        ..dateTimeController.dispose()
         ..accountOrAccountFromController.dispose()
         ..categoryOrAccountToController.dispose()
         ..amountController.dispose()
         ..noteController.dispose()
-        ..additionalNoteController.dispose();
+        ..additionalNoteController.dispose()
+        ..dateTimeFocus.dispose()
+        ..accountOrAccountFromFocus.dispose()
+        ..categoryOrAccountToFocus.dispose()
+        ..amountFocus.dispose()
+        ..noteFocus.dispose()
+        ..additionalNoteFocus.dispose();
     }
     super.dispose();
   }
@@ -64,16 +85,29 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     TextEditingController noteController = TextEditingController();
     TextEditingController additionalNoteController = TextEditingController();
 
+    //Add focus nodes
+    FocusNode dateTimeFocus = FocusNode();
+    FocusNode accountOrAccountFromFocus = FocusNode();
+    FocusNode categoryOrAccountToFocus = FocusNode();
+    FocusNode amountFocus = FocusNode();
+    FocusNode noteFocus = FocusNode();
+    FocusNode additionalNoteFocus = FocusNode();
+
     //Create a ledger and add controllers
     LedgerInput newLedger = LedgerInput(
-      id: const Uuid().v4(),
-      dateTimeController: dateTimeController,
-      accountOrAccountFromController: accountOrAccountFromController,
-      categoryOrAccountToController: categoryOrAccountToController,
-      amountController: amountController,
-      noteController: noteController,
-      additionalNoteController: additionalNoteController,
-    );
+        id: const Uuid().v4(),
+        dateTimeController: dateTimeController,
+        accountOrAccountFromController: accountOrAccountFromController,
+        categoryOrAccountToController: categoryOrAccountToController,
+        amountController: amountController,
+        noteController: noteController,
+        additionalNoteController: additionalNoteController,
+        dateTimeFocus: dateTimeFocus,
+        accountOrAccountFromFocus: accountOrAccountFromFocus,
+        categoryOrAccountToFocus: categoryOrAccountToFocus,
+        amountFocus: amountFocus,
+        noteFocus: noteFocus,
+        additionalNoteFocus: additionalNoteFocus);
 
     //Init the date time to be displayed at the start
     newLedger.dateTimeController.text =
@@ -142,10 +176,6 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     setState(() => input.categoryOrAccountTo = '');
   }
 
-  void _clearAmount(LedgerInput input) {
-    setState(() => input.amount = 0.0);
-  }
-
   void _clearNote(LedgerInput input) {
     setState(() => input.note = '');
   }
@@ -154,15 +184,19 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     setState(() => input.additionalNote = '');
   }
 
-  //This function will be called 
+  //This function will be called
   //1. Each time the user clicks outside the textfield,
   //2. Each time the user clicks on textfields that require the keyboard
   //3. Each time the user clicks on the X button in the custom textfield
   void _closeBottomSheet() {
-    if (controller != null) {
-      controller?.close();
+    if (_bottomSheetController != null) {
+      _bottomSheetController?.close();
     }
-    controller = null;
+    _bottomSheetController = null;
+  }
+
+  void _moveFocusTo(FocusNode focus) {
+    focus.requestFocus();
   }
 
   void _selectDate(BuildContext context, LedgerInput input) async {
@@ -189,29 +223,41 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
               dateLongFormatter.format(selectedDate.toLocal());
         },
       );
+
+      //Move focus to account after selecting date
+      _moveFocusTo(input.accountOrAccountFromFocus);
+      _selectAccount(input);
     }
   }
 
-  void _selectAccount(BuildContext context, LedgerInput input) {
-    controller = _scaffoldKey.currentState?.showBottomSheet<void>((context) {
-      return AccountPicker(
-        onPressed: (selectedAccount) {
-          if (selectedAccount != null) {
-            //Set value and close the dialog
-            setState(() => input.accountOrAccountFrom = selectedAccount);
-            input.accountOrAccountFromController.text =
-                input.accountOrAccountFrom;
-          }
-          else {
-            _closeBottomSheet();
-          }
-        },
-      );
+  void _selectAccount(LedgerInput input) {
+    //To allow initState to call this function and open the account selection
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _bottomSheetController =
+          _scaffoldKey.currentState?.showBottomSheet<void>((context) {
+        return AccountPicker(
+          onPressed: (selectedAccount) {
+            if (selectedAccount != null) {
+              //Set value and close the dialog
+              setState(() => input.accountOrAccountFrom = selectedAccount);
+              input.accountOrAccountFromController.text =
+                  input.accountOrAccountFrom;
+
+              //Move focus to categoryOrAccountTo after selection
+              _moveFocusTo(input.categoryOrAccountToFocus);
+              _selectCategory(input);
+            } else {
+              _closeBottomSheet();
+            }
+          },
+        );
+      });
     });
   }
 
-  void _selectCategory(BuildContext context, LedgerInput input) {
-    controller = _scaffoldKey.currentState?.showBottomSheet<void>((context) {
+  void _selectCategory(LedgerInput input) {
+    _bottomSheetController =
+        _scaffoldKey.currentState?.showBottomSheet<void>((context) {
       return CategoryPicker(
         onPressed: (selectedCategory) {
           if (selectedCategory != null) {
@@ -219,13 +265,85 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
             setState(() => input.categoryOrAccountTo = selectedCategory);
             input.categoryOrAccountToController.text =
                 input.categoryOrAccountTo;
-          }
-          else {
+
+            //Move focus to amount input,
+            //Then show the keypad
+            _moveFocusTo(input.amountFocus);
+            _selectAmount(input);
+          } else {
             _closeBottomSheet();
           }
         },
       );
     });
+  }
+
+  void _selectAmount(LedgerInput input) {
+    _bottomSheetController =
+        _scaffoldKey.currentState?.showBottomSheet<void>((context) {
+      return AmountTyper(
+        onCancelPressed: _closeBottomSheet,
+        getInput: (dynamic keyPress) {
+          _formatAndSetAmount(input, keyPress);
+        },
+        amount: input.amount,
+      );
+    });
+  }
+
+  //TODO WIP to enter amount with custom keypad
+  void _formatAndSetAmount(LedgerInput input, dynamic keyPress) {
+    bool isInteger(double amount) {
+      return amount % 1 == 0;
+    }
+
+    if (keyPress is! String) {
+      //Backspace action here
+      print('pressed backspace');
+      return;
+    }
+
+    //Do nothing When the user press on empty space in the keypad
+    if (keyPress.isEmpty) {
+      return;
+    }
+
+    //TODO Handle the arithmetic operations here. Make sure it terminates right after
+    if (keyPress == plusCharacter) {}
+    if (keyPress == minusCharacter) {}
+    if (keyPress == equalsCharacter) {}
+    if (keyPress == divideCharacter) {}
+
+    if (keyPress == '.') {
+
+      //Add a leading zero and dot if the value is still zero
+      if (input.amount == 0.0) {
+        input.amountController.text = '0.';
+      }
+
+      //Only add a dot if there is no dot yet
+      if (!input.amountController.text.contains('.')) {
+        input.amountController.text += '.';
+        return;
+      }
+    }
+    if (keyPress == '00') {}
+
+    int? numberInput = int.tryParse(keyPress);
+    if (numberInput != null) {
+      //Initially if stored value is 0.0
+      if (input.amount == 0.0) {
+        setState(() => input.amount = numberInput.toDouble());
+        input.amountController.text = input.amount.toInt().toString();
+      }
+      //If it's not zero, try and see if it's still an integer
+      else if (isInteger(input.amount)) {
+        setState(() => input.amount = input.amount * 10 + numberInput);
+        input.amountController.text = input.amount.toInt().toString();
+      }
+      //if it's neither zero nor integer, it must be a double
+      else {}
+    }
   }
 
   //To be called when
@@ -280,7 +398,6 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
           if (!currentFocus.hasPrimaryFocus) {
             currentFocus.focusedChild?.unfocus();
           }
-          _closeBottomSheet();
         },
         child: Scaffold(
           key: _scaffoldKey,
@@ -299,17 +416,6 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                     int index = entry.key;
                     LedgerInput input = entry.value;
 
-                    Key typeKey = const Key('type');
-                    Key dateKey = const Key('date');
-                    Key accountOrAccountFromKey =
-                        const Key('accountOrAccountFrom');
-                    Key categoryOrAccountToKey =
-                        const Key('categoryOrAccountTo');
-                    Key amountKey = const Key('amount');
-                    Key noteKey = const Key('note');
-                    Key dividerKey = const Key('divider');
-                    Key additionalNoteKey = const Key('additionalNote');
-
                     return Dismissible(
                       key: PageStorageKey<String>(input.id),
                       //Show red background when swiped left to right
@@ -320,8 +426,12 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                           _buildDismissibleBackground(Alignment.centerRight),
                       child: ExpansionGroup(
                         isExpanded: input.isExpanded,
-                        onExpand: (value) =>
-                            setState(() => input.isExpanded = value),
+                        onExpand: (value) {
+                          setState(() => input.isExpanded = value);
+                          if (!value) {
+                            _closeBottomSheet();
+                          }
+                        },
                         ledger: input,
                         children: [
                           TypePicker(
@@ -337,6 +447,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                           TextField(
                               //Date
                               key: dateKey,
+                              focusNode: input.dateTimeFocus,
                               controller: input.dateTimeController,
                               decoration: InputDecoration(
                                 labelText: 'Date',
@@ -356,10 +467,14 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                               ),
                               readOnly: true,
                               showCursor: false,
-                              onTap: () => _selectDate(context, input)),
+                              onTap: () {
+                                _closeBottomSheet();
+                                _selectDate(context, input);
+                              }),
                           TextField(
                             //Account From
                             key: accountOrAccountFromKey,
+                            focusNode: input.accountOrAccountFromFocus,
                             controller: input.accountOrAccountFromController,
                             decoration: InputDecoration(
                               border: const OutlineInputBorder(),
@@ -380,10 +495,13 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                             ),
                             readOnly: true,
                             showCursor: false,
-                            onTap: () => _selectAccount(context, input),
+                            onTap: () {
+                              _selectAccount(input);
+                            },
                           ),
                           TextField(
                             key: categoryOrAccountToKey,
+                            focusNode: input.categoryOrAccountToFocus,
                             controller: input.categoryOrAccountToController,
                             decoration: InputDecoration(
                               border: const OutlineInputBorder(),
@@ -404,29 +522,23 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                             ),
                             readOnly: true,
                             showCursor: false,
-                            onTap: () => _selectCategory(context, input),
+                            onTap: () => _selectCategory(input),
                           ),
                           TextField(
                             key: amountKey,
+                            focusNode: input.amountFocus,
                             controller: input.amountController,
-                            decoration: InputDecoration(
-                              border: const OutlineInputBorder(),
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
                               labelText: 'Amount',
-                              suffixIcon: input.amountController.text.isEmpty
-                                  ? null
-                                  : IconButton(
-                                      onPressed: () {
-                                        input.amountController.clear();
-                                        _clearAmount(input);
-                                      },
-                                      icon: const Icon(Icons.cancel_outlined),
-                                    ),
                             ),
                             readOnly: true,
                             showCursor: false,
+                            onTap: () => _selectAmount(input),
                           ),
                           TextField(
                             key: noteKey,
+                            focusNode: input.noteFocus,
                             controller: input.noteController,
                             decoration: InputDecoration(
                               border: const OutlineInputBorder(),
@@ -446,6 +558,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                           Divider(key: dividerKey),
                           TextField(
                             key: additionalNoteKey,
+                            focusNode: input.additionalNoteFocus,
                             controller: input.additionalNoteController,
                             decoration: InputDecoration(
                                 border: const OutlineInputBorder(),

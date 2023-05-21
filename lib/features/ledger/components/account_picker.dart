@@ -17,10 +17,11 @@ class _AccountPickerState extends State<AccountPicker> {
   @override
   Widget build(BuildContext context) {
     return FractionallySizedBox(
+        //This widget keeps the height of the bottom sheet be at 40% of screen
         heightFactor: 0.4,
         child: Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).canvasColor,
+            color: Colors.grey,
             border: Border.all(
               width: 0.5,
               color: Theme.of(context).dividerColor,
@@ -30,7 +31,7 @@ class _AccountPickerState extends State<AccountPicker> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Container(
-                color: Theme.of(context).canvasColor,
+                color: Theme.of(context).primaryColor,
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -38,16 +39,19 @@ class _AccountPickerState extends State<AccountPicker> {
                     IconButton(
                       onPressed: () {},
                       icon: const Icon(Icons.mode_edit_outline_outlined),
+                      color: Theme.of(context).canvasColor,
                     ),
                     IconButton(
                       onPressed: () => setState(() => isGridView = !isGridView),
                       icon: isGridView
                           ? const Icon(Icons.list)
                           : const Icon(Icons.window_rounded),
+                      color: Theme.of(context).canvasColor,
                     ),
                     IconButton(
                       onPressed: () => widget.onPressed(null),
                       icon: const Icon(Icons.cancel_rounded),
+                      color: Theme.of(context).canvasColor,
                     ),
                   ],
                 ),

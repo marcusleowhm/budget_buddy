@@ -18,7 +18,7 @@ class _CategoryPickerState extends State<CategoryPicker> {
         heightFactor: 0.4,
         child: Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).canvasColor,
+            color: Colors.grey,
             border: Border.all(
               width: 0.5,
               color: Theme.of(context).dividerColor,
@@ -28,7 +28,7 @@ class _CategoryPickerState extends State<CategoryPicker> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Container(
-                color: Theme.of(context).canvasColor,
+                color: Theme.of(context).primaryColor,
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -36,10 +36,12 @@ class _CategoryPickerState extends State<CategoryPicker> {
                     IconButton(
                       onPressed: () {},
                       icon: const Icon(Icons.mode_edit_outline_outlined),
+                      color: Theme.of(context).canvasColor,
                     ),
                     IconButton(
                       onPressed: () => widget.onPressed(null),
                       icon: const Icon(Icons.cancel_rounded),
+                      color: Theme.of(context).canvasColor,
                     ),
                   ],
                 ),

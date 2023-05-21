@@ -17,6 +17,12 @@ class LedgerInput {
     required this.amountController,
     required this.noteController,
     required this.additionalNoteController,
+    required this.dateTimeFocus,
+    required this.accountOrAccountFromFocus,
+    required this.categoryOrAccountToFocus,
+    required this.amountFocus,
+    required this.noteFocus,
+    required this.additionalNoteFocus
   });
   
   String id;
@@ -37,6 +43,14 @@ class LedgerInput {
   final TextEditingController amountController;
   final TextEditingController noteController;
   final TextEditingController additionalNoteController;
+
+  final FocusNode dateTimeFocus;
+  final FocusNode accountOrAccountFromFocus;
+  final FocusNode categoryOrAccountToFocus;
+  final FocusNode amountFocus;
+  final FocusNode noteFocus;
+  final FocusNode additionalNoteFocus;
+
 
   @override
   String toString() {

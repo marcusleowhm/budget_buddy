@@ -10,9 +10,9 @@ class LedgerScreen extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(title: Text('${titles[MainRoutes.ledger]}')),
         floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.add),
           onPressed: () => context.go(
               '/${routes[MainRoutes.ledger]}/${routes[SubRoutes.addledger]}'),
+          child: const Icon(Icons.add),
         ));
   }
 }
