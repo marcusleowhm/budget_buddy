@@ -4,7 +4,6 @@ import 'package:budget_buddy/features/ledger/components/add_summary.dart';
 import 'package:budget_buddy/features/ledger/components/amount_typer.dart';
 import 'package:budget_buddy/features/ledger/components/category_picker.dart';
 import 'package:budget_buddy/features/ledger/components/type_picker.dart';
-import 'package:budget_buddy/features/ledger/model/keyset.dart';
 import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
 import 'package:budget_buddy/features/ledger/widgets/expansion_group.dart';
 import 'package:budget_buddy/nav/routes.dart';
@@ -291,7 +290,6 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     });
   }
 
-  //TODO WIP to enter amount with custom keypad
   void _formatAndSetAmount(LedgerInput input, dynamic keyPress) {
     bool isInteger(double amount) {
       return amount % 1 == 0;
@@ -299,7 +297,18 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
 
     if (keyPress is! String) {
       //Backspace action here
-      print('pressed backspace');
+      String displayedText = input.amountController.text;
+      if (displayedText.isEmpty) {
+        return;
+      }
+      displayedText = displayedText.substring(0, displayedText.length - 1);
+      input.amountController.text = displayedText;
+      double? newValue = double.tryParse(displayedText);
+      if (newValue != null) {
+        setState(() => input.amount = newValue);
+      } else {
+        setState(() => input.amount = 0.0);
+      }
       return;
     }
 
@@ -308,41 +317,86 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
       return;
     }
 
-    //TODO Handle the arithmetic operations here. Make sure it terminates right after
-    if (keyPress == plusCharacter) {}
-    if (keyPress == minusCharacter) {}
-    if (keyPress == equalsCharacter) {}
-    if (keyPress == divideCharacter) {}
-
     if (keyPress == '.') {
-
       //Add a leading zero and dot if the value is still zero
+      //Does not affect the ledger state, so no setState needed
       if (input.amount == 0.0) {
         input.amountController.text = '0.';
+        return;
       }
-
       //Only add a dot if there is no dot yet
       if (!input.amountController.text.contains('.')) {
         input.amountController.text += '.';
         return;
       }
     }
+
+    //TODO logic for adding 100 to the value
     if (keyPress == '00') {}
 
     int? numberInput = int.tryParse(keyPress);
     if (numberInput != null) {
-      //Initially if stored value is 0.0
-      if (input.amount == 0.0) {
+      //Initially if stored value is 0.0 and there is no decimal
+      //Set amount to a single integer
+      if (input.amount == 0.0 && !input.amountController.text.contains('.')) {
         setState(() => input.amount = numberInput.toDouble());
         input.amountController.text = input.amount.toInt().toString();
+        return;
       }
-      //If it's not zero, try and see if it's still an integer
-      else if (isInteger(input.amount)) {
+      //if stored value is 0.0 and there is a decimal (keep decimal places to 2, or maybe 4?) //TODO
+      //Add the first decimal to the amount
+      if (input.amount == 0.0 && input.amountController.text.contains('.')) {
+        String displayText = input.amountController.text + numberInput.toString();
+        double? newValue = double.tryParse(displayText);
+        if (newValue != null) {
+          setState(() => input.amount = newValue);
+          input.amountController.text = input.amount.toStringAsFixed(1);
+        }
+        return;
+      }
+      //If it's not zero, still an integer, and user have not clicked on dot
+      //Just add a digit at the back, end result is still an integer value
+      if (isInteger(input.amount) &&
+          !input.amountController.text.contains('.')) {
         setState(() => input.amount = input.amount * 10 + numberInput);
         input.amountController.text = input.amount.toInt().toString();
+        return;
       }
-      //if it's neither zero nor integer, it must be a double
-      else {}
+      //if it's not zero, still an integer, and user have clicked on the dot
+      //Add a digit after the decimal number, end result is double value
+      if (isInteger(input.amount) && input.amountController.text.contains('.')) {
+        String displayText = input.amountController.text + numberInput.toString();
+        double? newValue = double.tryParse(displayText);
+        if (newValue != null) {
+          setState(() => input.amount = newValue);
+          input.amountController.text = input.amount.toStringAsFixed(1);
+        }
+        return;
+      }
+      //If it's a decimal value
+      //By this point, the number of decimal places can only be 1 or 2
+      //Add a digit at the back after the last decimal number
+      if (!isInteger(input.amount)) {
+        int decimalPlaces = input.amountController.text.split('.')[1].length;
+        if (decimalPlaces == 1) {
+          String displayText =
+              input.amountController.text + numberInput.toString();
+          double? newValue = double.tryParse(displayText);
+          if (newValue != null) {
+            setState(() => input.amount = newValue);
+          }
+        } else if (decimalPlaces == 2) {
+          String extractedText = input.amountController.text
+              .substring(0, input.amountController.text.length - 1);
+          String displayText = extractedText + numberInput.toString();
+          double? newValue = double.tryParse(displayText);
+          if (newValue != null) {
+            setState(() => input.amount = newValue);
+          }
+        }
+        input.amountController.text = input.amount.toStringAsFixed(2);
+        return;
+      }
     }
   }
 
@@ -584,6 +638,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                       ),
                       onDismissed: (direction) {
                         _removeRowAt(input, index);
+                        _closeBottomSheet();
                       },
                     );
                   }).toList(),

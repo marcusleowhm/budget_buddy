@@ -10,16 +10,11 @@ List<List<String>> numberKeys = [
   ['7', '8', '9'],
   ['4', '5', '6'],
   ['1', '2', '3'],
-  ['0', '.', '00'],
+  ['0', '00', '.'],
 ];
 
 List<List<dynamic>> actionKeys = [
-    [plusCharacter],
-    [minusCharacter],
-    [multiplyCharacter],
-    [divideCharacter],
     [
-      equalsCharacter,
       const Icon(Icons.backspace)
     ]
   ];
@@ -34,10 +29,10 @@ class Keyset {
 class USDKeySet extends Keyset {
   @override
   List<List<dynamic>> get keys => <List<dynamic>>[
-        [...numberKeys[0], ...actionKeys[0]],
-        [...numberKeys[1], ...actionKeys[1]],
-        [...numberKeys[2], ...actionKeys[2]],
-        [...numberKeys[3], ...actionKeys[3]],
-        ['', '', ...actionKeys[4]]
+        [...numberKeys[0],],
+        [...numberKeys[1],],
+        [...numberKeys[2],],
+        [...numberKeys[3],],
+        ['', '', '', ...actionKeys[0]]
       ];
 }
