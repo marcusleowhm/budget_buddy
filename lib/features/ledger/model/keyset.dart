@@ -29,10 +29,10 @@ class Keyset {
 class USDKeySet extends Keyset {
   @override
   List<List<dynamic>> get keys => <List<dynamic>>[
+        ['', '', ...actionKeys[0]],
         [...numberKeys[0],],
         [...numberKeys[1],],
         [...numberKeys[2],],
         [...numberKeys[3],],
-        ['', '', '', ...actionKeys[0]]
       ];
 }

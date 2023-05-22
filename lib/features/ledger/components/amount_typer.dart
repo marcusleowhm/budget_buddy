@@ -14,7 +14,6 @@ class AmountTyper extends StatelessWidget {
   final void Function(dynamic) getInput;
   final VoidCallback onCancelPressed;
 
-  //https://www.youtube.com/watch?v=dfaFK561PAo&t=726s
   @override
   Widget build(BuildContext context) {
     return FractionallySizedBox(

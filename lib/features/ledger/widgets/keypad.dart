@@ -17,23 +17,24 @@ class Keypad extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: keyset.keys
-          .map((x) => Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: x.map((y) {
-                  return Expanded(
-                    child: Container(
-                        color: Theme.of(context).canvasColor,
-                        child: KeypadItem(
-                          label: y,
-                          onPressed: (y) => onPressed(y),
-                        )),
-                  );
-                }).toList(),
-              ))
-          .toList(),
+    return SafeArea(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: keyset.keys
+            .map((x) => Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: x.map((y) {
+                    return Expanded(
+                      child: KeypadItem(
+                        label: y,
+                        value: y,
+                        onPressed: (y) => onPressed(y),
+                      ),
+                    );
+                  }).toList(),
+                ))
+            .toList(),
+      ),
     );
   }
 }
