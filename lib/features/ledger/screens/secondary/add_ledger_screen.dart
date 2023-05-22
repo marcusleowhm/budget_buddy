@@ -29,9 +29,9 @@ class AddLedgerScreen extends StatefulWidget {
 class _AddLedgerScreenState extends State<AddLedgerScreen> {
   //State managed by the screen
   List<LedgerInput> entries = <LedgerInput>[];
-  double totalIncome = 0.0;
-  double totalExpense = 0.0;
-  double totalTransfer = 0.0;
+
+  //Data passed to the summary widget
+  Map<String, Map<String, double>> currenciesTotal = {};
 
   DateTime now = DateTime.now();
 
@@ -490,26 +490,38 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
   //3. Removing rows and
   //4. Undoing removal
   void _tallyAll() {
-    double incomeSum = 0.0;
-    double expenseSum = 0.0;
-    double transferSum = 0.0;
 
-    for (LedgerInput element in entries) {
-      switch (element.type) {
+    const String incomeSum = 'incomeSum';
+    const String expenseSum = 'expenseSum';
+    const String transferSum = 'transferSum';
+
+    //For each of the currencies present in the entries, init their sum value
+    Set<String> currencies = entries.map((input) => input.currency).toSet();
+    for (String currency in currencies) {
+       Map<String, double> totals = {
+        incomeSum: 0.0,
+        expenseSum: 0.0,
+        transferSum: 0.0
+      };
+      setState(() => currenciesTotal[currency] = totals);
+    }
+
+    for (LedgerInput input in entries) {      
+      switch (input.type) {
         case TransactionType.income:
-          incomeSum += element.amount;
+          double? income = currenciesTotal[input.currency]?[incomeSum];
+          currenciesTotal[input.currency]?[incomeSum] = income! + input.amount;
           break;
         case TransactionType.expense:
-          expenseSum += element.amount;
+          double? expense = currenciesTotal[input.currency]?[expenseSum];
+          currenciesTotal[input.currency]?[expenseSum] = expense! + input.amount;
           break;
         case TransactionType.transfer:
-          transferSum += element.amount;
+          double? transfer = currenciesTotal[input.currency]?[transferSum];
+          currenciesTotal[input.currency]?[transferSum] = transfer! + input.amount;
           break;
       }
     }
-    totalIncome = incomeSum;
-    totalExpense = expenseSum;
-    totalTransfer = transferSum;
   }
 
   void _handleSubmit() {
@@ -688,9 +700,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                     AddSummary(
                       onSubmitPressed: _handleSubmit,
                       totalTransactions: entries.length,
-                      totalIncome: totalIncome,
-                      totalExpense: totalExpense,
-                      totalTransfer: totalTransfer,
+                      currenciesTotal: currenciesTotal,
                     ),
                   ],
                 ),

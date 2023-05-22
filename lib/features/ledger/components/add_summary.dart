@@ -3,19 +3,16 @@ import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:flutter/material.dart';
 
 class AddSummary extends StatelessWidget {
-  const AddSummary(
-      {super.key,
-      required this.onSubmitPressed,
-      required this.totalTransactions,
-      required this.totalIncome,
-      required this.totalExpense,
-      required this.totalTransfer});
+  const AddSummary({
+    super.key,
+    required this.onSubmitPressed,
+    required this.totalTransactions,
+    required this.currenciesTotal,
+  });
 
   final VoidCallback onSubmitPressed;
   final int totalTransactions;
-  final double totalIncome;
-  final double totalExpense;
-  final double totalTransfer;
+  final Map<String, Map<String, double>> currenciesTotal;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +47,7 @@ class AddSummary extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    currencyFormatter.format(totalIncome),
+                    currencyFormatter.format(0), //TODO use currenciesTotal
                     style: TextStyle(
                       color: Colors.blue[700],
                     ),
@@ -66,7 +63,7 @@ class AddSummary extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    currencyFormatter.format(totalExpense),
+                    currencyFormatter.format(0), //TODO use currenciesTotal
                     style: const TextStyle(
                       color: Colors.red,
                     ),
@@ -82,7 +79,7 @@ class AddSummary extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    currencyFormatter.format(totalTransfer),
+                    currencyFormatter.format(0), //TODO use currenciesTotal
                     style: const TextStyle(
                       color: Colors.grey,
                     ),
