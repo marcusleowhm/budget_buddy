@@ -39,6 +39,7 @@ class DateField extends StatelessWidget {
       ),
       readOnly: true,
       showCursor: false,
+      onTap: onTap,
     );
   }
 }

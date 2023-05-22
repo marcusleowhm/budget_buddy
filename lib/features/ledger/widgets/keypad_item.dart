@@ -16,30 +16,24 @@ class KeypadItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
         child: label is Widget
-            ? AspectRatio(
-                aspectRatio: 3,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).canvasColor,
-                  ),
-                  child: Center(child: label),
-                ),
-              )
-            : AspectRatio(
-                aspectRatio: 3,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).canvasColor,
-                  ),
-                  child: Center(
-                    child: Text(
-                      label,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 20),
-                    ),
-                  ),
+            ? Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).canvasColor,
+              ),
+              child: Center(child: label),
+            )
+            : Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).canvasColor,
+              ),
+              child: Center(
+                child: Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 20),
                 ),
               ),
+            ),
         onTap: () => onPressed(label));
   }
 }

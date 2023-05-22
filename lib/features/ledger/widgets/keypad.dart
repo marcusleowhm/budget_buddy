@@ -17,24 +17,20 @@ class Keypad extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: keyset.keys
-            .map((x) => Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: x.map((y) {
-                    return Expanded(
-                      child: KeypadItem(
-                        label: y,
-                        value: y,
-                        onPressed: (y) => onPressed(y),
-                      ),
-                    );
-                  }).toList(),
-                ))
-            .toList(),
+    return GridView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        mainAxisExtent: 50,
+        crossAxisCount: 3,
       ),
+      itemCount: keyset.keys.length,
+      itemBuilder: (context, index) {
+        return KeypadItem(
+          label: keyset.keys[index],
+          value: keyset.keys[index],
+          onPressed: onPressed,
+        );
+      },
     );
   }
 }

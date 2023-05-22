@@ -23,7 +23,7 @@ class AmountField extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         SizedBox(
-          height: 60,
+          height: 50,
           width: 100,
           child: InputDecorator(
             decoration: InputDecoration(

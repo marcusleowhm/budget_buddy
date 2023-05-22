@@ -42,7 +42,7 @@ class AmountTyper extends StatelessWidget {
                 ],
               ),
             ),
-            Expanded(
+            Flexible(
               //This expanded will ensure the keypad take up the remaining space
               child: Keypad(
                 amount: amount,
