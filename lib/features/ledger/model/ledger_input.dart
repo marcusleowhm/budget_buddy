@@ -7,6 +7,7 @@ class LedgerInput {
     this.type = TransactionType.expense,
     this.accountOrAccountFrom = '',
     this.categoryOrAccountTo = '',
+    this.currency = 'USD',
     this.amount = 0.0,
     this.note = '',
     this.additionalNote = '',
@@ -30,6 +31,7 @@ class LedgerInput {
   DateTime dateTime = DateTime.now().toUtc();
   String accountOrAccountFrom;
   String categoryOrAccountTo;
+  String currency;
   double amount;
   String note;
   String additionalNote;
@@ -54,6 +56,6 @@ class LedgerInput {
 
   @override
   String toString() {
-    return 'LedgerInput{id=$id, dateTime=$dateTime, account=$accountOrAccountFrom, category=$categoryOrAccountTo, amount=$amount, note=$note, additionalNote=$additionalNote}';
+    return 'LedgerInput{id=$id, dateTime=$dateTime, account=$accountOrAccountFrom, category=$categoryOrAccountTo, currency=$currency, amount=$amount, note=$note, additionalNote=$additionalNote}';
   }
 }

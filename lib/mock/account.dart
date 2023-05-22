@@ -14,3 +14,11 @@ final List<String> categories = [
   'Holiday',
   'Transport'
 ];
+
+final List<String> currencies = [
+  'USD',
+  'SGD',
+  'MYR',
+  'IDR',
+  'VND'
+];

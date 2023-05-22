@@ -6,6 +6,7 @@ import 'package:budget_buddy/features/ledger/components/category_picker.dart';
 import 'package:budget_buddy/features/ledger/components/type_picker.dart';
 import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
 import 'package:budget_buddy/features/ledger/widgets/expansion_group.dart';
+import 'package:budget_buddy/mock/account.dart';
 import 'package:budget_buddy/nav/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -688,26 +689,50 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                               showCursor: false,
                               onTap: () => _selectCategory(input),
                             ),
-                            TextField(
-                              key: amountKey,
-                              focusNode: input.amountFocus,
-                              controller: input.amountController,
-                              decoration: InputDecoration(
-                                border: const OutlineInputBorder(),
-                                labelText: 'Amount',
-                                suffixIcon: input.amountController.text.isEmpty
-                                    ? null
-                                    : IconButton(
-                                        onPressed: () {
-                                          input.amountController.clear();
-                                          _clearAmount(input);
-                                        },
-                                        icon: const Icon(Icons.cancel_outlined),
-                                      ),
-                              ),
-                              readOnly: true,
-                              showCursor: false,
-                              onTap: () => _selectAmount(input),
+                            Row(
+                              children: [
+                                DropdownButton(
+                                  value: input.currency,
+                                  items: currencies
+                                      .map(
+                                        (currency) => DropdownMenuItem(
+                                          value: currency,
+                                          child: Text(currency, style: const TextStyle(fontSize: 12)),
+                                        ),
+                                      )
+                                      .toList(),
+                                  onChanged: (String? selection) {
+                                    if (selection != null) {
+                                      setState(() => input.currency = selection);
+                                    }
+                                  },
+                                ),
+                                Expanded(
+                                  child: TextField(
+                                    key: amountKey,
+                                    focusNode: input.amountFocus,
+                                    controller: input.amountController,
+                                    decoration: InputDecoration(
+                                      border: const OutlineInputBorder(),
+                                      labelText: 'Amount',
+                                      suffixIcon: input
+                                              .amountController.text.isEmpty
+                                          ? null
+                                          : IconButton(
+                                              onPressed: () {
+                                                input.amountController.clear();
+                                                _clearAmount(input);
+                                              },
+                                              icon: const Icon(
+                                                  Icons.cancel_outlined),
+                                            ),
+                                    ),
+                                    readOnly: true,
+                                    showCursor: false,
+                                    onTap: () => _selectAmount(input),
+                                  ),
+                                ),
+                              ],
                             ),
                             TextField(
                               key: noteKey,
