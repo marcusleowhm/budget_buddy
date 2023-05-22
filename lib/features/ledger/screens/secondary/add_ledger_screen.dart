@@ -181,6 +181,10 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     setState(() => input.categoryOrAccountTo = '');
   }
 
+  void _clearAmount(LedgerInput input) {
+    setState(() => input.amount = 0.0);
+  }
+
   void _clearNote(LedgerInput input) {
     setState(() => input.note = '');
   }
@@ -338,7 +342,32 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     }
 
     //TODO logic for adding 100 to the value
-    if (keyPress == '00') {}
+    if (keyPress == '00') {
+      //If it's zero, the value remains at zero
+      if (input.amount == 0.0) {
+        setState(() => input.amount = 0.0);
+        input.amountController.text = 0.toString();
+        return;
+      }
+
+      //If it's not zero, still an integer, and user have clicked on the dot
+      //Value remains the same, but the text will have to display two more trailing zeros
+      if (isInteger(input.amount) &&
+          input.amountController.text.contains('.')) {
+        input.amountController.text = input.amount.toStringAsFixed(2);
+        return;
+      }
+
+      //If it's not zero, still an integer, and user have not clicked on dot
+      //Just add two zeros at the back by multiplying by 100
+      //End result is still an integer value
+      if (isInteger(input.amount) &&
+          !input.amountController.text.contains('.')) {
+        setState(() => input.amount = input.amount * 100);
+        input.amountController.text = input.amount.toInt().toString();
+        return;
+      }
+    }
 
     int? numberInput = int.tryParse(keyPress);
     if (numberInput != null) {
@@ -373,6 +402,37 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
       //Add a digit after the decimal number, end result is double value
       if (isInteger(input.amount) &&
           input.amountController.text.contains('.')) {
+        int decimalPlaces = input.amountController.text.split('.')[1].length;
+
+        //Only way input amount can remain an integer and have 2 decimal places is x.00
+        //In that case, the numbered keypad will replace the digit in the hundredth's space
+        if (decimalPlaces == 2) {
+          String displayText = input.amountController.text;
+          displayText = displayText.substring(0, displayText.length - 1) +
+              numberInput.toString();
+          double? newValue = double.tryParse(displayText);
+          if (newValue != null) {
+            setState(() => input.amount = newValue);
+            input.amountController.text = input.amount.toStringAsFixed(2);
+          }
+          return;
+        }
+
+        //Only way input amount can remain an integer and have 2 decimal places is x.00
+        //In that case, the numbered keypad will be appended into the hundredth's space
+        if (decimalPlaces == 1) {
+          String displayText =
+              input.amountController.text + numberInput.toString();
+          double? newValue = double.tryParse(displayText);
+          if (newValue != null) {
+            setState(() => input.amount = newValue);
+            input.amountController.text = input.amount.toStringAsFixed(2);
+          }
+          return;
+        }
+
+        //For input amount that does not have decimal places
+        //Only happens when it's an integer and user pressed the dot
         String displayText =
             input.amountController.text + numberInput.toString();
         double? newValue = double.tryParse(displayText);
@@ -380,6 +440,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
           setState(() => input.amount = newValue);
           input.amountController.text = input.amount.toStringAsFixed(1);
         }
+
         return;
       }
       //If it's a decimal value
@@ -393,7 +454,9 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
           double? newValue = double.tryParse(displayText);
           if (newValue != null) {
             setState(() => input.amount = newValue);
+            input.amountController.text = input.amount.toStringAsFixed(2);
           }
+          return;
         } else if (decimalPlaces == 2) {
           String extractedText = input.amountController.text
               .substring(0, input.amountController.text.length - 1);
@@ -401,10 +464,10 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
           double? newValue = double.tryParse(displayText);
           if (newValue != null) {
             setState(() => input.amount = newValue);
+            input.amountController.text = input.amount.toStringAsFixed(2);
           }
+          return;
         }
-        input.amountController.text = input.amount.toStringAsFixed(2);
-        return;
       }
     }
   }
@@ -629,9 +692,18 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                               key: amountKey,
                               focusNode: input.amountFocus,
                               controller: input.amountController,
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
+                              decoration: InputDecoration(
+                                border: const OutlineInputBorder(),
                                 labelText: 'Amount',
+                                suffixIcon: input.amountController.text.isEmpty
+                                    ? null
+                                    : IconButton(
+                                        onPressed: () {
+                                          input.amountController.clear();
+                                          _clearAmount(input);
+                                        },
+                                        icon: const Icon(Icons.cancel_outlined),
+                                      ),
                               ),
                               readOnly: true,
                               showCursor: false,

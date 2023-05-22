@@ -17,39 +17,42 @@ class AmountTyper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FractionallySizedBox(
-        heightFactor: 0.4,
-        child: Container(
-            decoration: BoxDecoration(
-              color: Colors.grey,
-              border: Border.all(
-                width: 0.5,
-                color: Theme.of(context).dividerColor,
+      heightFactor: 0.4,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.grey,
+          border: Border.all(
+            width: 0.5,
+            color: Theme.of(context).dividerColor,
+          ),
+        ),
+        child: Column(
+          children: [
+            Container(
+              color: Theme.of(context).primaryColor,
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  IconButton(
+                    onPressed: () => onCancelPressed(),
+                    icon: const Icon(Icons.cancel_rounded),
+                    color: Theme.of(context).canvasColor,
+                  ),
+                ],
               ),
             ),
-            child: Column(
-              children: [
-                Container(
-                  color: Theme.of(context).primaryColor,
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      IconButton(
-                        onPressed: () => onCancelPressed(),
-                        icon: const Icon(Icons.cancel_rounded),
-                        color: Theme.of(context).canvasColor,
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded( //This expanded will ensure the keypad take up the remaining space
-                  child: Keypad(
-                    amount: amount,
-                    keyset: USDKeySet(),
-                    onPressed: getInput,
-                  ),
-                ),
-              ],
-            )));
+            Expanded(
+              //This expanded will ensure the keypad take up the remaining space
+              child: Keypad(
+                amount: amount,
+                keyset: USDKeySet(),
+                onPressed: getInput,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
