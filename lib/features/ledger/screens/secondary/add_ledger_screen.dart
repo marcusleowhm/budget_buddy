@@ -1,18 +1,23 @@
+import 'package:budget_buddy/features/ledger/components/account_from_field.dart';
 import 'package:budget_buddy/features/ledger/components/account_picker.dart';
 import 'package:budget_buddy/features/ledger/components/add_row_button.dart';
 import 'package:budget_buddy/features/ledger/components/add_summary.dart';
+import 'package:budget_buddy/features/ledger/components/additional_note_field.dart';
+import 'package:budget_buddy/features/ledger/components/amount_field.dart';
 import 'package:budget_buddy/features/ledger/components/amount_typer.dart';
+import 'package:budget_buddy/features/ledger/components/category_account_to_field.dart';
 import 'package:budget_buddy/features/ledger/components/category_picker.dart';
+import 'package:budget_buddy/features/ledger/components/note_field.dart';
 import 'package:budget_buddy/features/ledger/components/type_picker.dart';
 import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
 import 'package:budget_buddy/features/ledger/widgets/expansion_group.dart';
-import 'package:budget_buddy/mock/account.dart';
 import 'package:budget_buddy/nav/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../utilities/date_formatter.dart';
+import '../../components/date_field.dart';
 
 class AddLedgerScreen extends StatefulWidget {
   const AddLedgerScreen({super.key});
@@ -286,6 +291,12 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
         },
       );
     });
+  }
+
+  void _setCurrency(LedgerInput input, String? selection) {
+    if (selection != null) {
+      setState(() => input.currency = selection);
+    }
   }
 
   void _selectAmount(LedgerInput input) {
@@ -564,7 +575,6 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                   }
                 }
               }
-
               return false;
             },
             child: SingleChildScrollView(
@@ -607,176 +617,61 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                 _tallyAll();
                               }),
                             ),
-                            TextField(
-                                //Date
-                                key: dateKey,
-                                focusNode: input.dateTimeFocus,
-                                controller: input.dateTimeController,
-                                decoration: InputDecoration(
-                                  labelText: 'Date',
-                                  border: const OutlineInputBorder(),
-                                  suffixIcon: dateLongFormatter.format(
-                                              input.dateTime.toLocal()) !=
-                                          dateLongFormatter.format(now)
-                                      ? IconButton(
-                                          onPressed: () {
-                                            input.dateTimeController.text =
-                                                dateLongFormatter.format(now);
-                                            _resetDateToToday(input, now);
-                                          },
-                                          icon: const Icon(Icons.refresh),
-                                        )
-                                      : null,
-                                ),
-                                readOnly: true,
-                                showCursor: false,
-                                onTap: () {
-                                  _closeBottomSheet();
-                                  _selectDate(context, input);
-                                }),
-                            TextField(
-                              //Account From
+                            DateField(
+                              key: dateKey,
+                              input: input,
+                              now: now,
+                              onTapTrailing: _resetDateToToday,
+                              onTap: () {
+                                _closeBottomSheet();
+                                _selectDate(context, input);
+                              },
+                            ),
+                            AccountFromField(
                               key: accountOrAccountFromKey,
-                              focusNode: input.accountOrAccountFromFocus,
-                              controller: input.accountOrAccountFromController,
-                              decoration: InputDecoration(
-                                border: const OutlineInputBorder(),
-                                labelText:
-                                    input.type == TransactionType.transfer
-                                        ? 'Account From'
-                                        : 'Account',
-                                suffixIcon: input.accountOrAccountFromController
-                                        .text.isEmpty
-                                    ? null
-                                    : IconButton(
-                                        onPressed: () {
-                                          input.accountOrAccountFromController
-                                              .clear();
-                                          _clearAccount(input);
-                                        },
-                                        icon: const Icon(Icons.cancel_outlined),
-                                      ),
-                              ),
-                              readOnly: true,
-                              showCursor: false,
+                              input: input,
+                              onTapTrailing: () {
+                                _clearAccount(input);
+                              },
                               onTap: () {
                                 _selectAccount(input);
                               },
                             ),
-                            TextField(
+                            CategoryAccountToField(
                               key: categoryOrAccountToKey,
-                              focusNode: input.categoryOrAccountToFocus,
-                              controller: input.categoryOrAccountToController,
-                              decoration: InputDecoration(
-                                border: const OutlineInputBorder(),
-                                labelText:
-                                    input.type == TransactionType.transfer
-                                        ? 'Account To'
-                                        : 'Category',
-                                suffixIcon: input.categoryOrAccountToController
-                                        .text.isEmpty
-                                    ? null
-                                    : IconButton(
-                                        onPressed: () {
-                                          input.categoryOrAccountToController
-                                              .clear();
-                                          _clearCategory(input);
-                                        },
-                                        icon: const Icon(Icons.cancel_outlined),
-                                      ),
-                              ),
-                              readOnly: true,
-                              showCursor: false,
-                              onTap: () => _selectCategory(input),
+                              input: input,
+                              onTapTrailing: () {
+                                _clearCategory(input);
+                              },
+                              onTap: () {
+                                _selectCategory(input);
+                              },
                             ),
-                            Row(
-                              children: [
-                                DropdownButton(
-                                  value: input.currency,
-                                  items: currencies
-                                      .map(
-                                        (currency) => DropdownMenuItem(
-                                          value: currency,
-                                          child: Text(currency, style: const TextStyle(fontSize: 12)),
-                                        ),
-                                      )
-                                      .toList(),
-                                  onChanged: (String? selection) {
-                                    if (selection != null) {
-                                      setState(() => input.currency = selection);
-                                    }
-                                  },
-                                ),
-                                Expanded(
-                                  child: TextField(
-                                    key: amountKey,
-                                    focusNode: input.amountFocus,
-                                    controller: input.amountController,
-                                    decoration: InputDecoration(
-                                      border: const OutlineInputBorder(),
-                                      labelText: 'Amount',
-                                      suffixIcon: input
-                                              .amountController.text.isEmpty
-                                          ? null
-                                          : IconButton(
-                                              onPressed: () {
-                                                input.amountController.clear();
-                                                _clearAmount(input);
-                                              },
-                                              icon: const Icon(
-                                                  Icons.cancel_outlined),
-                                            ),
-                                    ),
-                                    readOnly: true,
-                                    showCursor: false,
-                                    onTap: () => _selectAmount(input),
-                                  ),
-                                ),
-                              ],
+                            AmountField(
+                              key: amountKey,
+                              input: input,
+                              onCurrencyChange: (String? selection) {
+                                _setCurrency(input, selection);
+                              },
+                              onTapTrailing: () {
+                                _clearAmount(input);
+                              },
+                              onTap: () => _selectAmount(input),
                             ),
-                            TextField(
-                              key: noteKey,
-                              focusNode: input.noteFocus,
-                              controller: input.noteController,
-                              decoration: InputDecoration(
-                                border: const OutlineInputBorder(),
-                                labelText: 'Note',
-                                suffixIcon: input.noteController.text.isEmpty
-                                    ? null
-                                    : IconButton(
-                                        onPressed: () {
-                                          input.noteController.clear();
-                                          _clearNote(input);
-                                        },
-                                        icon: const Icon(Icons.cancel_outlined),
-                                      ),
-                              ),
+                            NoteField(
+                              input: input,
+                              onTapTrailing: () {
+                                _clearNote(input);
+                              },
                               onTap: _closeBottomSheet,
                             ),
                             Divider(key: dividerKey),
-                            TextField(
+                            AdditionalNoteField(
                               key: additionalNoteKey,
-                              focusNode: input.additionalNoteFocus,
-                              controller: input.additionalNoteController,
-                              decoration: InputDecoration(
-                                  border: const OutlineInputBorder(),
-                                  suffixIcon: input
-                                          .additionalNoteController.text.isEmpty
-                                      ? null
-                                      : IconButton(
-                                          onPressed: () {
-                                            input.additionalNoteController
-                                                .clear();
-                                            _clearAdditionalNote(input);
-                                          },
-                                          icon:
-                                              const Icon(Icons.cancel_outlined),
-                                        ),
-                                  hintText: 'Additional Notes',
-                                  helperText:
-                                      'Write notes here for transactions that require more details'),
-                              maxLines: 5,
-                              keyboardType: TextInputType.multiline,
+                              input: input,
+                              onTapTrailing: () {
+                                _clearAdditionalNote(input);
+                              },
                               onTap: _closeBottomSheet,
                             ),
                           ],
