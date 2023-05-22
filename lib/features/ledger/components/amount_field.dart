@@ -20,22 +20,38 @@ class AmountField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        DropdownButton(
-          value: input.currency,
-          items: currencies
-              .map(
-                (currency) => DropdownMenuItem(
-                  value: currency,
-                  child: Text(currency, style: const TextStyle(fontSize: 12)),
-                ),
-              )
-              .toList(),
-          onChanged: (String? selection) {
-            onCurrencyChange(selection);
-          },
+        SizedBox(
+          height: 60,
+          width: 100,
+          child: InputDecorator(
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+              labelText: 'Currency',
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton(
+                value: input.currency,
+                items: currencies
+                    .map(
+                      (currency) => DropdownMenuItem(
+                        value: currency,
+                        child: Text(currency, style: const TextStyle(fontSize: 16)),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (String? selection) {
+                  onCurrencyChange(selection);
+                },
+              ),
+            ),
+          ),
         ),
-        Expanded(
+        const SizedBox(width: 10),
+        Flexible(
           child: TextField(
             key: key,
             focusNode: input.amountFocus,
