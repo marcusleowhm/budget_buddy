@@ -497,28 +497,33 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
 
     //For each of the currencies present in the entries, init their sum value
     Set<String> currencies = entries.map((input) => input.currency).toSet();
+
+    //Remove all currencies in the map first
+    setState(() => currenciesTotal = {});
     for (String currency in currencies) {
        Map<String, double> totals = {
         incomeSum: 0.0,
         expenseSum: 0.0,
         transferSum: 0.0
       };
+      //Reset all the currencies to be 0.0
       setState(() => currenciesTotal[currency] = totals);
     }
 
+    //Loop through and tally up
     for (LedgerInput input in entries) {      
       switch (input.type) {
         case TransactionType.income:
           double? income = currenciesTotal[input.currency]?[incomeSum];
-          currenciesTotal[input.currency]?[incomeSum] = income! + input.amount;
+          setState(() => currenciesTotal[input.currency]?[incomeSum] = income! + input.amount);
           break;
         case TransactionType.expense:
           double? expense = currenciesTotal[input.currency]?[expenseSum];
-          currenciesTotal[input.currency]?[expenseSum] = expense! + input.amount;
+          setState(() => currenciesTotal[input.currency]?[expenseSum] = expense! + input.amount);
           break;
         case TransactionType.transfer:
           double? transfer = currenciesTotal[input.currency]?[transferSum];
-          currenciesTotal[input.currency]?[transferSum] = transfer! + input.amount;
+          setState(() => currenciesTotal[input.currency]?[transferSum] = transfer! + input.amount);
           break;
       }
     }
@@ -611,10 +616,10 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                             _buildDismissibleBackground(Alignment.centerRight),
                         child: ExpansionGroup(
                           isExpanded: input.isExpanded,
-                          onExpand: (value) {
-                            setState(() => input.isExpanded = value);
-                            if (!value) {
-                              _closeBottomSheet();
+                          onExpand: (isExpanded) {
+                            setState(() => input.isExpanded = isExpanded);
+                            if (!isExpanded) {
+                              _closeBottomSheet(); //Close the bottom sheet (custom keyboards)
                             }
                           },
                           ledger: input,
@@ -664,6 +669,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                               input: input,
                               onCurrencyChange: (String? selection) {
                                 _setCurrency(input, selection);
+                                _tallyAll();
                               },
                               onTapTrailing: () {
                                 _clearAmount(input);

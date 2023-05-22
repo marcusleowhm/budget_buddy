@@ -72,32 +72,36 @@ class ExpansionGroup extends StatelessWidget {
         : Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    ledger.categoryOrAccountTo,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: ledger.type == TransactionType.income
-                          ? Colors.blue[700]!
-                          : ledger.type == TransactionType.expense
-                              ? Colors.red
-                              : Colors.grey,
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      ledger.categoryOrAccountTo,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: ledger.type == TransactionType.income
+                            ? Colors.blue[700]!
+                            : ledger.type == TransactionType.expense
+                                ? Colors.red
+                                : Colors.grey,
+                      ),
                     ),
-                  ),
-                  Text(
-                    ledger.note,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: ledger.type == TransactionType.income
-                          ? Colors.blue[700]!
-                          : ledger.type == TransactionType.expense
-                              ? Colors.red
-                              : Colors.grey,
+                    Text(
+                      ledger.note,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: ledger.type == TransactionType.income
+                            ? Colors.blue[700]!
+                            : ledger.type == TransactionType.expense
+                                ? Colors.red
+                                : Colors.grey,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
 
               //Display the amount keyed in by the user
@@ -117,7 +121,7 @@ class ExpansionGroup extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10.0)),
                   child: Text(
                     //The price to be displayed when expansion tile is collapsed
-                    currencyFormatter.format(ledger.amount),
+                    '${currencyFormatter.format(ledger.amount)} ${ledger.currency}',
                     style: TextStyle(
                       fontSize: 12,
                       color: ledger.type == TransactionType.income
