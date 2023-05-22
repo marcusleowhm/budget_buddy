@@ -8,6 +8,7 @@ import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
 import 'package:budget_buddy/features/ledger/widgets/expansion_group.dart';
 import 'package:budget_buddy/nav/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../utilities/date_formatter.dart';
@@ -32,6 +33,11 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
   // Also a controller to close the bottom sheet when tapped outside
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late PersistentBottomSheetController? _bottomSheetController;
+
+  //Scroll controller for scrolling down
+  final ScrollController _scrollController = ScrollController();
+  //Variable to track whether to show the jump to bottom button
+  bool isScrollToBottomVisible = false;
 
   //Keys for the TextFields
   Key typeKey = const Key('type');
@@ -346,7 +352,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
       //if stored value is 0.0 and there is a decimal (keep decimal places to 2, or maybe 4?) //TODO
       //Add the first decimal to the amount
       if (input.amount == 0.0 && input.amountController.text.contains('.')) {
-        String displayText = input.amountController.text + numberInput.toString();
+        String displayText =
+            input.amountController.text + numberInput.toString();
         double? newValue = double.tryParse(displayText);
         if (newValue != null) {
           setState(() => input.amount = newValue);
@@ -364,8 +371,10 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
       }
       //if it's not zero, still an integer, and user have clicked on the dot
       //Add a digit after the decimal number, end result is double value
-      if (isInteger(input.amount) && input.amountController.text.contains('.')) {
-        String displayText = input.amountController.text + numberInput.toString();
+      if (isInteger(input.amount) &&
+          input.amountController.text.contains('.')) {
+        String displayText =
+            input.amountController.text + numberInput.toString();
         double? newValue = double.tryParse(displayText);
         if (newValue != null) {
           setState(() => input.amount = newValue);
@@ -459,200 +468,240 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
             title: Text('${titles[SubRoutes.addledger]}'),
           ),
           backgroundColor: Colors.grey[200], //TODO change this color
-          body: SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.only(top: 16.0, bottom: 64.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  //Build the dismissible expandable form
-                  ...entries.asMap().entries.map((entry) {
-                    int index = entry.key;
-                    LedgerInput input = entry.value;
+          floatingActionButton: isScrollToBottomVisible
+              ? FloatingActionButton(
+                  mini: true,
+                  onPressed: () {
+                    _scrollController
+                        .jumpTo(_scrollController.position.maxScrollExtent);
+                    setState(() => isScrollToBottomVisible = false);
+                  },
+                  child: const Icon(Icons.arrow_downward),
+                )
+              : null,
+          body: NotificationListener<ScrollNotification>(
+            onNotification: (ScrollNotification notification) {
+              if (notification is UserScrollNotification) {
+                //If the user scrolls down, show the button
+                if (notification.direction == ScrollDirection.reverse) {
+                  setState(() => isScrollToBottomVisible = true);
+                }
+                //If the user scrolls up, hide the button
+                if (notification.direction == ScrollDirection.forward) {
+                  setState(() => isScrollToBottomVisible = false);
+                }
+              }
+              //When scrolling has ended and has reached the bottom, hide the button
+              if (notification is ScrollEndNotification) {
+                if (notification.metrics.atEdge) {
+                  bool isTop = notification.metrics.pixels == 0;
+                  if (!isTop) {
+                    setState(() => isScrollToBottomVisible = false);
+                  }
+                }
+              }
 
-                    return Dismissible(
-                      key: PageStorageKey<String>(input.id),
-                      //Show red background when swiped left to right
-                      background:
-                          _buildDismissibleBackground(Alignment.centerLeft),
-                      //Show red background when swiped right to left
-                      secondaryBackground:
-                          _buildDismissibleBackground(Alignment.centerRight),
-                      child: ExpansionGroup(
-                        isExpanded: input.isExpanded,
-                        onExpand: (value) {
-                          setState(() => input.isExpanded = value);
-                          if (!value) {
-                            _closeBottomSheet();
-                          }
-                        },
-                        ledger: input,
-                        children: [
-                          TypePicker(
-                            key: typeKey,
-                            type: input.type,
-                            setType: (Set<TransactionType> newSelection) =>
-                                setState(() {
-                              entries.elementAt(index).type =
-                                  newSelection.first;
-                              _tallyAll();
-                            }),
-                          ),
-                          TextField(
-                              //Date
-                              key: dateKey,
-                              focusNode: input.dateTimeFocus,
-                              controller: input.dateTimeController,
+              return false;
+            },
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              child: Container(
+                padding: const EdgeInsets.only(top: 16.0, bottom: 64.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    //Build the dismissible expandable form
+                    ...entries.asMap().entries.map((entry) {
+                      int index = entry.key;
+                      LedgerInput input = entry.value;
+
+                      return Dismissible(
+                        key: PageStorageKey<String>(input.id),
+                        //Show red background when swiped left to right
+                        background:
+                            _buildDismissibleBackground(Alignment.centerLeft),
+                        //Show red background when swiped right to left
+                        secondaryBackground:
+                            _buildDismissibleBackground(Alignment.centerRight),
+                        child: ExpansionGroup(
+                          isExpanded: input.isExpanded,
+                          onExpand: (value) {
+                            setState(() => input.isExpanded = value);
+                            if (!value) {
+                              _closeBottomSheet();
+                            }
+                          },
+                          ledger: input,
+                          children: [
+                            TypePicker(
+                              key: typeKey,
+                              type: input.type,
+                              setType: (Set<TransactionType> newSelection) =>
+                                  setState(() {
+                                entries.elementAt(index).type =
+                                    newSelection.first;
+                                _tallyAll();
+                              }),
+                            ),
+                            TextField(
+                                //Date
+                                key: dateKey,
+                                focusNode: input.dateTimeFocus,
+                                controller: input.dateTimeController,
+                                decoration: InputDecoration(
+                                  labelText: 'Date',
+                                  border: const OutlineInputBorder(),
+                                  suffixIcon: dateLongFormatter.format(
+                                              input.dateTime.toLocal()) !=
+                                          dateLongFormatter.format(now)
+                                      ? IconButton(
+                                          onPressed: () {
+                                            input.dateTimeController.text =
+                                                dateLongFormatter.format(now);
+                                            _resetDateToToday(input, now);
+                                          },
+                                          icon: const Icon(Icons.refresh),
+                                        )
+                                      : null,
+                                ),
+                                readOnly: true,
+                                showCursor: false,
+                                onTap: () {
+                                  _closeBottomSheet();
+                                  _selectDate(context, input);
+                                }),
+                            TextField(
+                              //Account From
+                              key: accountOrAccountFromKey,
+                              focusNode: input.accountOrAccountFromFocus,
+                              controller: input.accountOrAccountFromController,
                               decoration: InputDecoration(
-                                labelText: 'Date',
                                 border: const OutlineInputBorder(),
-                                suffixIcon: dateLongFormatter
-                                            .format(input.dateTime.toLocal()) !=
-                                        dateLongFormatter.format(now)
-                                    ? IconButton(
+                                labelText:
+                                    input.type == TransactionType.transfer
+                                        ? 'Account From'
+                                        : 'Account',
+                                suffixIcon: input.accountOrAccountFromController
+                                        .text.isEmpty
+                                    ? null
+                                    : IconButton(
                                         onPressed: () {
-                                          input.dateTimeController.text =
-                                              dateLongFormatter.format(now);
-                                          _resetDateToToday(input, now);
+                                          input.accountOrAccountFromController
+                                              .clear();
+                                          _clearAccount(input);
                                         },
-                                        icon: const Icon(Icons.refresh),
-                                      )
-                                    : null,
+                                        icon: const Icon(Icons.cancel_outlined),
+                                      ),
                               ),
                               readOnly: true,
                               showCursor: false,
                               onTap: () {
-                                _closeBottomSheet();
-                                _selectDate(context, input);
-                              }),
-                          TextField(
-                            //Account From
-                            key: accountOrAccountFromKey,
-                            focusNode: input.accountOrAccountFromFocus,
-                            controller: input.accountOrAccountFromController,
-                            decoration: InputDecoration(
-                              border: const OutlineInputBorder(),
-                              labelText: input.type == TransactionType.transfer
-                                  ? 'Account From'
-                                  : 'Account',
-                              suffixIcon: input.accountOrAccountFromController
-                                      .text.isEmpty
-                                  ? null
-                                  : IconButton(
-                                      onPressed: () {
-                                        input.accountOrAccountFromController
-                                            .clear();
-                                        _clearAccount(input);
-                                      },
-                                      icon: const Icon(Icons.cancel_outlined),
-                                    ),
+                                _selectAccount(input);
+                              },
                             ),
-                            readOnly: true,
-                            showCursor: false,
-                            onTap: () {
-                              _selectAccount(input);
-                            },
-                          ),
-                          TextField(
-                            key: categoryOrAccountToKey,
-                            focusNode: input.categoryOrAccountToFocus,
-                            controller: input.categoryOrAccountToController,
-                            decoration: InputDecoration(
-                              border: const OutlineInputBorder(),
-                              labelText: input.type == TransactionType.transfer
-                                  ? 'Account To'
-                                  : 'Category',
-                              suffixIcon: input.categoryOrAccountToController
-                                      .text.isEmpty
-                                  ? null
-                                  : IconButton(
-                                      onPressed: () {
-                                        input.categoryOrAccountToController
-                                            .clear();
-                                        _clearCategory(input);
-                                      },
-                                      icon: const Icon(Icons.cancel_outlined),
-                                    ),
-                            ),
-                            readOnly: true,
-                            showCursor: false,
-                            onTap: () => _selectCategory(input),
-                          ),
-                          TextField(
-                            key: amountKey,
-                            focusNode: input.amountFocus,
-                            controller: input.amountController,
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Amount',
-                            ),
-                            readOnly: true,
-                            showCursor: false,
-                            onTap: () => _selectAmount(input),
-                          ),
-                          TextField(
-                            key: noteKey,
-                            focusNode: input.noteFocus,
-                            controller: input.noteController,
-                            decoration: InputDecoration(
-                              border: const OutlineInputBorder(),
-                              labelText: 'Note',
-                              suffixIcon: input.noteController.text.isEmpty
-                                  ? null
-                                  : IconButton(
-                                      onPressed: () {
-                                        input.noteController.clear();
-                                        _clearNote(input);
-                                      },
-                                      icon: const Icon(Icons.cancel_outlined),
-                                    ),
-                            ),
-                            onTap: _closeBottomSheet,
-                          ),
-                          Divider(key: dividerKey),
-                          TextField(
-                            key: additionalNoteKey,
-                            focusNode: input.additionalNoteFocus,
-                            controller: input.additionalNoteController,
-                            decoration: InputDecoration(
+                            TextField(
+                              key: categoryOrAccountToKey,
+                              focusNode: input.categoryOrAccountToFocus,
+                              controller: input.categoryOrAccountToController,
+                              decoration: InputDecoration(
                                 border: const OutlineInputBorder(),
-                                suffixIcon: input
-                                        .additionalNoteController.text.isEmpty
+                                labelText:
+                                    input.type == TransactionType.transfer
+                                        ? 'Account To'
+                                        : 'Category',
+                                suffixIcon: input.categoryOrAccountToController
+                                        .text.isEmpty
                                     ? null
                                     : IconButton(
                                         onPressed: () {
-                                          input.additionalNoteController
+                                          input.categoryOrAccountToController
                                               .clear();
-                                          _clearAdditionalNote(input);
+                                          _clearCategory(input);
                                         },
                                         icon: const Icon(Icons.cancel_outlined),
                                       ),
-                                hintText: 'Additional Notes',
-                                helperText:
-                                    'Write notes here for transactions that require more details'),
-                            maxLines: 5,
-                            keyboardType: TextInputType.multiline,
-                            onTap: _closeBottomSheet,
-                          ),
-                        ],
-                      ),
-                      onDismissed: (direction) {
-                        _removeRowAt(input, index);
-                        _closeBottomSheet();
-                      },
-                    );
-                  }).toList(),
-                  AddRowButton(
-                    onPressed: _addRow,
-                  ),
-                  AddSummary(
-                    onSubmitPressed: _handleSubmit,
-                    totalTransactions: entries.length,
-                    totalIncome: totalIncome,
-                    totalExpense: totalExpense,
-                    totalTransfer: totalTransfer,
-                  ),
-                ],
+                              ),
+                              readOnly: true,
+                              showCursor: false,
+                              onTap: () => _selectCategory(input),
+                            ),
+                            TextField(
+                              key: amountKey,
+                              focusNode: input.amountFocus,
+                              controller: input.amountController,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Amount',
+                              ),
+                              readOnly: true,
+                              showCursor: false,
+                              onTap: () => _selectAmount(input),
+                            ),
+                            TextField(
+                              key: noteKey,
+                              focusNode: input.noteFocus,
+                              controller: input.noteController,
+                              decoration: InputDecoration(
+                                border: const OutlineInputBorder(),
+                                labelText: 'Note',
+                                suffixIcon: input.noteController.text.isEmpty
+                                    ? null
+                                    : IconButton(
+                                        onPressed: () {
+                                          input.noteController.clear();
+                                          _clearNote(input);
+                                        },
+                                        icon: const Icon(Icons.cancel_outlined),
+                                      ),
+                              ),
+                              onTap: _closeBottomSheet,
+                            ),
+                            Divider(key: dividerKey),
+                            TextField(
+                              key: additionalNoteKey,
+                              focusNode: input.additionalNoteFocus,
+                              controller: input.additionalNoteController,
+                              decoration: InputDecoration(
+                                  border: const OutlineInputBorder(),
+                                  suffixIcon: input
+                                          .additionalNoteController.text.isEmpty
+                                      ? null
+                                      : IconButton(
+                                          onPressed: () {
+                                            input.additionalNoteController
+                                                .clear();
+                                            _clearAdditionalNote(input);
+                                          },
+                                          icon:
+                                              const Icon(Icons.cancel_outlined),
+                                        ),
+                                  hintText: 'Additional Notes',
+                                  helperText:
+                                      'Write notes here for transactions that require more details'),
+                              maxLines: 5,
+                              keyboardType: TextInputType.multiline,
+                              onTap: _closeBottomSheet,
+                            ),
+                          ],
+                        ),
+                        onDismissed: (direction) {
+                          _removeRowAt(input, index);
+                          _closeBottomSheet();
+                        },
+                      );
+                    }).toList(),
+                    AddRowButton(
+                      onPressed: _addRow,
+                    ),
+                    AddSummary(
+                      onSubmitPressed: _handleSubmit,
+                      totalTransactions: entries.length,
+                      totalIncome: totalIncome,
+                      totalExpense: totalExpense,
+                      totalTransfer: totalTransfer,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

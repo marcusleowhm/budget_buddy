@@ -33,7 +33,7 @@ class AmountTyper extends StatelessWidget {
                   color: Theme.of(context).primaryColor,
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       IconButton(
                         onPressed: () => onCancelPressed(),

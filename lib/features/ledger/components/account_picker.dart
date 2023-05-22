@@ -34,11 +34,11 @@ class _AccountPickerState extends State<AccountPicker> {
                 color: Theme.of(context).primaryColor,
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.mode_edit_outline_outlined),
+                      onPressed: () => widget.onPressed(null),
+                      icon: const Icon(Icons.cancel_rounded),
                       color: Theme.of(context).canvasColor,
                     ),
                     IconButton(
@@ -49,8 +49,8 @@ class _AccountPickerState extends State<AccountPicker> {
                       color: Theme.of(context).canvasColor,
                     ),
                     IconButton(
-                      onPressed: () => widget.onPressed(null),
-                      icon: const Icon(Icons.cancel_rounded),
+                      onPressed: () {},
+                      icon: const Icon(Icons.mode_edit_outline_outlined),
                       color: Theme.of(context).canvasColor,
                     ),
                   ],
