@@ -20,8 +20,8 @@ class Keypad extends StatelessWidget {
     return GridView.builder(
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        mainAxisExtent: 50,
-        crossAxisCount: 3,
+        mainAxisExtent: 60,
+        crossAxisCount: 4,
       ),
       itemCount: keyset.keys.length,
       itemBuilder: (context, index) {

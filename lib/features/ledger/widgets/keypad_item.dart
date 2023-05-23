@@ -15,25 +15,32 @@ class KeypadItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-        child: label is Widget
-            ? Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).canvasColor,
-              ),
-              child: Center(child: label),
-            )
+        child: label is Icon
+            ? label.toString() == const Icon(Icons.done).toString()
+                ? Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    child: Center(child: label),
+                  )
+                : Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).canvasColor,
+                    ),
+                    child: Center(child: label),
+                  )
             : Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).canvasColor,
-              ),
-              child: Center(
-                child: Text(
-                  label,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 20),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).canvasColor,
+                ),
+                child: Center(
+                  child: Text(
+                    label,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 24),
+                  ),
                 ),
               ),
-            ),
-        onTap: () => onPressed(label));
+        onTap: () => onPressed(label.toString()));
   }
 }

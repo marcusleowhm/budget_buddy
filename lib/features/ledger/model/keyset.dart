@@ -1,34 +1,38 @@
 import 'package:flutter/material.dart';
 
-const String plusCharacter = '\u002b';
-const String minusCharacter = '\u2212';
-const String multiplyCharacter = '\u00d7';
-const String divideCharacter = '\u00f7';
-const String equalsCharacter = '\u003d';
-
-List<String> numberKeys = [
+List<dynamic> standardKeys = [
   '7',
   '8',
   '9',
+  const Icon(Icons.backspace),
   '4',
   '5',
   '6',
+  '-/+',
   '1',
   '2',
   '3',
-  '0',
-  '00',
-  '.'
+  const Icon(Icons.done)
 ];
 
-List<dynamic> actionKeys = [const Icon(Icons.backspace)];
+List<String> smallNominalKeys = [
+  '0',
+  '00',
+  '.',
+  ''
+];
+
 
 class Keyset {
   List<dynamic> keys = [];
 }
 
-//TODO Refactor and create a currency file to store all the different keysets
 class USDKeySet extends Keyset {
   @override
-  List<dynamic> get keys => [...numberKeys, '', '', ...actionKeys];
+  List<dynamic> get keys => [...standardKeys, ...smallNominalKeys];
 }
+
+
+Map<String, dynamic> currencyKeys = {
+  'USD': USDKeySet()
+};

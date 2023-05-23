@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../mock/account.dart';
+import '../model/keyset.dart';
 import '../model/ledger_input.dart';
 
 class AmountField extends StatelessWidget {
@@ -27,21 +27,19 @@ class AmountField extends StatelessWidget {
           width: 100,
           child: InputDecorator(
             decoration: InputDecoration(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-              labelText: 'Currency',
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))
-            ),
+                contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 20.0, vertical: 15.0),
+                labelText: 'Currency',
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0))),
             child: DropdownButtonHideUnderline(
               child: DropdownButton(
                 value: input.currency,
-                items: currencies
-                    .map(
-                      (currency) => DropdownMenuItem(
+                items: currencyKeys.keys //TODO change this mapping to another configuration when ready
+                    .map((currency) => DropdownMenuItem(
                         value: currency,
-                        child: Text(currency, style: const TextStyle(fontSize: 16)),
-                      ),
-                    )
+                        child: Text(currency,
+                            style: const TextStyle(fontSize: 16))))
                     .toList(),
                 onChanged: (String? selection) {
                   onCurrencyChange(selection);

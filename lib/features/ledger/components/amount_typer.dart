@@ -5,17 +5,22 @@ import 'package:flutter/material.dart';
 class AmountTyper extends StatelessWidget {
   const AmountTyper({
     super.key,
+    required this.currency,
     required this.amount,
     required this.getInput,
     required this.onCancelPressed,
   });
 
+  final String currency;
   final double amount;
   final void Function(dynamic) getInput;
   final VoidCallback onCancelPressed;
 
   @override
   Widget build(BuildContext context) {
+
+    Keyset keySet = currencyKeys[currency];
+
     return FractionallySizedBox(
       heightFactor: 0.4,
       child: Container(
@@ -46,7 +51,7 @@ class AmountTyper extends StatelessWidget {
               //This expanded will ensure the keypad take up the remaining space
               child: Keypad(
                 amount: amount,
-                keyset: USDKeySet(),
+                keyset: keySet,
                 onPressed: getInput,
               ),
             ),
