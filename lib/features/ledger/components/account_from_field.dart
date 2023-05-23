@@ -17,7 +17,7 @@ class AccountFromField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      key: key,
+      key: input.accountOrAccountFromKey,
       focusNode: input.accountOrAccountFromFocus,
       controller: input.accountOrAccountFromController,
       decoration: InputDecoration(

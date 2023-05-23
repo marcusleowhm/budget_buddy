@@ -8,16 +8,18 @@ class NoteField extends StatelessWidget {
     required this.input,
     required this.onTapTrailing,
     required this.onTap,
+    required this.onEditingComplete,
   });
 
   final LedgerInput input;
   final VoidCallback onTapTrailing;
   final VoidCallback onTap;
+  final VoidCallback onEditingComplete;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
-      key: key,
+      key: input.noteKey,
       focusNode: input.noteFocus,
       controller: input.noteController,
       decoration: InputDecoration(
@@ -34,6 +36,7 @@ class NoteField extends StatelessWidget {
               ),
       ),
       onTap: onTap,
+      onEditingComplete: onEditingComplete,
     );
   }
 }

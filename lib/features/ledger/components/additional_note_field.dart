@@ -16,7 +16,7 @@ class AdditionalNoteField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      key: key,
+      key: input.additionalNoteKey,
       focusNode: input.additionalNoteFocus,
       controller: input.additionalNoteController,
       decoration: InputDecoration(

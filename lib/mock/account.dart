@@ -1,5 +1,5 @@
 final List<String> accounts = [
-  '222-19000-X Spending Account',
+  '222-19000-X Spending Account TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
   'Citibank Premier Miles',
   'Standard Chartered Unlimited Cashback',
   'DBS',
@@ -10,7 +10,7 @@ final List<String> accounts = [
 ];
 
 final List<String> categories = [
-  'Food & Beverage',
+  'Food & Beverage/EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE',
   'Holiday',
   'Transport'
 ];

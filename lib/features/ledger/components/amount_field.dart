@@ -53,7 +53,7 @@ class AmountField extends StatelessWidget {
         const SizedBox(width: 10),
         Flexible(
           child: TextField(
-            key: key,
+            key: input.amountKey,
             focusNode: input.amountFocus,
             controller: input.amountController,
             decoration: InputDecoration(

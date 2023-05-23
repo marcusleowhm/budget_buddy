@@ -44,16 +44,9 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
   final ScrollController _scrollController = ScrollController();
   //Variable to track whether to show the jump to bottom button
   bool isScrollToBottomVisible = false;
-
-  //Keys for the TextFields
-  Key typeKey = const Key('type');
-  Key dateKey = const Key('date');
-  Key accountOrAccountFromKey = const Key('accountOrAccountFrom');
-  Key categoryOrAccountToKey = const Key('categoryOrAccountTo');
-  Key amountKey = const Key('amount');
-  Key noteKey = const Key('note');
-  Key dividerKey = const Key('divider');
-  Key additionalNoteKey = const Key('additionalNote');
+  //Scroll alignment for keeping the widget visible on click
+  static const double scrollAlignment = 0.55;
+  static const Duration scrollDuration = Duration(milliseconds: 300);
 
   @override
   void initState() {
@@ -96,6 +89,15 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     TextEditingController noteController = TextEditingController();
     TextEditingController additionalNoteController = TextEditingController();
 
+    //Add GlobalKey for each LedgerInput's input widget
+    GlobalKey dateTimeKey = GlobalKey();
+    GlobalKey accountOrAccountFromKey = GlobalKey();
+    GlobalKey categoryOrAccountToKey = GlobalKey();
+    GlobalKey amountKey = GlobalKey();
+    GlobalKey noteKey = GlobalKey();
+    GlobalKey dividerKey = GlobalKey();
+    GlobalKey additionalNoteKey = GlobalKey();
+
     //Add focus nodes
     FocusNode dateTimeFocus = FocusNode();
     FocusNode accountOrAccountFromFocus = FocusNode();
@@ -113,6 +115,13 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
         amountController: amountController,
         noteController: noteController,
         additionalNoteController: additionalNoteController,
+        dateTimeKey: dateTimeKey,
+        accountOrAccountFromKey: accountOrAccountFromKey,
+        categoryOrAccountToKey: categoryOrAccountToKey,
+        amountKey: amountKey,
+        noteKey: noteKey,
+        dividerKey: dividerKey,
+        additionalNoteKey: additionalNoteKey,
         dateTimeFocus: dateTimeFocus,
         accountOrAccountFromFocus: accountOrAccountFromFocus,
         categoryOrAccountToFocus: categoryOrAccountToFocus,
@@ -214,6 +223,17 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     focus.requestFocus();
   }
 
+  Future<void> _scrollToWidget(GlobalKey widgetKey, double alignment) async {
+    await Future.delayed(const Duration(milliseconds: 400));
+    Scrollable.ensureVisible(
+      widgetKey.currentContext!,
+      duration: scrollDuration,
+      alignment: alignment,
+      curve: Curves.easeInOut,
+    );
+    return;
+  }
+
   void _selectDate(BuildContext context, LedgerInput input) async {
     final DateTime? selectedDate = await showDatePicker(
       context: context,
@@ -261,6 +281,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
               //Move focus to categoryOrAccountTo after selection
               _moveFocusTo(input.categoryOrAccountToFocus);
               _selectCategory(input);
+              _scrollToWidget(input.categoryOrAccountToKey, scrollAlignment);
             } else {
               _closeBottomSheet();
             }
@@ -285,6 +306,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
             //Then show the keypad
             _moveFocusTo(input.amountFocus);
             _selectAmount(input);
+            _scrollToWidget(input.amountKey, scrollAlignment);
           } else {
             _closeBottomSheet();
           }
@@ -490,7 +512,6 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
   //3. Removing rows and
   //4. Undoing removal
   void _tallyAll() {
-
     const String incomeSum = 'incomeSum';
     const String expenseSum = 'expenseSum';
     const String transferSum = 'transferSum';
@@ -501,7 +522,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     //Remove all currencies in the map first
     setState(() => currenciesTotal = {});
     for (String currency in currencies) {
-       Map<String, double> totals = {
+      Map<String, double> totals = {
         incomeSum: 0.0,
         expenseSum: 0.0,
         transferSum: 0.0
@@ -511,19 +532,22 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     }
 
     //Loop through and tally up
-    for (LedgerInput input in entries) {      
+    for (LedgerInput input in entries) {
       switch (input.type) {
         case TransactionType.income:
           double? income = currenciesTotal[input.currency]?[incomeSum];
-          setState(() => currenciesTotal[input.currency]?[incomeSum] = income! + input.amount);
+          setState(() => currenciesTotal[input.currency]?[incomeSum] =
+              income! + input.amount);
           break;
         case TransactionType.expense:
           double? expense = currenciesTotal[input.currency]?[expenseSum];
-          setState(() => currenciesTotal[input.currency]?[expenseSum] = expense! + input.amount);
+          setState(() => currenciesTotal[input.currency]?[expenseSum] =
+              expense! + input.amount);
           break;
         case TransactionType.transfer:
           double? transfer = currenciesTotal[input.currency]?[transferSum];
-          setState(() => currenciesTotal[input.currency]?[transferSum] = transfer! + input.amount);
+          setState(() => currenciesTotal[input.currency]?[transferSum] =
+              transfer! + input.amount);
           break;
       }
     }
@@ -625,7 +649,6 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                           ledger: input,
                           children: [
                             TypePicker(
-                              key: typeKey,
                               type: input.type,
                               setType: (Set<TransactionType> newSelection) =>
                                   setState(() {
@@ -635,7 +658,6 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                               }),
                             ),
                             DateField(
-                              key: dateKey,
                               input: input,
                               now: now,
                               onTapTrailing: _resetDateToToday,
@@ -645,27 +667,32 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                               },
                             ),
                             AccountFromField(
-                              key: accountOrAccountFromKey,
                               input: input,
                               onTapTrailing: () {
                                 _clearAccount(input);
                               },
                               onTap: () {
+                                _scrollToWidget(
+                                  input.accountOrAccountFromKey,
+                                  scrollAlignment,
+                                );
                                 _selectAccount(input);
                               },
                             ),
                             CategoryAccountToField(
-                              key: categoryOrAccountToKey,
                               input: input,
                               onTapTrailing: () {
                                 _clearCategory(input);
                               },
                               onTap: () {
+                                _scrollToWidget(
+                                  input.categoryOrAccountToKey,
+                                  scrollAlignment,
+                                );
                                 _selectCategory(input);
                               },
                             ),
                             AmountField(
-                              key: amountKey,
                               input: input,
                               onCurrencyChange: (String? selection) {
                                 _setCurrency(input, selection);
@@ -674,23 +701,47 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                               onTapTrailing: () {
                                 _clearAmount(input);
                               },
-                              onTap: () => _selectAmount(input),
+                              onTap: () {
+                                _scrollToWidget(
+                                  input.amountKey,
+                                  scrollAlignment,
+                                );
+                                _selectAmount(input);
+                              },
                             ),
                             NoteField(
                               input: input,
                               onTapTrailing: () {
                                 _clearNote(input);
                               },
-                              onTap: _closeBottomSheet,
+                              onTap: () {
+                                _closeBottomSheet();
+                                _scrollToWidget(
+                                  input.noteKey,
+                                  1,
+                                );
+                              },
+                              onEditingComplete: () {
+                                _moveFocusTo(input.additionalNoteFocus);
+                                _scrollToWidget(
+                                  input.additionalNoteKey,
+                                  1,
+                                );
+                              },
                             ),
-                            Divider(key: dividerKey),
+                            Divider(key: input.dividerKey),
                             AdditionalNoteField(
-                              key: additionalNoteKey,
                               input: input,
                               onTapTrailing: () {
                                 _clearAdditionalNote(input);
                               },
-                              onTap: _closeBottomSheet,
+                              onTap: () {
+                                _closeBottomSheet();
+                                _scrollToWidget(
+                                  input.additionalNoteKey,
+                                  1,
+                                );
+                              },
                             ),
                           ],
                         ),

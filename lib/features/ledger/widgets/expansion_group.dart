@@ -63,6 +63,7 @@ class ExpansionGroup extends StatelessWidget {
         : Text(
             ledger.accountOrAccountFrom,
             style: const TextStyle(fontSize: 14),
+            overflow: TextOverflow.ellipsis,
           );
   }
 

@@ -17,7 +17,7 @@ class CategoryAccountToField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      key: key,
+      key: input.categoryOrAccountToKey,
       focusNode: input.categoryOrAccountToFocus,
       controller: input.categoryOrAccountToController,
       decoration: InputDecoration(
@@ -36,7 +36,7 @@ class CategoryAccountToField extends StatelessWidget {
       ),
       readOnly: true,
       showCursor: false,
-      onTap: onTap
+      onTap: onTap,
     );
   }
 }

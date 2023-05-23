@@ -20,7 +20,7 @@ class DateField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      key: key,
+      key: input.dateTimeKey,
       focusNode: input.dateTimeFocus,
       controller: input.dateTimeController,
       decoration: InputDecoration(
