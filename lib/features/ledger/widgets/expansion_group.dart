@@ -122,7 +122,7 @@ class ExpansionGroup extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10.0)),
                   child: Text(
                     //The price to be displayed when expansion tile is collapsed
-                    '${currencyFormatter.format(ledger.amount)} ${ledger.currency}',
+                    '${englishCurrencyFormatter.format(ledger.amount)} ${ledger.currency}',
                     style: TextStyle(
                       fontSize: 12,
                       color: ledger.type == TransactionType.income
