@@ -7,7 +7,8 @@ final Map<String, List<String>> accountGroups = {
     'Citibank Premier Miles',
     'Standard Chartered Unlimited Cashback',
   ],
-  'Investment': ['CityIndex', 'TD Ameritrade']
+  'Investment': ['CityIndex', 'TD Ameritrade'],
+  'Savings': ['POSB Kids', 'Investment Capital']
 };
 
 final List<String> categories = [
