@@ -14,7 +14,7 @@ class AddSummary extends StatelessWidget {
   final int totalTransactions;
   final Map<String, Map<String, double>> currenciesTotal;
 
-  static const rowSpacing = EdgeInsets.all(8.0);
+  static const rowSpacing = EdgeInsets.symmetric(vertical: 8.0);
 
   List<TableRow> _createTableRows() {
     const String incomeSum = 'incomeSum';
@@ -23,12 +23,9 @@ class AddSummary extends StatelessWidget {
 
     return currenciesTotal.entries.map((entry) {
       String currency = entry.key;
-      double? incomeAmount = entry.value[incomeSum];
-      incomeAmount ??= 0.0;
-      double? expenseAmount = entry.value[expenseSum];
-      expenseAmount ??= 0.0;
-      double? transferAmount = entry.value[transferSum];
-      transferAmount ??= 0.0;
+      double incomeAmount = entry.value[incomeSum] ?? 0.0;
+      double expenseAmount = entry.value[expenseSum] ?? 0.0;
+      double transferAmount = entry.value[transferSum] ?? 0.0;
 
       return TableRow(children: [
         TableCell(

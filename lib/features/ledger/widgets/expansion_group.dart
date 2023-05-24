@@ -92,13 +92,8 @@ class ExpansionGroup extends StatelessWidget {
                     Text(
                       ledger.note,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14,
-                        color: ledger.type == TransactionType.income
-                            ? Colors.blue[700]!
-                            : ledger.type == TransactionType.expense
-                                ? Colors.red
-                                : Colors.grey,
                       ),
                     ),
                   ],
