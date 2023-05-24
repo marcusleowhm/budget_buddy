@@ -1,13 +1,14 @@
-final List<String> accounts = [
-  '222-19000-X Spending Account TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
-  'Citibank Premier Miles',
-  'Standard Chartered Unlimited Cashback',
-  'DBS',
-  'Citi',
-  'POSB',
-  'CityIndex',
-  'TD Ameritrade'
-];
+final Map<String, List<String>> accountGroups = {
+  'Bank': [
+    '222-19000-X Spending Account',
+  ],
+  'Cash': ['Cash'],
+  'Card': [
+    'Citibank Premier Miles',
+    'Standard Chartered Unlimited Cashback',
+  ],
+  'Investment': ['CityIndex', 'TD Ameritrade']
+};
 
 final List<String> categories = [
   'Food & Beverage/EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE',
@@ -15,10 +16,4 @@ final List<String> categories = [
   'Transport'
 ];
 
-final List<String> currencies = [
-  'USD',
-  'SGD',
-  'MYR',
-  'IDR',
-  'VND'
-];
+final List<String> currencies = ['USD', 'SGD', 'MYR', 'IDR', 'VND'];

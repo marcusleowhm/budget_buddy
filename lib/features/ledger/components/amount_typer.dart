@@ -74,6 +74,12 @@ class AmountTyper extends StatelessWidget {
       return;
     }
 
+    //if the remaining text is just the currency symbol and/or negative sign, just empty it
+    if (newText == '\$ -' || newText == '\$' || newText == '-') {
+      input.amountController.clear();
+      return;
+    }
+
     //If the remaining text contains a dot and there is a decimal place left, display as it is
     if (newText.contains('.')) {
       int decimalPlaces = newText.split('.')[1].length;
