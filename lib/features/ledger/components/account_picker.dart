@@ -1,3 +1,5 @@
+import 'package:budget_buddy/features/ledger/components/account_grid_view.dart';
+import 'package:budget_buddy/features/ledger/components/account_list_view.dart';
 import 'package:flutter/material.dart';
 
 import '../../../mock/account.dart';
@@ -61,124 +63,19 @@ class _AccountPickerState extends State<AccountPicker> {
                 ),
               ),
               isGridView
-                  ? Expanded(
-                      child: GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          mainAxisExtent: 64,
-                          crossAxisCount: 3,
-                        ),
-                        itemCount: accounts.length,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            child: Container(
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).canvasColor,
-                                border: Border.all(
-                                  width: 0.5,
-                                  color: Theme.of(context).dividerColor,
-                                ),
-                              ),
-                              child: Text(
-                                accounts[index],
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            onTap: () => widget.onPressed(accounts[index]),
-                          );
-                        },
-                      ),
+                  ? AccountGridView(
+                      accounts: accounts,
+                      onItemPressed: widget.onPressed,
                     )
-                  : Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Flexible(
-                            flex: 2,
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  ListView.builder(
-                                    physics: const ScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemCount: accountGroups.keys.length,
-                                    itemBuilder: (context, index) {
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                          color: selectedGroupIndex == index
-                                              ? Colors
-                                                  .blue[100] //TODO change color
-                                              : Theme.of(context).canvasColor,
-                                          border: Border.all(
-                                            width: 0.5,
-                                            color:
-                                                Theme.of(context).dividerColor,
-                                          ),
-                                        ),
-                                        child: ListTile(
-                                          onTap: () => setState(
-                                              () => selectedGroupIndex = index),
-                                          title: Text(
-                                            accountGroups.keys.elementAt(index),
-                                          ),
-                                          trailing: const Icon(
-                                            Icons.chevron_right,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Flexible(
-                            flex: 3,
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  ListView.builder(
-                                    physics: const ScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemCount: accountGroups.values
-                                        .elementAt(selectedGroupIndex)
-                                        .length,
-                                    itemBuilder: (context, index) {
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                          color: Theme.of(context).canvasColor,
-                                          border: Border.all(
-                                            width: 0.5,
-                                            color:
-                                                Theme.of(context).dividerColor,
-                                          ),
-                                        ),
-                                        child: ListTile(
-                                          onTap: () {
-                                            widget.onPressed(
-                                              accountGroups.values
-                                                  .elementAt(selectedGroupIndex)
-                                                  .elementAt(index),
-                                            );
-                                          },
-                                          title: Text(
-                                            accountGroups.values
-                                                .elementAt(selectedGroupIndex)
-                                                .elementAt(index),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
+                  : AccountListView(
+                      selectedGroupIndex: selectedGroupIndex,
+                      accountGroups: accountGroups,
+                      selectGroupIndex: (index) {
+                        setState(() => selectedGroupIndex = index);
+                      },
+                      onSelectAccount: (account) {
+                        widget.onPressed(account);
+                      }),
             ],
           ),
         ));
