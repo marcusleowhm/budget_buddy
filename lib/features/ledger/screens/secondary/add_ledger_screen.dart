@@ -12,6 +12,7 @@ import 'package:budget_buddy/features/ledger/components/type_picker.dart';
 import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
 import 'package:budget_buddy/features/ledger/widgets/expansion_group.dart';
 import 'package:budget_buddy/nav/routes.dart';
+import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:uuid/uuid.dart';
@@ -145,7 +146,10 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     amountController.addListener(
       () => setState(
         () {
-          double number = double.tryParse(amountController.text) ?? 0.0;
+          double number = double.tryParse(amountController.text
+                  .replaceAll(',', '')
+                  .replaceAll('\$', '')) ??
+              0.0;
           newLedger.amount = number;
           _tallyAll();
         },
@@ -325,6 +329,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     _bottomSheetController =
         _scaffoldKey.currentState?.showBottomSheet<void>((context) {
       return AmountTyper(
+        //TODO refactor for this amount typer to not take in getInput. Put the function inside the class
         currency: input.currency,
         onCancelPressed: _closeBottomSheet,
         getInput: (dynamic keyPress) {
@@ -380,8 +385,29 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     }
     //Cut the string character one at a time
     //Set the newly cut string back into the textfield
+    String newText = displayedText.substring(0, displayedText.length - 1);
+
+    //If the remaining text is empty or has a dot at the end, display as it is
+    if (newText.isEmpty || newText[newText.length - 1] == '.') {
+      input.amountController.text = newText;
+      return;
+    }
+
+    //If the remaining text contains a dot and there is a decimal place left, display as it is
+    if (newText.contains('.')) {
+      int decimalPlaces = newText.split('.')[1].length;
+      if (decimalPlaces == 1) {
+        input.amountController.text = newText;
+        return;
+      }
+    }
+
+    double newValue =
+        double.tryParse(newText.replaceAll(',', '').replaceAll('\$', '')) ??
+            0.0;
     input.amountController.text =
-        displayedText.substring(0, displayedText.length - 1);
+        englishTypingCurrencyFormatter.format(newValue);
+    return;
   }
 
   void _handleSignToggleKey(LedgerInput input) {
@@ -407,7 +433,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
   void _handleDoneKey(LedgerInput input) {
     //When the user has not entered anything
     //When the user has entered a number, doesn't matter whether a dot was pressed
-    input.amountController.text = input.amount.toStringAsFixed(2);
+    input.amountController.text =
+        englishDisplayCurrencyFormatter.format(input.amount);
     _moveFocusTo(input.noteFocus);
     _scrollToWidget(input.noteKey, 0.0);
     _closeBottomSheet();
@@ -444,12 +471,14 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
       input.amountController.text = '0';
     }
 
-    double? maybeValue = double.tryParse(input.amountController.text);
+    double? maybeValue = double.tryParse(
+        input.amountController.text.replaceAll(',', '').replaceAll('\$', ''));
     if (maybeValue != null) {
       //If it's not zero, still an integer, and user have clicked on the dot
       //Value remains the same, but the text will have to display two more trailing zeros
       if (isInteger(maybeValue) && input.amountController.text.contains('.')) {
-        input.amountController.text = input.amount.toStringAsFixed(2);
+        input.amountController.text =
+            englishDisplayCurrencyFormatter.format(maybeValue);
         return;
       }
 
@@ -457,7 +486,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
       //Just add two zeros at the back by multiplying by 100
       //End result is still an integer value
       if (isInteger(maybeValue) && !input.amountController.text.contains('.')) {
-        input.amountController.text = (100 * input.amount).toInt().toString();
+        input.amountController.text = englishTypingCurrencyFormatter.format(100 * maybeValue);
         return;
       }
 
@@ -483,14 +512,9 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
   void _handleNumberKey(LedgerInput input, dynamic keyPress) {
     int? numberInput = int.tryParse(keyPress);
     if (numberInput != null) {
-      //When there is nothing in the field
-      if (input.amountController.text.isEmpty) {
-        input.amountController.text = numberInput.toString();
-        return;
-      }
-
-      //If there is a negative sign
-      if (input.amountController.text == '-') {
+      //When there is nothing in the field OR a negative sign
+      if (input.amountController.text.isEmpty ||
+          input.amountController.text == '-') {
         input.amountController.text += numberInput.toString();
         return;
       }
@@ -501,8 +525,6 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
         int decimals = input.amountController.text.split('.')[1].length;
         switch (decimals) {
           case 0:
-            input.amountController.text += numberInput.toString();
-            return;
           case 1:
             input.amountController.text += numberInput.toString();
             return;
@@ -517,7 +539,12 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
 
       //If there is no decimal places
       if (!input.amountController.text.contains('.')) {
-        input.amountController.text += numberInput.toString();
+        String displayedText = input.amountController.text;
+        double currentValue = double.parse(
+            displayedText.replaceAll(',', '').replaceAll('\$', '') +
+                numberInput.toString());
+        input.amountController.text =
+            englishTypingCurrencyFormatter.format(currentValue);
         return;
       }
     }

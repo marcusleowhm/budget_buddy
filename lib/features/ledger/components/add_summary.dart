@@ -49,7 +49,7 @@ class AddSummary extends StatelessWidget {
             padding: rowSpacing,
             child: Center(
               child: Text(
-                englishCurrencyFormatter.format(incomeAmount),
+                englishDisplayCurrencyFormatter.format(incomeAmount),
                 style: TextStyle(
                   color: Colors.blue[700],
                 ),
@@ -62,7 +62,7 @@ class AddSummary extends StatelessWidget {
             padding: rowSpacing,
             child: Center(
               child: Text(
-                englishCurrencyFormatter.format(expenseAmount),
+                englishDisplayCurrencyFormatter.format(expenseAmount),
                 style: const TextStyle(
                   color: Colors.red,
                 ),
@@ -75,7 +75,7 @@ class AddSummary extends StatelessWidget {
             padding: rowSpacing,
             child: Center(
               child: Text(
-                englishCurrencyFormatter.format(transferAmount),
+                englishDisplayCurrencyFormatter.format(transferAmount),
                 style: const TextStyle(
                   color: Colors.grey,
                 ),
