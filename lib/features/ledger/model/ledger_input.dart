@@ -76,6 +76,6 @@ class LedgerInput {
 
   @override
   String toString() {
-    return 'LedgerInput{id=$id, dateTime=$dateTime, account=$accountOrAccountFrom, category=$categoryOrAccountTo, currency=$currency, amount=$amount, note=$note, additionalNote=$additionalNote}';
+    return '\nLedgerInput{\nid = $id,\ntype = $type,\ndateTime = $dateTime,\naccount = $accountOrAccountFrom,\ncategory = $categoryOrAccountTo,\ncurrency=$currency,\namount=$amount,\nnote=$note,\nadditionalNote=$additionalNote}';
   }
 }

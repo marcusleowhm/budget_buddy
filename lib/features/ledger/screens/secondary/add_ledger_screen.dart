@@ -299,6 +299,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     _bottomSheetController =
         _scaffoldKey.currentState?.showBottomSheet<void>((context) {
       return CategoryPicker(
+        isTransfer: (input.type == TransactionType.transfer),
         onPressed: (selectedCategory) {
           if (selectedCategory != null) {
             //Set value and close the dialog
@@ -483,14 +484,24 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                           ledger: input,
                           children: [
                             TypePicker(
-                              type: input.type,
-                              setType: (Set<TransactionType> newSelection) =>
-                                  setState(() {
-                                entries.elementAt(index).type =
-                                    newSelection.first;
-                                _tallyAll();
-                              }),
-                            ),
+                                type: input.type,
+                                setType: (Set<TransactionType> newSelection) {
+                                  if (_bottomSheetController != null) {
+                                    _bottomSheetController?.setState!(
+                                      () {
+                                        input.type = newSelection.first;
+                                        _tallyAll();
+                                      },
+                                    );
+                                  } else {
+                                    setState(
+                                      () {
+                                        input.type = newSelection.first;
+                                        _tallyAll();
+                                      },
+                                    );
+                                  }
+                                }),
                             DateField(
                               input: input,
                               now: now,

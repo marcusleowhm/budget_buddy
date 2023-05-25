@@ -1,10 +1,18 @@
+import 'package:budget_buddy/features/ledger/components/account_grid_view.dart';
+import 'package:budget_buddy/features/ledger/components/account_list_view.dart';
+import 'package:budget_buddy/features/ledger/components/category_grid_view.dart';
 import 'package:flutter/material.dart';
 
 import '../../../mock/account.dart';
 
 class CategoryPicker extends StatefulWidget {
-  const CategoryPicker({super.key, required this.onPressed});
+  const CategoryPicker({
+    super.key,
+    required this.isTransfer,
+    required this.onPressed,
+  });
 
+  final bool isTransfer;
   final void Function(String? selectedCategory) onPressed;
 
   @override
@@ -12,8 +20,14 @@ class CategoryPicker extends StatefulWidget {
 }
 
 class _CategoryPickerState extends State<CategoryPicker> {
+  bool isGridView = true;
+  int selectedGroupIndex = 0;
+
   @override
   Widget build(BuildContext context) {
+    List<String> accounts = [];
+    accountGroups.forEach((key, value) => accounts += value);
+
     return FractionallySizedBox(
         heightFactor: 0.4,
         child: Container(
@@ -38,44 +52,40 @@ class _CategoryPickerState extends State<CategoryPicker> {
                       icon: const Icon(Icons.cancel_rounded),
                       color: Theme.of(context).canvasColor,
                     ),
+                    if (widget.isTransfer)
+                      IconButton(
+                        onPressed: () =>
+                            setState(() => isGridView = !isGridView),
+                        icon: isGridView
+                            ? const Icon(Icons.list)
+                            : const Icon(Icons.window_rounded),
+                        color: Theme.of(context).canvasColor,
+                      ),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {}, //TODO edit button
                       icon: const Icon(Icons.mode_edit_outline_outlined),
                       color: Theme.of(context).canvasColor,
                     ),
-                    
                   ],
                 ),
               ),
-              Expanded(
-                child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    mainAxisExtent: 64,
-                    crossAxisCount: 3,
-                  ),
-                  itemCount: categories.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      child: Container(
-                        padding: const EdgeInsets.all(5.0),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).canvasColor,
-                          border: Border.all(
-                            width: 0.5,
-                            color: Theme.of(context).dividerColor,
-                          ),
-                        ),
-                        child: Text(
-                          categories[index],
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      onTap: () => widget.onPressed(categories[index]),
-                    );
-                  },
-                ),
-              )
+              widget.isTransfer
+                  ? isGridView
+                      ? AccountGridView(
+                          accounts: accounts,
+                          onItemPressed: widget.onPressed,
+                        )
+                      : AccountListView(
+                          selectedGroupIndex: selectedGroupIndex,
+                          accountGroups: accountGroups,
+                          selectGroupIndex: (index) {
+                            setState(() => selectedGroupIndex = index);
+                          },
+                          onSelectAccount: widget.onPressed)
+                  : CategoryGridView(
+                      categories: categories,
+                      onItemPressed: widget.onPressed,
+                    ),
             ],
           ),
         ));

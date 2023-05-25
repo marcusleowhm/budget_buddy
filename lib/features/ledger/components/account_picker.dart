@@ -73,9 +73,8 @@ class _AccountPickerState extends State<AccountPicker> {
                       selectGroupIndex: (index) {
                         setState(() => selectedGroupIndex = index);
                       },
-                      onSelectAccount: (account) {
-                        widget.onPressed(account);
-                      }),
+                      onSelectAccount: widget.onPressed,
+                    ),
             ],
           ),
         ));
