@@ -1,5 +1,5 @@
-import 'package:budget_buddy/features/ledger/components/account_grid_view.dart';
-import 'package:budget_buddy/features/ledger/components/account_list_view.dart';
+import 'package:budget_buddy/features/ledger/components/account/account_grid_view.dart';
+import 'package:budget_buddy/features/ledger/components/account/account_list_view.dart';
 import 'package:budget_buddy/features/ledger/components/category_grid_view.dart';
 import 'package:flutter/material.dart';
 

@@ -12,7 +12,7 @@ final Map<String, List<String>> accountGroups = {
 };
 
 final List<String> categories = [
-  'Food & Beverage/EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE',
+  'Food & Beverage',
   'Holiday',
   'Transport'
 ];

@@ -18,6 +18,7 @@ class TypePicker extends StatelessWidget {
             BorderSide(width: 0.5),
           ),
         ),
+        selectedIcon: const Icon(Icons.attach_money_outlined),
         segments: const <ButtonSegment<TransactionType>>[
           ButtonSegment<TransactionType>(
             value: TransactionType.income,

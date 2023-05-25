@@ -1,8 +1,8 @@
-import 'package:budget_buddy/features/ledger/components/account_grid_view.dart';
-import 'package:budget_buddy/features/ledger/components/account_list_view.dart';
+import 'package:budget_buddy/features/ledger/components/account/account_grid_view.dart';
+import 'package:budget_buddy/features/ledger/components/account/account_list_view.dart';
 import 'package:flutter/material.dart';
 
-import '../../../mock/account.dart';
+import '../../../../mock/account.dart';
 
 class AccountPicker extends StatefulWidget {
   const AccountPicker({super.key, required this.onPressed});
