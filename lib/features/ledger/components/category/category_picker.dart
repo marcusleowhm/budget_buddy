@@ -1,9 +1,9 @@
 import 'package:budget_buddy/features/ledger/components/account/account_grid_view.dart';
 import 'package:budget_buddy/features/ledger/components/account/account_list_view.dart';
-import 'package:budget_buddy/features/ledger/components/category_grid_view.dart';
+import 'package:budget_buddy/features/ledger/components/category/category_list_view.dart';
 import 'package:flutter/material.dart';
 
-import '../../../mock/account.dart';
+import '../../../../mock/account.dart';
 
 class CategoryPicker extends StatefulWidget {
   const CategoryPicker({
@@ -27,6 +27,9 @@ class _CategoryPickerState extends State<CategoryPicker> {
   Widget build(BuildContext context) {
     List<String> accounts = [];
     accountGroups.forEach((key, value) => accounts += value);
+
+    List<String> categories = [];
+    categoryGroups.forEach((key, value) => categories += value);
 
     return FractionallySizedBox(
         heightFactor: 0.4,
@@ -82,10 +85,17 @@ class _CategoryPickerState extends State<CategoryPicker> {
                             setState(() => selectedGroupIndex = index);
                           },
                           onSelectAccount: widget.onPressed)
-                  : CategoryGridView(
-                      categories: categories,
-                      onItemPressed: widget.onPressed,
-                    ),
+                  : CategoryListView(
+                      selectedGroupIndex: selectedGroupIndex,
+                      categoryGroups: categoryGroups,
+                      selectGroupIndex: (index) {
+                        setState(() => selectedGroupIndex = index);
+                      },
+                      onSelectCategory: widget.onPressed)
+              // CategoryGridView(
+              //     categories: categories,
+              //     onItemPressed: widget.onPressed,
+              //   ),
             ],
           ),
         ));

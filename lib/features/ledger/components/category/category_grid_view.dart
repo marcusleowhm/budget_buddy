@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+@Deprecated('Category would not be using grid view, use CategoryListView instead')
 class CategoryGridView extends StatelessWidget {
   const CategoryGridView({
     super.key,

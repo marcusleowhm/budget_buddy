@@ -11,10 +11,12 @@ final Map<String, List<String>> accountGroups = {
   'Savings': ['POSB Kids', 'Investment Capital']
 };
 
-final List<String> categories = [
-  'Food & Beverage',
-  'Holiday',
-  'Transport'
-];
+final Map<String, List<String>> categoryGroups = {
+  'Food & Beverage': ['Eating Out', 'Groceries', 'Snacks', 'Drinks', 'Convenience Store'],
+  'Leisure': ['Videogames', 'Holiday', 'Arcade'],
+  'Transport': ['Bus', 'MRT', 'Car', 'Taxi'],
+  'Housing': ['Renovation', 'Maintenance', 'Furniture'],
+  'Shopping': ['e-Commerce', 'Clothes']
+};
 
 final List<String> currencies = ['USD', 'SGD', 'MYR', 'IDR', 'VND'];
