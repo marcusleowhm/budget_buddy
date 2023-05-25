@@ -25,7 +25,7 @@ class NoteField extends StatelessWidget {
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
         labelText: 'Note',
-        suffixIcon: input.noteController.text.isEmpty
+        suffixIcon: input.note.isEmpty
             ? null
             : IconButton(
                 onPressed: () {

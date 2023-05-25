@@ -14,7 +14,7 @@ class DateField extends StatelessWidget {
 
   final LedgerInput input;
   final DateTime now;
-  final void Function(LedgerInput, DateTime) onTapTrailing;
+  final VoidCallback onTapTrailing;
   final VoidCallback onTap;
 
   @override
@@ -29,10 +29,7 @@ class DateField extends StatelessWidget {
         suffixIcon: dateLongFormatter.format(input.dateTime.toLocal()) !=
                 dateLongFormatter.format(now)
             ? IconButton(
-                onPressed: () {
-                  input.dateTimeController.text = dateLongFormatter.format(now);
-                  onTapTrailing(input, now);
-                },
+                onPressed: onTapTrailing,
                 icon: const Icon(Icons.refresh),
               )
             : null,
