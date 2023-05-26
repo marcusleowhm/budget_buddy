@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:budget_buddy/features/ledger/widgets/widget_shaker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:uuid/uuid.dart';
 
@@ -37,6 +38,11 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     GlobalKey dividerKey = GlobalKey();
     GlobalKey<FormFieldState> additionalNoteKey = GlobalKey<FormFieldState>();
 
+    GlobalKey<ShakeErrorState> accountOrAccountFromShakerKey =
+        GlobalKey<ShakeErrorState>();
+    GlobalKey<ShakeErrorState> categoryOrAccountToShakerKey =
+        GlobalKey<ShakeErrorState>();
+
     //Add focus nodes
     FocusNode dateTimeFocus = FocusNode();
     FocusNode accountOrAccountFromFocus = FocusNode();
@@ -62,6 +68,8 @@ class UTransactionCubit extends Cubit<UTransactionState> {
       noteKey: noteKey,
       dividerKey: dividerKey,
       additionalNoteKey: additionalNoteKey,
+      accountOrAccountFromShakerKey: accountOrAccountFromShakerKey,
+      categoryOrAccountToShakerKey: categoryOrAccountToShakerKey,
       dateTimeFocus: dateTimeFocus,
       accountOrAccountFromFocus: accountOrAccountFromFocus,
       categoryOrAccountToFocus: categoryOrAccountToFocus,
@@ -93,7 +101,10 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     });
     amountFocus.addListener(() {
       if (!amountFocus.hasFocus) {
-        amountController.text = englishDisplayCurrencyFormatter.format(newLedger.amount);
+        if (newLedger.amount != 0.0) {
+          amountController.text =
+              englishDisplayCurrencyFormatter.format(newLedger.amount);
+        }
       }
     });
 
@@ -288,23 +299,41 @@ class UTransactionCubit extends Cubit<UTransactionState> {
         entries: state.entries, currenciesTotal: state.currenciesTotal));
   }
 
-  bool _validateFormAt(int index) {
-    if (!state.entries.elementAt(index).formKey.currentState!.validate()) {
-      return false;
-    }
-    //if no error detected
-    return true;
-  }
-
-  void handleSubmit() {
-    //Validate and return if there is even 1 form that's invalid
-    for (int i = 0; i < state.entries.length; i++) {
-      if (!_validateFormAt(i)) {
-        return;
+  bool _validateForm() {
+    List<ShakeErrorState?> fieldStatesToShake = [];
+    for (int index = 0; index < state.entries.length; index++) {
+      LedgerInput input = state.entries.elementAt(index);
+      if (input.isExpanded) {
+        if (!input.accountOrAccountFromKey.currentState!.validate()) {
+          fieldStatesToShake
+              .add(input.accountOrAccountFromShakerKey.currentState);
+        }
+        if (!input.categoryOrAccountToKey.currentState!.validate()) {
+          fieldStatesToShake
+              .add(input.categoryOrAccountToShakerKey.currentState);
+        }
+      } else {
+        //If expanded and the whole form has error, collect the whole form state
       }
     }
 
+    //if no error detected
+    if (fieldStatesToShake.isEmpty) {
+      return true;
+    }
+
+    for (var element in fieldStatesToShake) {
+      element?.shake();
+    }
+    return false;
+  }
+
+  void handleSubmit() {
+    //Validate form first and shake if needed
+    if (!_validateForm()) {
+      return;
+    }
+
     //Submit the form to API and state
-    
   }
 }

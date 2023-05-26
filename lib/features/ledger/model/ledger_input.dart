@@ -1,4 +1,5 @@
 import 'package:budget_buddy/features/ledger/components/type_picker.dart';
+import 'package:budget_buddy/features/ledger/widgets/widget_shaker.dart';
 import 'package:flutter/material.dart';
 
 class LedgerInput {
@@ -26,6 +27,8 @@ class LedgerInput {
       required this.noteKey,
       required this.dividerKey,
       required this.additionalNoteKey,
+      required this.accountOrAccountFromShakerKey,
+      required this.categoryOrAccountToShakerKey,
       required this.dateTimeFocus,
       required this.accountOrAccountFromFocus,
       required this.categoryOrAccountToFocus,
@@ -68,6 +71,10 @@ class LedgerInput {
   final GlobalKey<FormFieldState> noteKey;
   final GlobalKey dividerKey;
   final GlobalKey<FormFieldState> additionalNoteKey;
+
+  //GlobalKey for shaker animation
+  final GlobalKey<ShakeErrorState> accountOrAccountFromShakerKey;
+  final GlobalKey<ShakeErrorState> categoryOrAccountToShakerKey;
 
   //Not instantited here
   //Focus variable to help with moving the focus
