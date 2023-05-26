@@ -184,11 +184,6 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     });
   }
 
-  void _handleSubmit() {
-    //TODO implement logic to handle form submission
-    // entries.forEach((e) => print(e));
-  }
-
   Widget _buildDismissibleBackground(Alignment alignment) {
     return Container(
       color: Colors.red,
@@ -418,7 +413,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                           },
                         ),
                         AddSummary(
-                          onSubmitPressed: _handleSubmit,
+                          onSubmitPressed: BlocProvider.of<UTransactionCubit>(context).handleSubmit,
                           totalTransactions: state.entries.length,
                           currenciesTotal: state.currenciesTotal,
                         ),

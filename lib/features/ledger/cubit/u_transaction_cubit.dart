@@ -253,4 +253,10 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     emit(UTransactionState(
         entries: state.entries, currenciesTotal: state.currenciesTotal));
   }
+
+  void handleSubmit() {
+    state.entries.forEach((element) {
+      print(element);
+    });
+  }
 }
