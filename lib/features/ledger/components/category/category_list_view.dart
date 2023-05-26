@@ -27,7 +27,7 @@ class CategoryListView extends StatelessWidget {
                 child: Column(
                   children: [
                     ListView.builder(
-                      physics: const ScrollPhysics(),
+                      physics: const BouncingScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: categoryGroups.keys.length,
                       itemBuilder: (context, index) {
@@ -63,7 +63,7 @@ class CategoryListView extends StatelessWidget {
                 child: Column(
                   children: [
                     ListView.builder(
-                      physics: const ScrollPhysics(),
+                      physics: const BouncingScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: categoryGroups.values
                           .elementAt(selectedGroupIndex)
