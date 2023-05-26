@@ -19,6 +19,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../components/form_fields/date_field.dart';
 import '../../components/form_fields/note_field.dart';
 import '../../cubit/u_transaction_cubit.dart';
+import '../../widgets/widget_shaker.dart';
 
 class AddLedgerScreen extends StatefulWidget {
   const AddLedgerScreen({super.key});
@@ -258,152 +259,167 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                           int index = entry.key;
                           LedgerInput input = entry.value;
 
-                          return Dismissible(
-                            key: PageStorageKey<String>(input.id),
-                            //Show red background when swiped left to right
-                            background: _buildDismissibleBackground(
-                                Alignment.centerLeft),
-                            //Show red background when swiped right to left
-                            secondaryBackground: _buildDismissibleBackground(
-                                Alignment.centerRight),
-                            child: ExpansionGroup(
-                              isExpanded: input.isExpanded,
-                              onExpand: (isExpanded) {
-                                BlocProvider.of<UTransactionCubit>(context)
-                                    .setIsExpanded(index, isExpanded);
-                                if (!isExpanded) {
-                                  _closeBottomSheet(); //Close the bottom sheet (custom keyboards)
-                                  FocusManager.instance.primaryFocus
-                                      ?.unfocus(); //Should close keyboard too
-                                }
+                          return ShakeError(
+                            key: input.formShakerKey,
+                            duration: const Duration(milliseconds: 600),
+                            shakeCount: 4,
+                            shakeOffset: 10,
+                            child: Dismissible(
+                              key: PageStorageKey<String>(input.id),
+                              //Show red background when swiped left to right
+                              background: _buildDismissibleBackground(
+                                  Alignment.centerLeft),
+                              //Show red background when swiped right to left
+                              secondaryBackground: _buildDismissibleBackground(
+                                  Alignment.centerRight),
+                              child: ExpansionGroup(
+                                isExpanded: input.isExpanded,
+                                onExpand: (isExpanded) {
+                                  BlocProvider.of<UTransactionCubit>(context)
+                                      .setIsExpanded(index, isExpanded);
+                                  if (!isExpanded) {
+                                    _closeBottomSheet(); //Close the bottom sheet (custom keyboards)
+                                    FocusManager.instance.primaryFocus
+                                        ?.unfocus(); //Should close keyboard too
+                                  }
+                                },
+                                ledger: input,
+                                children: [
+                                  TypePicker(
+                                      type: input.type,
+                                      setType:
+                                          (Set<TransactionType> newSelection) {
+                                        if (_bottomSheetController != null) {
+                                          _bottomSheetController?.setState!(
+                                            () {
+                                              input.type = newSelection.first;
+                                              BlocProvider.of<
+                                                          UTransactionCubit>(
+                                                      context)
+                                                  .tallyAllCurrencies();
+                                            },
+                                          );
+                                        } else {
+                                          BlocProvider.of<UTransactionCubit>(
+                                                  context)
+                                              .setTypeAt(
+                                                  index, newSelection.first);
+                                          BlocProvider.of<UTransactionCubit>(
+                                                  context)
+                                              .tallyAllCurrencies();
+                                        }
+                                      }),
+                                  DateField(
+                                    input: input,
+                                    now: now,
+                                    onTapTrailing: () {
+                                      BlocProvider.of<UTransactionCubit>(
+                                              context)
+                                          .resetDateAtToToday(index, now);
+                                    },
+                                    onTap: () {
+                                      _closeBottomSheet();
+                                      _setDate(context, index, input);
+                                    },
+                                  ),
+                                  AccountFromField(
+                                    input: input,
+                                    onTapTrailing: () {
+                                      BlocProvider.of<UTransactionCubit>(
+                                              context)
+                                          .clearAccountAt(index);
+                                    },
+                                    onTap: () {
+                                      _scrollToWidget(
+                                        input.accountOrAccountFromKey,
+                                        scrollAlignment,
+                                      );
+                                      _selectAccount(input, index);
+                                    },
+                                  ),
+                                  CategoryAccountToField(
+                                    input: input,
+                                    onTapTrailing: () {
+                                      BlocProvider.of<UTransactionCubit>(
+                                              context)
+                                          .clearCategoryAt(index);
+                                    },
+                                    onTap: () {
+                                      _scrollToWidget(
+                                        input.categoryOrAccountToKey,
+                                        scrollAlignment,
+                                      );
+                                      _selectCategory(input, index);
+                                    },
+                                  ),
+                                  AmountField(
+                                    input: input,
+                                    onCurrencyChange: (String? selection) {
+                                      BlocProvider.of<UTransactionCubit>(
+                                              context)
+                                          .setCurrencyAt(index, selection);
+                                      BlocProvider.of<UTransactionCubit>(
+                                              context)
+                                          .tallyAllCurrencies();
+                                    },
+                                    onTapTrailing: () {
+                                      BlocProvider.of<UTransactionCubit>(
+                                              context)
+                                          .clearAmountAt(index);
+                                    },
+                                    onTap: () {
+                                      _scrollToWidget(
+                                        input.amountKey,
+                                        scrollAlignment,
+                                      );
+                                      _selectAmount(input);
+                                    },
+                                  ),
+                                  NoteField(
+                                    input: input,
+                                    onTapTrailing: () {
+                                      BlocProvider.of<UTransactionCubit>(
+                                              context)
+                                          .clearNoteAt(index);
+                                    },
+                                    onTap: () {
+                                      _closeBottomSheet();
+                                      _scrollToWidget(
+                                        input.noteKey,
+                                        1,
+                                      );
+                                    },
+                                    onEditingComplete: () {
+                                      _moveFocusTo(input.additionalNoteFocus);
+                                      _scrollToWidget(
+                                        input.additionalNoteKey,
+                                        1,
+                                      );
+                                    },
+                                  ),
+                                  Divider(key: input.dividerKey),
+                                  AdditionalNoteField(
+                                    input: input,
+                                    onTapTrailing: () {
+                                      BlocProvider.of<UTransactionCubit>(
+                                              context)
+                                          .clearAdditionalNoteAt(index);
+                                    },
+                                    onTap: () {
+                                      _closeBottomSheet();
+                                      _scrollToWidget(
+                                        input.additionalNoteKey,
+                                        1,
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                              onDismissed: (direction) {
+                                _removeRowAt(context, input, index);
+                                _closeBottomSheet();
                               },
-                              ledger: input,
-                              children: [
-                                TypePicker(
-                                    type: input.type,
-                                    setType:
-                                        (Set<TransactionType> newSelection) {
-                                      if (_bottomSheetController != null) {
-                                        _bottomSheetController?.setState!(
-                                          () {
-                                            input.type = newSelection.first;
-                                            BlocProvider.of<UTransactionCubit>(
-                                                    context)
-                                                .tallyAllCurrencies();
-                                          },
-                                        );
-                                      } else {
-                                        BlocProvider.of<UTransactionCubit>(
-                                                context)
-                                            .setTypeAt(
-                                                index, newSelection.first);
-                                        BlocProvider.of<UTransactionCubit>(
-                                                context)
-                                            .tallyAllCurrencies();
-                                      }
-                                    }),
-                                DateField(
-                                  input: input,
-                                  now: now,
-                                  onTapTrailing: () {
-                                    BlocProvider.of<UTransactionCubit>(context)
-                                        .resetDateAtToToday(index, now);
-                                  },
-                                  onTap: () {
-                                    _closeBottomSheet();
-                                    _setDate(context, index, input);
-                                  },
-                                ),
-                                AccountFromField(
-                                  input: input,
-                                  onTapTrailing: () {
-                                    BlocProvider.of<UTransactionCubit>(context)
-                                        .clearAccountAt(index);
-                                  },
-                                  onTap: () {
-                                    _scrollToWidget(
-                                      input.accountOrAccountFromKey,
-                                      scrollAlignment,
-                                    );
-                                    _selectAccount(input, index);
-                                  },
-                                ),
-                                CategoryAccountToField(
-                                  input: input,
-                                  onTapTrailing: () {
-                                    BlocProvider.of<UTransactionCubit>(context)
-                                        .clearCategoryAt(index);
-                                  },
-                                  onTap: () {
-                                    _scrollToWidget(
-                                      input.categoryOrAccountToKey,
-                                      scrollAlignment,
-                                    );
-                                    _selectCategory(input, index);
-                                  },
-                                ),
-                                AmountField(
-                                  input: input,
-                                  onCurrencyChange: (String? selection) {
-                                    BlocProvider.of<UTransactionCubit>(context)
-                                        .setCurrencyAt(index, selection);
-                                    BlocProvider.of<UTransactionCubit>(context)
-                                        .tallyAllCurrencies();
-                                  },
-                                  onTapTrailing: () {
-                                    BlocProvider.of<UTransactionCubit>(context)
-                                        .clearAmountAt(index);
-                                  },
-                                  onTap: () {
-                                    _scrollToWidget(
-                                      input.amountKey,
-                                      scrollAlignment,
-                                    );
-                                    _selectAmount(input);
-                                  },
-                                ),
-                                NoteField(
-                                  input: input,
-                                  onTapTrailing: () {
-                                    BlocProvider.of<UTransactionCubit>(context)
-                                        .clearNoteAt(index);
-                                  },
-                                  onTap: () {
-                                    _closeBottomSheet();
-                                    _scrollToWidget(
-                                      input.noteKey,
-                                      1,
-                                    );
-                                  },
-                                  onEditingComplete: () {
-                                    _moveFocusTo(input.additionalNoteFocus);
-                                    _scrollToWidget(
-                                      input.additionalNoteKey,
-                                      1,
-                                    );
-                                  },
-                                ),
-                                Divider(key: input.dividerKey),
-                                AdditionalNoteField(
-                                  input: input,
-                                  onTapTrailing: () {
-                                    BlocProvider.of<UTransactionCubit>(context)
-                                        .clearAdditionalNoteAt(index);
-                                  },
-                                  onTap: () {
-                                    _closeBottomSheet();
-                                    _scrollToWidget(
-                                      input.additionalNoteKey,
-                                      1,
-                                    );
-                                  },
-                                ),
-                              ],
                             ),
-                            onDismissed: (direction) {
-                              _removeRowAt(context, input, index);
-                              _closeBottomSheet();
-                            },
                           );
                         }).toList(),
                         AddRowButton(
@@ -413,7 +429,9 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                           },
                         ),
                         AddSummary(
-                          onSubmitPressed: BlocProvider.of<UTransactionCubit>(context).handleSubmit,
+                          onSubmitPressed:
+                              BlocProvider.of<UTransactionCubit>(context)
+                                  .handleSubmit,
                           totalTransactions: state.entries.length,
                           currenciesTotal: state.currenciesTotal,
                         ),

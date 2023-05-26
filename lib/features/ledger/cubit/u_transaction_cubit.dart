@@ -38,6 +38,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     GlobalKey dividerKey = GlobalKey();
     GlobalKey<FormFieldState> additionalNoteKey = GlobalKey<FormFieldState>();
 
+    GlobalKey<ShakeErrorState> formShakerKey = GlobalKey<ShakeErrorState>();
     GlobalKey<ShakeErrorState> accountOrAccountFromShakerKey =
         GlobalKey<ShakeErrorState>();
     GlobalKey<ShakeErrorState> categoryOrAccountToShakerKey =
@@ -68,6 +69,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
       noteKey: noteKey,
       dividerKey: dividerKey,
       additionalNoteKey: additionalNoteKey,
+      formShakerKey: formShakerKey,
       accountOrAccountFromShakerKey: accountOrAccountFromShakerKey,
       categoryOrAccountToShakerKey: categoryOrAccountToShakerKey,
       dateTimeFocus: dateTimeFocus,
@@ -314,6 +316,9 @@ class UTransactionCubit extends Cubit<UTransactionState> {
         }
       } else {
         //If expanded and the whole form has error, collect the whole form state
+        if (!input.formKey.currentState!.validate()) {
+          fieldStatesToShake.add(input.formShakerKey.currentState);
+        }
       }
     }
 

@@ -27,6 +27,7 @@ class LedgerInput {
       required this.noteKey,
       required this.dividerKey,
       required this.additionalNoteKey,
+      required this.formShakerKey,
       required this.accountOrAccountFromShakerKey,
       required this.categoryOrAccountToShakerKey,
       required this.dateTimeFocus,
@@ -73,6 +74,7 @@ class LedgerInput {
   final GlobalKey<FormFieldState> additionalNoteKey;
 
   //GlobalKey for shaker animation
+  final GlobalKey<ShakeErrorState> formShakerKey;
   final GlobalKey<ShakeErrorState> accountOrAccountFromShakerKey;
   final GlobalKey<ShakeErrorState> categoryOrAccountToShakerKey;
 

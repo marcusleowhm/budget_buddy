@@ -4,11 +4,13 @@ import 'package:budget_buddy/features/configuration/screens/secondary/user_edit_
 import 'package:budget_buddy/features/data/screens/balance_screen.dart';
 import 'package:budget_buddy/features/data/screens/dashboard_screen.dart';
 import 'package:budget_buddy/features/data/screens/statistics_screen.dart';
+import 'package:budget_buddy/features/ledger/cubit/u_transaction_cubit.dart';
 import 'package:budget_buddy/features/ledger/screens/primary/ledger_screen.dart';
 import 'package:budget_buddy/features/ledger/screens/secondary/add_ledger_screen.dart';
 import 'package:budget_buddy/nav/routes.dart';
 import 'package:budget_buddy/nav/tab_navigator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -52,7 +54,12 @@ final goRouter = GoRouter(
             GoRoute(
               parentNavigatorKey: _rootNavigatorKey,
               path: '${routes[SubRoutes.addledger]}',
-              builder: (context, state) => const AddLedgerScreen(),
+              pageBuilder: (context, state) => MaterialPage(
+                child: BlocProvider(
+                  create: (_) => UTransactionCubit()..addInputRow(),
+                  child: const AddLedgerScreen(),
+                ),
+              ),
             )
           ],
         ),

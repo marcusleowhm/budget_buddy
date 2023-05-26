@@ -1,11 +1,20 @@
+The folders are separated by feature
+
 Project Struture:
 - cloud_functions: internal API calls
 - lib: 
-    - providers: external API calls
-    - screens: 
-        - onboarding: Initial screens
-        - primary: Main screens
-        - secondary: Sub screens
-    - constants: Application constants
-    - utilities: Help functions (Json utilites, serializer, converter etc)
-    - widgets: Flutter widget wrapper for custom widgets 
+    - features (with their respective subfolders)
+        - components (UI Components made up from standard flutter widgets or customized widgets)
+        - cubit (State management library BloC)
+        - providers (external API calls)
+        - screens (split up into primary or secondary screens)
+        - constants: Application constants
+        - widgets: Custom widgets functioning like a wrapper for Flutter widgets
+    - mock: 
+        - account.dart keeps mock data for building the app
+    - theme (reserved for use in the future to customize the app look)
+    - utilities (Help functions (Json utilites, serializer, converter etc))
+    - main.dart (program entry point)
+    
+Current Known Issues:
+- 
