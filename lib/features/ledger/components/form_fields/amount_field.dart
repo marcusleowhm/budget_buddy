@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../model/keyset.dart';
-import '../model/ledger_input.dart';
+import '../../model/keyset.dart';
+import '../../model/ledger_input.dart';
 
 class AmountField extends StatelessWidget {
   const AmountField({

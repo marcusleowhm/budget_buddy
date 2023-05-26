@@ -157,7 +157,16 @@ class ExpansionGroup extends StatelessWidget {
             title: _buildTitle(),
             subtitle: _buildSubtitle(),
           ),
-          children: children.map(_buildChildrenTiles).toList(),
+          children: [
+            Form(
+              key: ledger.formKey,
+              child: Column(
+                children: [
+                  ...children.map(_buildChildrenTiles).toList(),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../utilities/currency_formatter.dart';
 import '../../../utilities/date_formatter.dart';
 import '../components/type_picker.dart';
 import '../model/ledger_input.dart';
@@ -23,14 +24,18 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     TextEditingController noteController = TextEditingController();
     TextEditingController additionalNoteController = TextEditingController();
 
+    GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
     //Add GlobalKey for each LedgerInput's input widget
-    GlobalKey dateTimeKey = GlobalKey();
-    GlobalKey accountOrAccountFromKey = GlobalKey();
-    GlobalKey categoryOrAccountToKey = GlobalKey();
-    GlobalKey amountKey = GlobalKey();
-    GlobalKey noteKey = GlobalKey();
+    GlobalKey<FormFieldState> dateTimeKey = GlobalKey<FormFieldState>();
+    GlobalKey<FormFieldState> accountOrAccountFromKey =
+        GlobalKey<FormFieldState>();
+    GlobalKey<FormFieldState> categoryOrAccountToKey =
+        GlobalKey<FormFieldState>();
+    GlobalKey<FormFieldState> amountKey = GlobalKey<FormFieldState>();
+    GlobalKey<FormFieldState> noteKey = GlobalKey<FormFieldState>();
     GlobalKey dividerKey = GlobalKey();
-    GlobalKey additionalNoteKey = GlobalKey();
+    GlobalKey<FormFieldState> additionalNoteKey = GlobalKey<FormFieldState>();
 
     //Add focus nodes
     FocusNode dateTimeFocus = FocusNode();
@@ -43,6 +48,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     //Create a ledger and add controllers
     LedgerInput newLedger = LedgerInput(
       id: const Uuid().v4(),
+      formKey: formKey,
       dateTimeController: dateTimeController,
       accountOrAccountFromController: accountOrAccountFromController,
       categoryOrAccountToController: categoryOrAccountToController,
@@ -74,6 +80,22 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     noteController.addListener(() => setNoteOf(newLedger, noteController.text));
     additionalNoteController.addListener(
         () => setAdditionalNoteOf(newLedger, additionalNoteController.text));
+    //Add listeners for when losing focus
+    accountOrAccountFromFocus.addListener(() {
+      if (!accountOrAccountFromFocus.hasFocus) {
+        accountOrAccountFromKey.currentState?.validate();
+      }
+    });
+    categoryOrAccountToFocus.addListener(() {
+      if (!categoryOrAccountToFocus.hasFocus) {
+        categoryOrAccountToKey.currentState?.validate();
+      }
+    });
+    amountFocus.addListener(() {
+      if (!amountFocus.hasFocus) {
+        amountController.text = englishDisplayCurrencyFormatter.format(newLedger.amount);
+      }
+    });
 
     emit(UTransactionState(
         entries: [...state.entries, newLedger],
@@ -225,13 +247,25 @@ class UTransactionCubit extends Cubit<UTransactionState> {
   }
 
   void clearAccountAt(int index) {
-    state.entries.elementAt(index).accountOrAccountFromController.clear();
+    LedgerInput input = state.entries.elementAt(index);
+    input.accountOrAccountFromController.clear();
+    input.accountOrAccountFrom = input.accountOrAccountFromController.text;
+
+    //Trigger the validation error
+    input.accountOrAccountFromKey.currentState?.validate();
+
     emit(UTransactionState(
         entries: state.entries, currenciesTotal: state.currenciesTotal));
   }
 
   void clearCategoryAt(int index) {
-    state.entries.elementAt(index).categoryOrAccountToController.clear();
+    LedgerInput input = state.entries.elementAt(index);
+    input.categoryOrAccountToController.clear();
+    input.categoryOrAccountTo = input.categoryOrAccountToController.text;
+
+    //Trigger validation
+    input.categoryOrAccountToKey.currentState?.validate();
+
     emit(UTransactionState(
         entries: state.entries, currenciesTotal: state.currenciesTotal));
   }
@@ -254,9 +288,23 @@ class UTransactionCubit extends Cubit<UTransactionState> {
         entries: state.entries, currenciesTotal: state.currenciesTotal));
   }
 
+  bool _validateFormAt(int index) {
+    if (!state.entries.elementAt(index).formKey.currentState!.validate()) {
+      return false;
+    }
+    //if no error detected
+    return true;
+  }
+
   void handleSubmit() {
-    state.entries.forEach((element) {
-      print(element);
-    });
+    //Validate and return if there is even 1 form that's invalid
+    for (int i = 0; i < state.entries.length; i++) {
+      if (!_validateFormAt(i)) {
+        return;
+      }
+    }
+
+    //Submit the form to API and state
+    
   }
 }

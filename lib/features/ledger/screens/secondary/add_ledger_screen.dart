@@ -1,13 +1,12 @@
-import 'package:budget_buddy/features/ledger/components/account/account_from_field.dart';
+import 'package:budget_buddy/features/ledger/components/form_fields/account_from_field.dart';
 import 'package:budget_buddy/features/ledger/components/account/account_picker.dart';
-import 'package:budget_buddy/features/ledger/components/add_row_button.dart';
-import 'package:budget_buddy/features/ledger/components/add_summary.dart';
-import 'package:budget_buddy/features/ledger/components/additional_note_field.dart';
-import 'package:budget_buddy/features/ledger/components/amount_field.dart';
+import 'package:budget_buddy/features/ledger/components/form_fields/add_row_button.dart';
+import 'package:budget_buddy/features/ledger/components/form_fields/add_summary.dart';
+import 'package:budget_buddy/features/ledger/components/form_fields/additional_note_field.dart';
+import 'package:budget_buddy/features/ledger/components/form_fields/amount_field.dart';
 import 'package:budget_buddy/features/ledger/components/amount_typer.dart';
-import 'package:budget_buddy/features/ledger/components/category/category_account_to_field.dart';
+import 'package:budget_buddy/features/ledger/components/form_fields/category_account_to_field.dart';
 import 'package:budget_buddy/features/ledger/components/category/category_picker.dart';
-import 'package:budget_buddy/features/ledger/components/note_field.dart';
 import 'package:budget_buddy/features/ledger/components/type_picker.dart';
 import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
 import 'package:budget_buddy/features/ledger/widgets/expansion_group.dart';
@@ -17,7 +16,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../components/date_field.dart';
+import '../../components/form_fields/date_field.dart';
+import '../../components/form_fields/note_field.dart';
 import '../../cubit/u_transaction_cubit.dart';
 
 class AddLedgerScreen extends StatefulWidget {

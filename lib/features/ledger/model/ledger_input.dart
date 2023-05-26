@@ -12,6 +12,7 @@ class LedgerInput {
       this.note = '',
       this.additionalNote = '',
       this.isExpanded = true,
+      required this.formKey,
       required this.dateTimeController,
       required this.accountOrAccountFromController,
       required this.categoryOrAccountToController,
@@ -46,6 +47,9 @@ class LedgerInput {
   //Boolean to help with displaying data depending on state of the ExpansionTile
   bool isExpanded;
 
+  //Form key to help with tracking the form within the ledger entity
+  GlobalKey<FormState> formKey;
+
   //Not instantiated in this class
   //Will be instantiated in the add_ledeger_screen
   final TextEditingController dateTimeController;
@@ -57,13 +61,13 @@ class LedgerInput {
 
   //Not instantiated here
   //GlobalKey for moving the focus
-  final GlobalKey dateTimeKey;
-  final GlobalKey accountOrAccountFromKey;
-  final GlobalKey categoryOrAccountToKey;
-  final GlobalKey amountKey;
-  final GlobalKey noteKey;
+  final GlobalKey<FormFieldState> dateTimeKey;
+  final GlobalKey<FormFieldState> accountOrAccountFromKey;
+  final GlobalKey<FormFieldState> categoryOrAccountToKey;
+  final GlobalKey<FormFieldState> amountKey;
+  final GlobalKey<FormFieldState> noteKey;
   final GlobalKey dividerKey;
-  final GlobalKey additionalNoteKey;
+  final GlobalKey<FormFieldState> additionalNoteKey;
 
   //Not instantited here
   //Focus variable to help with moving the focus

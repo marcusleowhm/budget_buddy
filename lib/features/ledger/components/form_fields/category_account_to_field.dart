@@ -2,8 +2,8 @@ import 'package:budget_buddy/features/ledger/components/type_picker.dart';
 import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
 import 'package:flutter/material.dart';
 
-class AccountFromField extends StatelessWidget {
-  const AccountFromField({
+class CategoryAccountToField extends StatelessWidget {
+  const CategoryAccountToField({
     super.key,
     required this.input,
     required this.onTapTrailing,
@@ -16,19 +16,25 @@ class AccountFromField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      key: input.accountOrAccountFromKey,
-      focusNode: input.accountOrAccountFromFocus,
-      controller: input.accountOrAccountFromController,
+    return TextFormField(
+      key: input.categoryOrAccountToKey,
+      focusNode: input.categoryOrAccountToFocus,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please select category';
+        }
+        return null;
+      },
+      controller: input.categoryOrAccountToController,
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
         labelText:
-            input.type == TransactionType.transfer ? 'Account From' : 'Account',
-        suffixIcon: input.accountOrAccountFromController.text.isEmpty
+            input.type == TransactionType.transfer ? 'Account To' : 'Category',
+        suffixIcon: input.categoryOrAccountToController.text.isEmpty
             ? null
             : IconButton(
                 onPressed: () {
-                  input.accountOrAccountFromController.clear();
+                  input.categoryOrAccountToController.clear();
                   onTapTrailing();
                 },
                 icon: const Icon(Icons.cancel_outlined),
