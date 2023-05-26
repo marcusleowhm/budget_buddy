@@ -10,6 +10,10 @@ class AddRowButton extends StatelessWidget {
     return ListTile(
       title: OutlinedButton(
         onPressed: onPressed,
+        style: ButtonStyle(
+          shape: MaterialStateProperty.all(RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0))),
+        ),
         child: const Text('Add Another Transaction'),
       ),
     );

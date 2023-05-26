@@ -10,6 +10,10 @@ class SubmitButton extends StatelessWidget {
     return ListTile(
       title: ElevatedButton(
         onPressed: action,
+        style: ButtonStyle(
+          shape: MaterialStateProperty.all(RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0))),
+        ),
         child: const Text('Submit'),
       ),
     );

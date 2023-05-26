@@ -14,33 +14,32 @@ class KeypadItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-        child: label is Icon
-            ? label.toString() == const Icon(Icons.done).toString()
-                ? Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    child: Center(child: label),
-                  )
-                : Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).canvasColor,
-                    ),
-                    child: Center(child: label),
-                  )
-            : Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).canvasColor,
-                ),
-                child: Center(
-                  child: Text(
-                    label,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 24),
-                  ),
+    return Material(
+      child: label == ''
+          ? Center(child: Text(label))
+          : Ink(
+              decoration: BoxDecoration(
+                color: label.toString() == const Icon(Icons.done).toString()
+                    ? Theme.of(context).primaryColor
+                    : Theme.of(context).canvasColor,
+              ),
+              child: InkWell(
+                child: label is Icon
+                    // If label is Icon, just let it be Icon
+                    ? Center(child: label)
+                    //Else will be just number button
+                    : Center(
+                        child: Text(
+                          label,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontSize: 24),
+                        ),
+                      ),
+                onTap: () => onPressed(
+                  label.toString(),
                 ),
               ),
-        onTap: () => onPressed(label.toString()));
+            ),
+    );
   }
 }
