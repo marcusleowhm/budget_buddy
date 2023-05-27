@@ -33,7 +33,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
   DateTime now = DateTime.now();
 
   //Keep track of whether the form is valid
-  bool isValid = true;
+  bool isValid = false;
 
   // Key to get Scaffold and show bottom sheet.
   // Also a controller to close the bottom sheet when tapped outside
@@ -138,6 +138,10 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
               //Set value and close the dialog
               BlocProvider.of<UTransactionCubit>(context)
                   .setAccountAt(index, selectedAccount);
+
+              setState(() => isValid =
+                  BlocProvider.of<UTransactionCubit>(context).validateForm());
+
               //Move focus to categoryOrAccountTo after selection
               _moveFocusTo(input.categoryOrAccountToFocus);
               _selectCategory(input, index);
@@ -161,7 +165,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
             //Set value and close the dialog
             BlocProvider.of<UTransactionCubit>(context)
                 .setCategoryAt(index, selectedCategory);
-
+            setState(() => isValid =
+                BlocProvider.of<UTransactionCubit>(context).validateForm());
             //Move focus to amount input,
             //Then show the keypad
             _moveFocusTo(input.amountFocus);
@@ -337,6 +342,10 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                       BlocProvider.of<UTransactionCubit>(
                                               context)
                                           .clearAccountAt(index);
+                                      setState(() => isValid =
+                                          BlocProvider.of<UTransactionCubit>(
+                                                  context)
+                                              .validateForm());
                                     },
                                     onTap: () {
                                       _scrollToWidget(
@@ -352,6 +361,10 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                       BlocProvider.of<UTransactionCubit>(
                                               context)
                                           .clearCategoryAt(index);
+                                      setState(() => isValid =
+                                          BlocProvider.of<UTransactionCubit>(
+                                                  context)
+                                              .validateForm());
                                     },
                                     onTap: () {
                                       _scrollToWidget(
@@ -440,40 +453,19 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                               ScaffoldMessenger.of(context)
                                   .hideCurrentSnackBar();
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: const Text('No transactions added'),
-                                  action: SnackBarAction(
-                                    label: 'DISMISS',
-                                    onPressed: () {
-                                      ScaffoldMessenger.of(context)
-                                          .hideCurrentSnackBar();
-                                    },
-                                  ),
+                                const SnackBar(
+                                  content: Text('No transaction added'),
                                 ),
                               );
-                              setState(() => isValid = true);
                               return;
                             }
-
                             //Submission
-                            setState(() => isValid =
-                                BlocProvider.of<UTransactionCubit>(context)
-                                    .handleSubmit());
-                            if (isValid) {
+                            if (BlocProvider.of<UTransactionCubit>(context)
+                                .handleSubmit()) {
                               //Close the snackbar because we are navigating back
                               ScaffoldMessenger.of(context)
                                   .hideCurrentSnackBar();
                               Navigator.of(context).pop();
-
-                              //Show snack bar for confirmations
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                behavior: SnackBarBehavior.floating,
-                                content: state.entries.length == 1
-                                    ? const Text('1 transaction added')
-                                    : Text(
-                                        '${state.entries.length} transactions added'),
-                              ));
                             }
                           },
                           isValid: isValid,

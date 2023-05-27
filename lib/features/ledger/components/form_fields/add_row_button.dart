@@ -14,7 +14,12 @@ class AddRowButton extends StatelessWidget {
           shape: MaterialStateProperty.all(RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.0))),
         ),
-        child: const Text('Add Another Transaction'),
+        child: const Text(
+          'Add Another Transaction',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class SubmitButton extends StatelessWidget {
-  const SubmitButton({super.key, this.action});
+  const SubmitButton({
+    super.key,
+    this.action,
+  });
 
   final VoidCallback? action;
 
@@ -14,7 +17,12 @@ class SubmitButton extends StatelessWidget {
           shape: MaterialStateProperty.all(RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.0))),
         ),
-        child: const Text('Submit'),
+        child: const Text(
+          'Submit',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }

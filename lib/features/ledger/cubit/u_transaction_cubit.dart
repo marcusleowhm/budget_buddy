@@ -170,7 +170,6 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     LedgerInput input = state.entries.elementAt(index);
     input.accountOrAccountFrom = accountOrAccountFrom;
     input.accountOrAccountFromController.text = accountOrAccountFrom;
-    input.accountOrAccountFromKey.currentState?.validate();
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
@@ -181,7 +180,6 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     LedgerInput input = state.entries.elementAt(index);
     input.categoryOrAccountTo = categoryOrAccountTo;
     input.categoryOrAccountToController.text = categoryOrAccountTo;
-    input.categoryOrAccountToKey.currentState?.validate();
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
@@ -341,10 +339,32 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     ));
   }
 
-  bool _validateForm() {
+  bool validateForm() {
+    List<TextEditingController> invalidInputs = [];
+    for (LedgerInput input in state.entries) {
+      if (input.accountOrAccountFromKey.currentState != null) {
+        if (!input.accountOrAccountFromKey.currentState!.validate()) {
+          invalidInputs.add(input.accountOrAccountFromController);
+        }
+      }
+
+      if (input.categoryOrAccountToKey.currentState != null) {
+        if (!input.categoryOrAccountToKey.currentState!.validate()) {
+          invalidInputs.add(input.categoryOrAccountToController);
+        }
+      }
+    }
+
+    if (invalidInputs.isEmpty) {
+      return true;
+    }
+
+    return false;
+  }
+
+  bool _validateFormAndShake() {
     List<ShakeErrorState?> fieldStatesToShake = [];
-    for (int index = 0; index < state.entries.length; index++) {
-      LedgerInput input = state.entries.elementAt(index);
+    for (LedgerInput input in state.entries) {
       if (input.isExpanded) {
         if (!input.accountOrAccountFromKey.currentState!.validate()) {
           fieldStatesToShake
@@ -375,7 +395,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
 
   bool handleSubmit() {
     //Validate form first and shake if needed
-    if (!_validateForm()) {
+    if (!_validateFormAndShake()) {
       emit(UTransactionState(
         entries: state.entries,
         currenciesTotal: state.currenciesTotal,
