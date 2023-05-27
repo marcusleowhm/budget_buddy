@@ -39,22 +39,24 @@ class ExpansionGroup extends StatelessWidget {
     if (isExpanded) {
       return null;
     } else {
-      if (ledger.formKey.currentState != null) {
-        if (!ledger.formKey.currentState!.validate()) {
-          return null;
-        }
+      //Check the fields directly because form state will be null when undoing dismiss
+      if (ledger.accountOrAccountFrom.isEmpty ||
+          ledger.categoryOrAccountTo.isEmpty) {
+        return null;
       }
+
+      //Else if the form is valid
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          //Whenever displaying the date time, use Local date time
+          Text(dayFormatter.format(ledger.dateTime.toLocal()),
+              style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text(monthNameFormatter.format(ledger.dateTime.toLocal())),
+          Text(yearLongFormatter.format(ledger.dateTime.toLocal())),
+        ],
+      );
     }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        //Whenever displaying the date time, use Local date time
-        Text(dayFormatter.format(ledger.dateTime.toLocal()),
-            style: const TextStyle(fontWeight: FontWeight.bold)),
-        Text(monthNameFormatter.format(ledger.dateTime.toLocal())),
-        Text(yearLongFormatter.format(ledger.dateTime.toLocal())),
-      ],
-    );
   }
 
   Widget? _buildTitle() {
@@ -68,21 +70,22 @@ class ExpansionGroup extends StatelessWidget {
         ],
       );
     } else {
-      if (ledger.formKey.currentState != null) {
-        if (!ledger.formKey.currentState!.validate()) {
-          return const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Icon(
-                  Icons.warning_rounded,
-                  color: Colors.red,
-                ),
-                Text(
-                  'Issues detected with inputs',
-                  style: TextStyle(color: Colors.red),
-                )
-              ]);
-        }
+      //Check the fields directly because form state will be null when undoing dismiss
+      if (ledger.accountOrAccountFrom.isEmpty ||
+          ledger.categoryOrAccountTo.isEmpty) {
+        return const Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Icon(
+              Icons.warning_rounded,
+              color: Colors.red,
+            ),
+            Text(
+              'Issues detected with inputs',
+              style: TextStyle(color: Colors.red),
+            )
+          ],
+        );
       }
     }
     return Text(
@@ -96,10 +99,10 @@ class ExpansionGroup extends StatelessWidget {
     if (isExpanded) {
       return null;
     } else {
-      if (ledger.formKey.currentState != null) {
-        if (!ledger.formKey.currentState!.validate()) {
-          return null;
-        }
+      //Check the fields directly because form state will be null when undoing dismiss
+      if (ledger.accountOrAccountFrom.isEmpty ||
+          ledger.categoryOrAccountTo.isEmpty) {
+        return null;
       }
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

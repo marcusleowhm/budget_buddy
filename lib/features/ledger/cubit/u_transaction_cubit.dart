@@ -90,6 +90,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     noteController.addListener(() => setNoteOf(newLedger, noteController.text));
     additionalNoteController.addListener(
         () => setAdditionalNoteOf(newLedger, additionalNoteController.text));
+
     //Add listeners for when losing focus
     accountOrAccountFromFocus.addListener(() {
       if (!accountOrAccountFromFocus.hasFocus) {
@@ -111,26 +112,33 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     });
 
     emit(UTransactionState(
-        entries: [...state.entries, newLedger],
-        currenciesTotal: state.currenciesTotal));
+      entries: [...state.entries, newLedger],
+      currenciesTotal: state.currenciesTotal,
+    ));
   }
 
   void removeRowAt(int index) {
     state.entries.removeAt(index);
     emit(UTransactionState(
-        entries: state.entries, currenciesTotal: state.currenciesTotal));
+      entries: state.entries,
+      currenciesTotal: state.currenciesTotal,
+    ));
   }
 
   void insertEntryAt(int index, LedgerInput input) {
     state.entries.insert(index, input);
     emit(UTransactionState(
-        entries: state.entries, currenciesTotal: state.currenciesTotal));
+      entries: state.entries,
+      currenciesTotal: state.currenciesTotal,
+    ));
   }
 
   void setIsExpanded(int index, bool isExpanded) {
     state.entries.elementAt(index).isExpanded = isExpanded;
     emit(UTransactionState(
-        entries: state.entries, currenciesTotal: state.currenciesTotal));
+      entries: state.entries,
+      currenciesTotal: state.currenciesTotal,
+    ));
   }
 
   void setDateAt(int index, DateTime selectedDate) {
@@ -144,30 +152,40 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     state.entries.elementAt(index).dateTimeController.text =
         dateLongFormatter.format(selectedDate.toLocal());
     emit(UTransactionState(
-        entries: state.entries, currenciesTotal: state.currenciesTotal));
+      entries: state.entries,
+      currenciesTotal: state.currenciesTotal,
+    ));
   }
 
   void setTypeAt(int index, TransactionType type) {
     LedgerInput input = state.entries.elementAt(index);
     input.type = type;
     emit(UTransactionState(
-        entries: state.entries, currenciesTotal: state.currenciesTotal));
+      entries: state.entries,
+      currenciesTotal: state.currenciesTotal,
+    ));
   }
 
   void setAccountAt(int index, String accountOrAccountFrom) {
     LedgerInput input = state.entries.elementAt(index);
     input.accountOrAccountFrom = accountOrAccountFrom;
     input.accountOrAccountFromController.text = accountOrAccountFrom;
+    input.accountOrAccountFromKey.currentState?.validate();
     emit(UTransactionState(
-        entries: state.entries, currenciesTotal: state.currenciesTotal));
+      entries: state.entries,
+      currenciesTotal: state.currenciesTotal,
+    ));
   }
 
   void setCategoryAt(int index, String categoryOrAccountTo) {
     LedgerInput input = state.entries.elementAt(index);
     input.categoryOrAccountTo = categoryOrAccountTo;
     input.categoryOrAccountToController.text = categoryOrAccountTo;
+    input.categoryOrAccountToKey.currentState?.validate();
     emit(UTransactionState(
-        entries: state.entries, currenciesTotal: state.currenciesTotal));
+      entries: state.entries,
+      currenciesTotal: state.currenciesTotal,
+    ));
   }
 
   void setCurrencyAt(int index, String? selectedCurrency) {
@@ -176,7 +194,9 @@ class UTransactionCubit extends Cubit<UTransactionState> {
       input.currency = selectedCurrency;
     }
     emit(UTransactionState(
-        entries: state.entries, currenciesTotal: state.currenciesTotal));
+      entries: state.entries,
+      currenciesTotal: state.currenciesTotal,
+    ));
   }
 
   void setAmountOf(LedgerInput input, String amountString) {
@@ -186,19 +206,25 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     input.amount = number;
     tallyAllCurrencies();
     emit(UTransactionState(
-        entries: state.entries, currenciesTotal: state.currenciesTotal));
+      entries: state.entries,
+      currenciesTotal: state.currenciesTotal,
+    ));
   }
 
   void setNoteOf(LedgerInput input, String note) {
     input.note = note;
     emit(UTransactionState(
-        entries: state.entries, currenciesTotal: state.currenciesTotal));
+      entries: state.entries,
+      currenciesTotal: state.currenciesTotal,
+    ));
   }
 
   void setAdditionalNoteOf(LedgerInput input, String additionalNote) {
     input.additionalNote = additionalNote;
     emit(UTransactionState(
-        entries: state.entries, currenciesTotal: state.currenciesTotal));
+      entries: state.entries,
+      currenciesTotal: state.currenciesTotal,
+    ));
   }
 
   //To be called when
@@ -247,7 +273,9 @@ class UTransactionCubit extends Cubit<UTransactionState> {
       }
     }
     emit(UTransactionState(
-        entries: state.entries, currenciesTotal: calculatedTotal));
+      entries: state.entries,
+      currenciesTotal: calculatedTotal,
+    ));
   }
 
   void resetDateAtToToday(int index, DateTime now) {
@@ -256,7 +284,9 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     input.dateTimeController.text =
         dateLongFormatter.format(input.dateTime.toLocal());
     emit(UTransactionState(
-        entries: state.entries, currenciesTotal: state.currenciesTotal));
+      entries: state.entries,
+      currenciesTotal: state.currenciesTotal,
+    ));
   }
 
   void clearAccountAt(int index) {
@@ -268,7 +298,9 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     input.accountOrAccountFromKey.currentState?.validate();
 
     emit(UTransactionState(
-        entries: state.entries, currenciesTotal: state.currenciesTotal));
+      entries: state.entries,
+      currenciesTotal: state.currenciesTotal,
+    ));
   }
 
   void clearCategoryAt(int index) {
@@ -280,25 +312,33 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     input.categoryOrAccountToKey.currentState?.validate();
 
     emit(UTransactionState(
-        entries: state.entries, currenciesTotal: state.currenciesTotal));
+      entries: state.entries,
+      currenciesTotal: state.currenciesTotal,
+    ));
   }
 
   void clearAmountAt(int index) {
     state.entries.elementAt(index).amount = 0.0;
     emit(UTransactionState(
-        entries: state.entries, currenciesTotal: state.currenciesTotal));
+      entries: state.entries,
+      currenciesTotal: state.currenciesTotal,
+    ));
   }
 
   void clearNoteAt(int index) {
     state.entries.elementAt(index).noteController.clear();
     emit(UTransactionState(
-        entries: state.entries, currenciesTotal: state.currenciesTotal));
+      entries: state.entries,
+      currenciesTotal: state.currenciesTotal,
+    ));
   }
 
   void clearAdditionalNoteAt(int index) {
     state.entries.elementAt(index).additionalNoteController.clear();
     emit(UTransactionState(
-        entries: state.entries, currenciesTotal: state.currenciesTotal));
+      entries: state.entries,
+      currenciesTotal: state.currenciesTotal,
+    ));
   }
 
   bool _validateForm() {
@@ -333,12 +373,21 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     return false;
   }
 
-  void handleSubmit() {
+  bool handleSubmit() {
     //Validate form first and shake if needed
     if (!_validateForm()) {
-      return;
+      emit(UTransactionState(
+        entries: state.entries,
+        currenciesTotal: state.currenciesTotal,
+      ));
+      return false;
     }
 
     //Submit the form to API and state
+    emit(const UTransactionState(
+      entries: [],
+      currenciesTotal: {},
+    ));
+    return true;
   }
 }

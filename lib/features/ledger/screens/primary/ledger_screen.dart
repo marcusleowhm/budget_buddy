@@ -40,8 +40,11 @@ class _LedgerScreenState extends State<LedgerScreen> {
     return Scaffold(
       appBar: AppBar(title: Text('${titles[MainRoutes.ledger]}')),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context
-            .go('/${routes[MainRoutes.ledger]}/${routes[SubRoutes.addledger]}'),
+        onPressed: () {
+          context.go(
+              '/${routes[MainRoutes.ledger]}/${routes[SubRoutes.addledger]}');
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        },
         child: const Icon(Icons.add),
       ),
       backgroundColor: Colors.grey[200],

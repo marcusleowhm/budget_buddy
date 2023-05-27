@@ -32,6 +32,9 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
   //Date for the datepicker
   DateTime now = DateTime.now();
 
+  //Keep track of whether the form is valid
+  bool isValid = true;
+
   // Key to get Scaffold and show bottom sheet.
   // Also a controller to close the bottom sheet when tapped outside
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -258,7 +261,6 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                         ...state.entries.asMap().entries.map((entry) {
                           int index = entry.key;
                           LedgerInput input = entry.value;
-
                           return ShakeError(
                             key: input.formShakerKey,
                             duration: const Duration(milliseconds: 600),
@@ -272,8 +274,15 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                               //Show red background when swiped right to left
                               secondaryBackground: _buildDismissibleBackground(
                                   Alignment.centerRight),
+                              onDismissed: (direction) {
+                                //Remove the previous snackbar first if it's still present. Otherwise it will cause issues with inserting at index
+                                ScaffoldMessenger.of(context)
+                                    .hideCurrentSnackBar();
+                                _removeRowAt(context, input, index);
+                                _closeBottomSheet();
+                              },
                               child: ExpansionGroup(
-                                isExpanded: input.isExpanded,
+                                isExpanded: input.isExpanded == true,
                                 onExpand: (isExpanded) {
                                   BlocProvider.of<UTransactionCubit>(context)
                                       .setIsExpanded(index, isExpanded);
@@ -415,10 +424,6 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                   ),
                                 ],
                               ),
-                              onDismissed: (direction) {
-                                _removeRowAt(context, input, index);
-                                _closeBottomSheet();
-                              },
                             ),
                           );
                         }).toList(),
@@ -429,9 +434,49 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                           },
                         ),
                         AddSummary(
-                          onSubmitPressed:
-                              BlocProvider.of<UTransactionCubit>(context)
-                                  .handleSubmit,
+                          onSubmitPressed: () {
+                            //If no entries have been inputted, don't allow submission
+                            if (state.entries.isEmpty) {
+                              ScaffoldMessenger.of(context)
+                                  .hideCurrentSnackBar();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: const Text('No transactions added'),
+                                  action: SnackBarAction(
+                                    label: 'DISMISS',
+                                    onPressed: () {
+                                      ScaffoldMessenger.of(context)
+                                          .hideCurrentSnackBar();
+                                    },
+                                  ),
+                                ),
+                              );
+                              setState(() => isValid = true);
+                              return;
+                            }
+
+                            //Submission
+                            setState(() => isValid =
+                                BlocProvider.of<UTransactionCubit>(context)
+                                    .handleSubmit());
+                            if (isValid) {
+                              //Close the snackbar because we are navigating back
+                              ScaffoldMessenger.of(context)
+                                  .hideCurrentSnackBar();
+                              Navigator.of(context).pop();
+
+                              //Show snack bar for confirmations
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                behavior: SnackBarBehavior.floating,
+                                content: state.entries.length == 1
+                                    ? const Text('1 transaction added')
+                                    : Text(
+                                        '${state.entries.length} transactions added'),
+                              ));
+                            }
+                          },
+                          isValid: isValid,
                           totalTransactions: state.entries.length,
                           currenciesTotal: state.currenciesTotal,
                         ),

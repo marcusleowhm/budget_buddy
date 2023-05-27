@@ -6,11 +6,13 @@ class AddSummary extends StatelessWidget {
   const AddSummary({
     super.key,
     required this.onSubmitPressed,
+    required this.isValid,
     required this.totalTransactions,
     required this.currenciesTotal,
   });
 
   final VoidCallback onSubmitPressed;
+  final bool isValid;
   final int totalTransactions;
   final Map<String, Map<String, double>> currenciesTotal;
 
@@ -87,7 +89,7 @@ class AddSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       margin: const EdgeInsets.all(10.0),
       decoration: BoxDecoration(
         color: Theme.of(context).canvasColor,
@@ -173,7 +175,14 @@ class AddSummary extends StatelessWidget {
               ..._createTableRows()
             ],
           ),
-          SubmitButton(action: onSubmitPressed)
+          SubmitButton(
+            action: onSubmitPressed,
+          ),
+          if (!isValid)
+            const Text(
+              'There were some issues with your inputs',
+              style: TextStyle(color: Colors.red),
+            ),
         ],
       ),
     );
