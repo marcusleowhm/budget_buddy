@@ -1,6 +1,10 @@
+import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
+import 'package:budget_buddy/features/ledger/components/transaction_block.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../utilities/date_formatter.dart';
+import '../model/ledger_input.dart';
 
 class CTransactionList extends StatelessWidget {
   CTransactionList({
@@ -70,18 +74,44 @@ class CTransactionList extends StatelessWidget {
           child: SingleChildScrollView(
             controller: _scrollController,
             physics: const BouncingScrollPhysics(),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: 100,
-                  itemBuilder: (context, index) {
-                    return Card(child: Text(index.toString()));
-                  },
-                ),
-              ],
+            child: BlocBuilder<CTransactionCubit, CTransactionState>(
+              builder: (context, state) {
+                //Do some mapping by date and return the card
+                Map<DateTime, List<LedgerInput>> data = {};
+                for (var element in state.committedEntries) {
+                  DateTime dateTime = DateTime(
+                      element.dateTime.toLocal().year,
+                      element.dateTime.toLocal().month,
+                      element.dateTime.toLocal().day);
+
+                  if (currentDate.month == dateTime.month &&
+                      currentDate.year == dateTime.year) {
+                    data.putIfAbsent(dateTime, () => []);
+                    data[dateTime]!.add(element);
+                  }
+                }
+                //Sort the map by date
+                Map<DateTime, List<LedgerInput>> sortedData = Map.fromEntries(
+                    data.entries.toList()
+                      ..sort((e1, e2) => e1.key.compareTo(e2.key)));
+
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: sortedData.keys.length,
+                      itemBuilder: (context, index) {
+                        return TransactionBlock(
+                          dateTime: sortedData.keys.elementAt(index),
+                          transactions: sortedData.values.elementAt(index),
+                        );
+                      },
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ),

@@ -1,25 +1,26 @@
-import 'package:budget_buddy/features/ledger/components/form_fields/account_from_field.dart';
-import 'package:budget_buddy/features/ledger/components/account/account_picker.dart';
-import 'package:budget_buddy/features/ledger/components/form_fields/add_row_button.dart';
-import 'package:budget_buddy/features/ledger/components/form_fields/add_summary.dart';
-import 'package:budget_buddy/features/ledger/components/form_fields/additional_note_field.dart';
-import 'package:budget_buddy/features/ledger/components/form_fields/amount_field.dart';
-import 'package:budget_buddy/features/ledger/components/amount_typer.dart';
-import 'package:budget_buddy/features/ledger/components/form_fields/category_account_to_field.dart';
-import 'package:budget_buddy/features/ledger/components/category/category_picker.dart';
-import 'package:budget_buddy/features/ledger/components/type_picker.dart';
+import 'package:budget_buddy/features/ledger/components/inputs/account/account_picker.dart';
+import 'package:budget_buddy/features/ledger/components/inputs/amount_typer.dart';
+import 'package:budget_buddy/features/ledger/components/inputs/category/category_picker.dart';
+import 'package:budget_buddy/features/ledger/components/inputs/form_fields/account_from_field.dart';
+import 'package:budget_buddy/features/ledger/components/inputs/form_fields/add_row_button.dart';
+import 'package:budget_buddy/features/ledger/components/inputs/form_fields/add_summary.dart';
+import 'package:budget_buddy/features/ledger/components/inputs/form_fields/additional_note_field.dart';
+import 'package:budget_buddy/features/ledger/components/inputs/form_fields/amount_field.dart';
+import 'package:budget_buddy/features/ledger/components/inputs/form_fields/category_account_to_field.dart';
+import 'package:budget_buddy/features/ledger/components/inputs/form_fields/date_field.dart';
+import 'package:budget_buddy/features/ledger/components/inputs/form_fields/note_field.dart';
+import 'package:budget_buddy/features/ledger/components/inputs/type_picker.dart';
+import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
+import 'package:budget_buddy/features/ledger/cubit/u_transaction_cubit.dart';
 import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
 import 'package:budget_buddy/features/ledger/widgets/expansion_group.dart';
+import 'package:budget_buddy/features/ledger/widgets/widget_shaker.dart';
 import 'package:budget_buddy/nav/routes.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../components/form_fields/date_field.dart';
-import '../../components/form_fields/note_field.dart';
-import '../../cubit/u_transaction_cubit.dart';
-import '../../widgets/widget_shaker.dart';
 
 class AddLedgerScreen extends StatefulWidget {
   const AddLedgerScreen({super.key});
@@ -462,6 +463,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                             //Submission
                             if (BlocProvider.of<UTransactionCubit>(context)
                                 .handleSubmit()) {
+                              BlocProvider.of<CTransactionCubit>(context)
+                                  .addTransactions(state.entries);
                               //Close the snackbar because we are navigating back
                               ScaffoldMessenger.of(context)
                                   .hideCurrentSnackBar();

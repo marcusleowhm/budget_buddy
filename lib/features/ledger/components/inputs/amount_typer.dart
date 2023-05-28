@@ -2,8 +2,8 @@ import 'package:budget_buddy/features/ledger/model/keyset.dart';
 import 'package:budget_buddy/features/ledger/widgets/keypad.dart';
 import 'package:flutter/material.dart';
 
-import '../../../utilities/currency_formatter.dart';
-import '../model/ledger_input.dart';
+import '../../../../utilities/currency_formatter.dart';
+import '../../model/ledger_input.dart';
 
 class AmountTyper extends StatelessWidget {
   const AmountTyper({

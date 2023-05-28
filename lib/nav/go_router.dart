@@ -25,9 +25,7 @@ final goRouter = GoRouter(
   routes: <RouteBase>[
     ShellRoute(
       navigatorKey: _shellNavigatorKey,
-      builder: (context, state, child) {
-        return TabNavigator(child: child);
-      },
+      builder: (context, state, child) => TabNavigator(child: child),
       routes: <GoRoute>[
         GoRoute(
           path: '/',
@@ -54,13 +52,11 @@ final goRouter = GoRouter(
             GoRoute(
               parentNavigatorKey: _rootNavigatorKey,
               path: '${routes[SubRoutes.addledger]}',
-              pageBuilder: (context, state) => MaterialPage(
-                child: BlocProvider(
-                  create: (_) => UTransactionCubit()..addInputRow(),
-                  child: const AddLedgerScreen(),
-                ),
+              builder: (context, state) => BlocProvider(
+                create: (_) => UTransactionCubit()..addInputRow(),
+                child: const AddLedgerScreen(),
               ),
-            )
+            ),
           ],
         ),
         GoRoute(

@@ -1,4 +1,4 @@
-import 'package:budget_buddy/features/ledger/components/type_picker.dart';
+import 'package:budget_buddy/features/ledger/components/inputs/type_picker.dart';
 import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
 import 'package:budget_buddy/features/ledger/widgets/widget_shaker.dart';
 import 'package:flutter/material.dart';

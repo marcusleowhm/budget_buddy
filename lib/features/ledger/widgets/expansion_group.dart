@@ -3,7 +3,7 @@ import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:budget_buddy/utilities/date_formatter.dart';
 import 'package:flutter/material.dart';
 
-import '../components/type_picker.dart';
+import '../components/inputs/type_picker.dart';
 
 class ExpansionGroup extends StatelessWidget {
   const ExpansionGroup({

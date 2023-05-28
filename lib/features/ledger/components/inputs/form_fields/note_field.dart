@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../model/ledger_input.dart';
-
+import '../../../model/ledger_input.dart';
 
 class NoteField extends StatelessWidget {
   const NoteField({
