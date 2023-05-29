@@ -7,40 +7,100 @@ class TypePicker extends StatelessWidget {
   const TypePicker({super.key, required this.type, required this.setType});
 
   final TransactionType type;
-  final void Function(Set<TransactionType> newSelection) setType;
+  final void Function(TransactionType newSelection) setType;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      child: SegmentedButton<TransactionType>(
-        style: const ButtonStyle(
-          side: MaterialStatePropertyAll<BorderSide>(
-            BorderSide(width: 0.5),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Material(
+          child: Ink(
+            child: InkWell(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: type == TransactionType.income
+                      ? Colors.blue[100]
+                      : Theme.of(context).canvasColor,
+                  border: Border.all(
+                    width: 0.5,
+                  ),
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                padding: const EdgeInsets.symmetric(
+                    vertical: 20.0, horizontal: 30.0),
+                child: const Column(
+                  children: [
+                    FaIcon(FontAwesomeIcons.handHoldingDollar),
+                    SizedBox(height: 10.0),
+                    Text("Income")
+                  ],
+                ),
+              ),
+              onTap: () {
+                setType(TransactionType.income);
+              },
+            ),
           ),
         ),
-        showSelectedIcon: false,
-        segments: const <ButtonSegment<TransactionType>>[
-          ButtonSegment<TransactionType>(
-            icon: FaIcon(FontAwesomeIcons.handHoldingDollar),
-            value: TransactionType.income,
-            label: Text('Income'),
+        Material(
+          child: Ink(
+            child: InkWell(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: type == TransactionType.expense
+                        ? Colors.blue[100]
+                        : Theme.of(context).canvasColor,
+                    border: Border.all(
+                      width: 0.5,
+                    ),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 20.0, horizontal: 30.0),
+                  child: const Column(
+                    children: [
+                      FaIcon(FontAwesomeIcons.moneyBill),
+                      SizedBox(height: 10.0),
+                      Text("Expense")
+                    ],
+                  ),
+                ),
+                onTap: () {
+                  setType(TransactionType.expense);
+                }),
           ),
-          ButtonSegment<TransactionType>(
-            icon: FaIcon(FontAwesomeIcons.moneyBill),
-            value: TransactionType.expense,
-            label: Text('Expense'),
+        ),
+        Material(
+          child: Ink(
+            child: InkWell(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: type == TransactionType.transfer
+                        ? Colors.blue[100]
+                        : Theme.of(context).canvasColor,
+                    border: Border.all(
+                      width: 0.5,
+                    ),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 20.0, horizontal: 30.0),
+                  child: const Column(
+                    children: [
+                      FaIcon(FontAwesomeIcons.moneyBillTransfer),
+                      SizedBox(height: 10.0),
+                      Text("Transfer")
+                    ],
+                  ),
+                ),
+                onTap: () {
+                  setType(TransactionType.transfer);
+                }),
           ),
-          ButtonSegment<TransactionType>(
-            icon: FaIcon(FontAwesomeIcons.moneyBillTransfer),
-            value: TransactionType.transfer,
-            label: Text('Transfer'),
-          ),
-        ],
-        selected: <TransactionType>{type},
-        onSelectionChanged: (Set<TransactionType> newSelection) =>
-            setType(newSelection),
-      ),
+        ),
+      ],
     );
   }
 }

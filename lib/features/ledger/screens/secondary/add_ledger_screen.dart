@@ -303,11 +303,11 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                   TypePicker(
                                       type: input.type,
                                       setType:
-                                          (Set<TransactionType> newSelection) {
+                                          (TransactionType newSelection) {
                                         if (_bottomSheetController != null) {
                                           _bottomSheetController?.setState!(
                                             () {
-                                              input.type = newSelection.first;
+                                              input.type = newSelection;
                                               BlocProvider.of<
                                                           UTransactionCubit>(
                                                       context)
@@ -318,7 +318,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                           BlocProvider.of<UTransactionCubit>(
                                                   context)
                                               .setTypeAt(
-                                                  index, newSelection.first);
+                                                  index, newSelection);
                                           BlocProvider.of<UTransactionCubit>(
                                                   context)
                                               .tallyAllCurrencies();
