@@ -26,7 +26,7 @@ class DateField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: 'Date',
         border: const OutlineInputBorder(),
-        suffixIcon: dateLongFormatter.format(input.dateTime.toLocal()) !=
+        suffixIcon: dateLongFormatter.format(input.utcDateTime.toLocal()) !=
                 dateLongFormatter.format(now)
             ? IconButton(
                 onPressed: onTapTrailing,

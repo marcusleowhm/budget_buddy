@@ -40,7 +40,7 @@ class LedgerInput {
   //Data
   String id;
   TransactionType type;
-  DateTime dateTime = DateTime.now().toUtc();
+  DateTime utcDateTime = DateTime.now().toUtc();
   String accountOrAccountFrom;
   String categoryOrAccountTo;
   String currency;
@@ -89,6 +89,6 @@ class LedgerInput {
 
   @override
   String toString() {
-    return '\nLedgerInput{\nid = $id,\ntype = $type,\ndateTime = $dateTime,\naccount = $accountOrAccountFrom,\ncategory = $categoryOrAccountTo,\ncurrency=$currency,\namount=$amount,\nnote=$note,\nadditionalNote=$additionalNote}';
+    return '\nLedgerInput{\nid = $id,\ntype = $type,\ndateTime = $utcDateTime,\naccount = $accountOrAccountFrom,\ncategory = $categoryOrAccountTo,\ncurrency=$currency,\namount=$amount,\nnote=$note,\nadditionalNote=$additionalNote}';
   }
 }

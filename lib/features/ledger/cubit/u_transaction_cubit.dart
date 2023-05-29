@@ -83,7 +83,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
 
     //Init the date time to be displayed at the start
     newLedger.dateTimeController.text =
-        dateLongFormatter.format(newLedger.dateTime);
+        dateLongFormatter.format(newLedger.utcDateTime);
 
     //Add listeners to controllers
     amountController
@@ -145,7 +145,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
   void setDateAt(int index, DateTime selectedDate) {
     //Set state of the LedgerInput to the user selected date
     //Note: Whenever setting the date time state, use UTC
-    state.entries.elementAt(index).dateTime = selectedDate.toUtc();
+    state.entries.elementAt(index).utcDateTime = selectedDate.toUtc();
 
     //Note: Whenever setting the date time to display, use Local
     //Convert to string just for the display in the TextField
@@ -279,9 +279,9 @@ class UTransactionCubit extends Cubit<UTransactionState> {
 
   void resetDateAtToToday(int index, DateTime now) {
     LedgerInput input = state.entries.elementAt(index);
-    input.dateTime = now;
+    input.utcDateTime = now;
     input.dateTimeController.text =
-        dateLongFormatter.format(input.dateTime.toLocal());
+        dateLongFormatter.format(input.utcDateTime.toLocal());
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,

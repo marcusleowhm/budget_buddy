@@ -10,4 +10,8 @@ class CTransactionCubit extends Cubit<CTransactionState> {
   void addTransactions(List<LedgerInput> uncommittedEntries) {
     emit(CTransactionState(committedEntries: state.committedEntries + uncommittedEntries));
   }
+
+  void getTransactions() {
+    //TODO implement API and local storage
+  }
 }

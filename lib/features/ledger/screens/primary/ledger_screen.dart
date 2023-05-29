@@ -11,28 +11,28 @@ class LedgerScreen extends StatefulWidget {
 }
 
 class _LedgerScreenState extends State<LedgerScreen> {
-  DateTime now = DateTime.now();
-  late DateTime currentDate;
+  DateTime utcNow = DateTime.now();
+  late DateTime currentLocalDate;
 
   @override
   void initState() {
     setState(
-        () => currentDate = DateTime(now.year, now.month, now.day).toLocal());
+        () => currentLocalDate = DateTime(utcNow.year, utcNow.month, utcNow.day).toLocal());
     super.initState();
   }
 
   void incrementMonth() {
-    setState(() => currentDate =
-        DateTime(currentDate.year, currentDate.month + 1, currentDate.day));
+    setState(() => currentLocalDate =
+        DateTime(currentLocalDate.year, currentLocalDate.month + 1, currentLocalDate.day));
   }
 
   void decrementMonth() {
-    setState(() => currentDate =
-        DateTime(currentDate.year, currentDate.month - 1, currentDate.day));
+    setState(() => currentLocalDate =
+        DateTime(currentLocalDate.year, currentLocalDate.month - 1, currentLocalDate.day));
   }
 
   void resetDate() {
-    setState(() => currentDate = now);
+    setState(() => currentLocalDate = utcNow);
   }
 
   @override
@@ -49,8 +49,8 @@ class _LedgerScreenState extends State<LedgerScreen> {
       ),
       backgroundColor: Colors.grey[200],
       body: CTransactionList(
-        currentDate: currentDate,
-        nowDate: now,
+        currentLocalDate: currentLocalDate,
+        nowDate: utcNow,
         incrementMonth: incrementMonth,
         decrementMonth: decrementMonth,
         resetDate: resetDate,

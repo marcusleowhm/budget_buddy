@@ -9,14 +9,14 @@ import '../model/ledger_input.dart';
 class CTransactionList extends StatelessWidget {
   CTransactionList({
     super.key,
-    required this.currentDate,
+    required this.currentLocalDate,
     required this.nowDate,
     required this.incrementMonth,
     required this.decrementMonth,
     required this.resetDate,
   });
 
-  final DateTime currentDate;
+  final DateTime currentLocalDate;
   final DateTime nowDate;
 
   //Scroll controller for scrolling down
@@ -43,7 +43,7 @@ class CTransactionList extends StatelessWidget {
               ),
               SizedBox(
                 width: 80,
-                child: Text(dateMonthYearFormatter.format(currentDate),
+                child: Text(dateMonthYearFormatter.format(currentLocalDate),
                     textAlign: TextAlign.center,
                     style: const TextStyle(fontSize: 16)),
               ),
@@ -56,10 +56,10 @@ class CTransactionList extends StatelessWidget {
               ),
               if (
                   //Same month but different year
-                  (currentDate.month == nowDate.month &&
-                          currentDate.year != nowDate.year) ||
+                  (currentLocalDate.month == nowDate.month &&
+                          currentLocalDate.year != nowDate.year) ||
                       //Different month, year is irrelevant
-                      (currentDate.month != nowDate.month))
+                      (currentLocalDate.month != nowDate.month))
                 IconButton(
                   icon: const Icon(Icons.refresh),
                   onPressed: resetDate,
@@ -79,15 +79,16 @@ class CTransactionList extends StatelessWidget {
                 //Do some mapping by date and return the card
                 Map<DateTime, List<LedgerInput>> data = {};
                 for (var element in state.committedEntries) {
-                  DateTime dateTime = DateTime(
-                      element.dateTime.toLocal().year,
-                      element.dateTime.toLocal().month,
-                      element.dateTime.toLocal().day);
+                  DateTime localDateTime = DateTime(
+                    element.utcDateTime.toLocal().year,
+                    element.utcDateTime.toLocal().month,
+                    element.utcDateTime.toLocal().day,
+                  );
 
-                  if (currentDate.month == dateTime.month &&
-                      currentDate.year == dateTime.year) {
-                    data.putIfAbsent(dateTime, () => []);
-                    data[dateTime]!.add(element);
+                  if (currentLocalDate.month == localDateTime.month &&
+                      currentLocalDate.year == localDateTime.year) {
+                    data.putIfAbsent(localDateTime, () => []);
+                    data[localDateTime]!.add(element);
                   }
                 }
                 //Sort the map by date
