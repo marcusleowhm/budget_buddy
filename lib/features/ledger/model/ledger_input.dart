@@ -5,16 +5,8 @@ import 'package:flutter/material.dart';
 class LedgerInput {
   LedgerInput(
       {required this.id,
-      this.type = TransactionType.expense,
-      this.accountOrAccountFrom = '',
-      this.categoryOrAccountTo = '',
-      this.currency = 'USD',
-      this.amount = 0.0,
-      this.note = '',
-      this.additionalNote = '',
       this.isExpanded = true,
       required this.formKey,
-      required this.dateTimeController,
       required this.accountOrAccountFromController,
       required this.categoryOrAccountToController,
       required this.amountController,
@@ -39,14 +31,14 @@ class LedgerInput {
 
   //Data
   String id;
-  TransactionType type;
+  TransactionType type = TransactionType.expense;
   DateTime utcDateTime = DateTime.now().toUtc();
-  String accountOrAccountFrom;
-  String categoryOrAccountTo;
-  String currency;
-  double amount;
-  String note;
-  String additionalNote;
+  String accountOrAccountFrom = '';
+  String categoryOrAccountTo = '';
+  String currency = 'USD'; //TODO change
+  double amount = 0.0;
+  String note = '';
+  String additionalNote = '';
 
   //Boolean to help with displaying data depending on state of the ExpansionTile
   bool isExpanded;
@@ -56,7 +48,6 @@ class LedgerInput {
 
   //Not instantiated in this class
   //Will be instantiated in the add_ledeger_screen
-  final TextEditingController dateTimeController;
   final TextEditingController accountOrAccountFromController;
   final TextEditingController categoryOrAccountToController;
   final TextEditingController amountController;

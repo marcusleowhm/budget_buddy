@@ -28,7 +28,7 @@ class TransactionBlock extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(right: 5.0),
             child: Text(
-              dateTime.day.toString(),
+              dayFormatter.format(dateTime),
               style: const TextStyle(fontSize: 20),
             ),
           ),

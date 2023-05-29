@@ -7,12 +7,14 @@ class DateField extends StatelessWidget {
   const DateField({
     super.key,
     required this.input,
+    required this.controller,
     required this.now,
     required this.onTapTrailing,
     required this.onTap,
   });
 
   final LedgerInput input;
+  final TextEditingController controller;
   final DateTime now;
   final VoidCallback onTapTrailing;
   final VoidCallback onTap;
@@ -22,12 +24,24 @@ class DateField extends StatelessWidget {
     return TextField(
       key: input.dateTimeKey,
       focusNode: input.dateTimeFocus,
-      controller: input.dateTimeController,
+      controller: controller,
       decoration: InputDecoration(
         labelText: 'Date',
         border: const OutlineInputBorder(),
-        suffixIcon: dateLongFormatter.format(input.utcDateTime.toLocal()) !=
-                dateLongFormatter.format(now)
+        suffixIcon: dateLongFormatter.format(
+                  DateTime(
+                    input.utcDateTime.toLocal().year,
+                    input.utcDateTime.toLocal().month,
+                    input.utcDateTime.toLocal().day,
+                  ),
+                ) !=
+                dateLongFormatter.format(
+                  DateTime(
+                    now.year,
+                    now.month,
+                    now.day,
+                  ),
+                )
             ? IconButton(
                 onPressed: onTapTrailing,
                 icon: const Icon(Icons.refresh),

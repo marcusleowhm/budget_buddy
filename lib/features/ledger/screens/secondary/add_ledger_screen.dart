@@ -16,6 +16,7 @@ import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
 import 'package:budget_buddy/features/ledger/widgets/expansion_group.dart';
 import 'package:budget_buddy/features/ledger/widgets/widget_shaker.dart';
 import 'package:budget_buddy/nav/routes.dart';
+import 'package:budget_buddy/utilities/date_formatter.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -56,6 +57,13 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     _moveFocusTo(state.entries.first.accountOrAccountFromFocus);
     _selectAccount(state.entries.first, 0);
     super.initState();
+  }
+
+  TextEditingController _createDateTimeController(LedgerInput input) {
+    TextEditingController controller = TextEditingController();
+    //Set the initial date to be now (When adding ledger)
+    controller.text = dateLongFormatter.format(input.utcDateTime.toLocal());
+    return controller;
   }
 
   void _removeRowAt(BuildContext context, LedgerInput input, int index) {
@@ -102,10 +110,10 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     return;
   }
 
-  Future<DateTime?> _selectDate(BuildContext context, int index) async {
+  Future<DateTime?> _selectDate(BuildContext context, LedgerInput input) async {
     final DateTime? selectedDate = await showDatePicker(
       context: context,
-      initialDate: localNow.toLocal(),
+      initialDate: input.utcDateTime.toLocal(),
       firstDate: DateTime(1970),
       lastDate: localNow.add(
         const Duration(days: 365 * 10),
@@ -114,12 +122,19 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     return selectedDate;
   }
 
-  void _setDate(BuildContext context, int index, LedgerInput input) {
-    _selectDate(context, index).then((selectedDate) {
+  void _setDate(
+    BuildContext context,
+    int index,
+    TextEditingController controller,
+    LedgerInput input,
+  ) {
+    _selectDate(context, input).then((selectedDate) {
       if (selectedDate != null) {
         //Set value and close the dialog
         BlocProvider.of<UTransactionCubit>(context)
             .setDateAt(index, selectedDate);
+        controller.text = dateLongFormatter.format(selectedDate);
+
         //Move focus to account after selecting date
         _moveFocusTo(input.accountOrAccountFromFocus);
         _selectAccount(input, index);
@@ -266,6 +281,10 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                         ...state.entries.asMap().entries.map((entry) {
                           int index = entry.key;
                           LedgerInput input = entry.value;
+
+                          TextEditingController dateTimeController =
+                              _createDateTimeController(input);
+
                           return ShakeError(
                             key: input.formShakerKey,
                             duration: const Duration(milliseconds: 600),
@@ -323,15 +342,19 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                   ),
                                   DateField(
                                     input: input,
+                                    controller: dateTimeController,
                                     now: localNow,
                                     onTapTrailing: () {
                                       BlocProvider.of<UTransactionCubit>(
                                               context)
                                           .resetDateAtToToday(index, localNow);
+                                      dateTimeController.text =
+                                          dateLongFormatter.format(localNow);
                                     },
                                     onTap: () {
                                       _closeBottomSheet();
-                                      _setDate(context, index, input);
+                                      _setDate(context, index,
+                                          dateTimeController, input);
                                     },
                                   ),
                                   AccountFromField(

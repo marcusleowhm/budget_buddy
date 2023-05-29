@@ -8,6 +8,8 @@ import 'package:budget_buddy/nav/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../utilities/date_formatter.dart';
+
 class EditLedgerScreen extends StatefulWidget {
   const EditLedgerScreen({
     super.key,
@@ -39,7 +41,23 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
   late TransactionType type;
   late DateTime localDateTime;
 
-  Future<DateTime?> _selectDate(BuildContext context, LedgerInput ledger) async {
+  @override
+  void initState() {
+    setState(() => type = widget.input.type);
+    setState(() => localDateTime = widget.input.utcDateTime.toLocal());
+
+    super.initState();
+  }
+
+  TextEditingController _createDateTimeController(LedgerInput input) {
+    TextEditingController controller = TextEditingController();
+    //Set the initial date to be now (When adding ledger)
+    controller.text = dateLongFormatter.format(localDateTime);
+    return controller;
+  }
+
+  Future<DateTime?> _selectDate(
+      BuildContext context, LedgerInput ledger) async {
     final DateTime? selectedDate = await showDatePicker(
       context: context,
       initialDate: ledger.utcDateTime.toLocal(),
@@ -51,11 +69,13 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
     return selectedDate;
   }
 
-  void _setDate(BuildContext context) {
+  void _setDate(BuildContext context, TextEditingController controller) {
     _selectDate(context, widget.input).then((selectedDate) {
       if (selectedDate != null) {
         //Set value and close the dialog
-        setState(() => localDateTime = selectedDate);
+        setState(
+          () => localDateTime = selectedDate,
+        );
         //Move focus to account after selecting date
         // _moveFocusTo(ledger.accountOrAccountFromFocus);
         // _selectAccount(ledger, index);
@@ -65,12 +85,6 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
 
   void _resetDate() {
     setState(() => localDateTime = widget.input.utcDateTime.toLocal());
-  }
-
-  @override
-  void initState() {
-    setState(() => type = widget.input.type);
-    super.initState();
   }
 
   @override
@@ -94,7 +108,12 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
             child: Container(
                 padding: const EdgeInsets.only(top: 16.0, bottom: 64.0),
                 child: BlocBuilder<CTransactionCubit, CTransactionState>(
-                  builder: (context, state) => Column(
+                    builder: (context, state) {
+                      
+                  TextEditingController dateTimeController =
+                      _createDateTimeController(widget.input);
+
+                  return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
@@ -125,10 +144,11 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                               ),
                               DateField(
                                 input: widget.input,
-                                now: localNow,
+                                controller: dateTimeController,
+                                now: localDateTime,
                                 onTapTrailing: _resetDate,
                                 onTap: () {
-                                  _setDate(context);
+                                  _setDate(context, dateTimeController);
                                 },
                               ),
                               SubmitButton(
@@ -136,6 +156,9 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                   BlocProvider.of<CTransactionCubit>(context)
                                       .changeTypeWhereIdEquals(
                                           widget.input.id, type);
+                                  BlocProvider.of<CTransactionCubit>(context)
+                                      .changeDateTimeWhereIdEquals(
+                                          widget.input.id, localDateTime);
 
                                   //Go to previous page
                                   Navigator.of(context).pop();
@@ -146,8 +169,8 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                         )),
                       ),
                     ],
-                  ),
-                )),
+                  );
+                })),
           ),
         ),
       ),

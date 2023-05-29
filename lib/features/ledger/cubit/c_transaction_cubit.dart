@@ -34,4 +34,13 @@ class CTransactionCubit extends Cubit<CTransactionState> {
       ),
     );
   }
+
+  void changeDateTimeWhereIdEquals(String id, DateTime newDateTime) {
+    state.committedEntries[id]?.utcDateTime = newDateTime.toUtc();
+    emit(
+      CTransactionState(
+        committedEntries: state.committedEntries,
+      ),
+    );
+  }
 }

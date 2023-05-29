@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../utilities/currency_formatter.dart';
-import '../../../utilities/date_formatter.dart';
 import '../components/inputs/type_picker.dart';
 import '../model/ledger_input.dart';
 
@@ -17,7 +16,6 @@ class UTransactionCubit extends Cubit<UTransactionState> {
 
   void addInputRow() {
     //Init controllers first
-    TextEditingController dateTimeController = TextEditingController();
     TextEditingController accountOrAccountFromController =
         TextEditingController();
     TextEditingController categoryOrAccountToController =
@@ -57,7 +55,6 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     LedgerInput newLedger = LedgerInput(
       id: const Uuid().v4(),
       formKey: formKey,
-      dateTimeController: dateTimeController,
       accountOrAccountFromController: accountOrAccountFromController,
       categoryOrAccountToController: categoryOrAccountToController,
       amountController: amountController,
@@ -80,10 +77,6 @@ class UTransactionCubit extends Cubit<UTransactionState> {
       noteFocus: noteFocus,
       additionalNoteFocus: additionalNoteFocus,
     );
-
-    //Init the date time to be displayed at the start
-    newLedger.dateTimeController.text =
-        dateLongFormatter.format(newLedger.utcDateTime);
 
     //Add listeners to controllers
     amountController
@@ -146,12 +139,6 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     //Set state of the LedgerInput to the user selected date
     //Note: Whenever setting the date time state, use UTC
     state.entries.elementAt(index).utcDateTime = selectedDate.toUtc();
-
-    //Note: Whenever setting the date time to display, use Local
-    //Convert to string just for the display in the TextField
-    //Underlying data type in the LedgerInput class is still a DateTime
-    state.entries.elementAt(index).dateTimeController.text =
-        dateLongFormatter.format(selectedDate.toLocal());
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
@@ -277,11 +264,11 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     ));
   }
 
-  void resetDateAtToToday(int index, DateTime now) {
-    LedgerInput input = state.entries.elementAt(index);
-    input.utcDateTime = now;
-    input.dateTimeController.text =
-        dateLongFormatter.format(input.utcDateTime.toLocal());
+  void resetDateAtToToday(
+    int index,
+    DateTime localNow,
+  ) {
+    state.entries.elementAt(index).utcDateTime = localNow.toUtc();
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
