@@ -85,74 +85,96 @@ class TransactionBlock extends StatelessWidget {
 
   List<Widget> _buildSubsequentLines(BuildContext context) {
     return transactions
-        .map((input) => Container(
-              margin: const EdgeInsets.all(10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    flex: 1,
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 5.0),
-                            child: Text(
-                              input.accountOrAccountFrom,
-                              style: const TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.bold),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 5.0),
-                            child: Text(
-                              input.categoryOrAccountTo,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: input.type == TransactionType.income
-                                    ? Theme.of(context).primaryColor
-                                    : input.type == TransactionType.expense
-                                        ? Colors.red
-                                        : Colors.grey,
+        .map((input) => InkWell(
+              onTap: () {
+                print('open edit');
+              },
+              child: Container(
+                margin: const EdgeInsets.all(10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Text(
+                                  input.accountOrAccountFrom,
+                                  style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                              Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Text(
+                                  input.categoryOrAccountTo,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: input.type == TransactionType.income
+                                        ? Theme.of(context).primaryColor
+                                        : input.type == TransactionType.expense
+                                            ? Colors.red
+                                            : Colors.grey,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
                           ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 5.0),
-                            child: Text(
-                              input.note.isEmpty ? '-' : input.note,
-                              style: const TextStyle(fontSize: 14),
-                              overflow: TextOverflow.ellipsis,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Text(
+                                input.currency,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
+                            Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Text(
+                                englishDisplayCurrencyFormatter
+                                    .format(input.amount),
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: input.type == TransactionType.income
+                                      ? Theme.of(context).primaryColor
+                                      : input.type == TransactionType.expense
+                                          ? Colors.red
+                                          : Colors.grey,
+                                ),
+                                textAlign: TextAlign.right,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                          child: Text(
+                            input.note.isEmpty ? '-' : input.note,
+                            style: const TextStyle(fontSize: 14),
+                            overflow: TextOverflow.ellipsis,
                           ),
-                        ]),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        input.currency,
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        englishDisplayCurrencyFormatter.format(input.amount),
-                        style: TextStyle(
-                            fontSize: 14,
-                            color: input.type == TransactionType.income
-                                ? Theme.of(context).primaryColor
-                                : input.type == TransactionType.expense
-                                    ? Colors.red
-                                    : Colors.grey),
-                      )
-                    ],
-                  ),
-                ],
+                        ),
+                      ],
+                    )
+                  ],
+                ),
               ),
             ))
         .toList();
