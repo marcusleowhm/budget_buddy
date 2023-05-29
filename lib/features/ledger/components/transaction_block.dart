@@ -1,6 +1,8 @@
 import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../nav/routes.dart';
 import '../../../utilities/date_formatter.dart';
 import '../model/ledger_input.dart';
 import 'inputs/type_picker.dart';
@@ -87,7 +89,11 @@ class TransactionBlock extends StatelessWidget {
     return transactions
         .map((input) => InkWell(
               onTap: () {
-                print('open edit');
+                context.go(
+                  '/${routes[MainRoutes.ledger]}/${routes[SubRoutes.editLedger]}',
+                  extra: input
+                );
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
               },
               child: Container(
                 margin: const EdgeInsets.all(10.0),

@@ -21,7 +21,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 class AddLedgerScreen extends StatefulWidget {
   const AddLedgerScreen({super.key});
 
@@ -301,29 +300,27 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                 ledger: input,
                                 children: [
                                   TypePicker(
-                                      type: input.type,
-                                      setType:
-                                          (TransactionType newSelection) {
-                                        if (_bottomSheetController != null) {
-                                          _bottomSheetController?.setState!(
-                                            () {
-                                              input.type = newSelection;
-                                              BlocProvider.of<
-                                                          UTransactionCubit>(
-                                                      context)
-                                                  .tallyAllCurrencies();
-                                            },
-                                          );
-                                        } else {
-                                          BlocProvider.of<UTransactionCubit>(
-                                                  context)
-                                              .setTypeAt(
-                                                  index, newSelection);
-                                          BlocProvider.of<UTransactionCubit>(
-                                                  context)
-                                              .tallyAllCurrencies();
-                                        }
-                                      }),
+                                    type: input.type,
+                                    setType: (TransactionType newSelection) {
+                                      if (_bottomSheetController != null) {
+                                        _bottomSheetController?.setState!(
+                                          () {
+                                            input.type = newSelection;
+                                            BlocProvider.of<UTransactionCubit>(
+                                                    context)
+                                                .tallyAllCurrencies();
+                                          },
+                                        );
+                                      } else {
+                                        BlocProvider.of<UTransactionCubit>(
+                                                context)
+                                            .setTypeAt(index, newSelection);
+                                        BlocProvider.of<UTransactionCubit>(
+                                                context)
+                                            .tallyAllCurrencies();
+                                      }
+                                    },
+                                  ),
                                   DateField(
                                     input: input,
                                     now: now,

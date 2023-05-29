@@ -1,4 +1,5 @@
 import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
+import 'package:budget_buddy/features/ledger/widgets/ledger_form.dart';
 import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:budget_buddy/utilities/date_formatter.dart';
 import 'package:flutter/material.dart';
@@ -18,22 +19,6 @@ class ExpansionGroup extends StatelessWidget {
   final List<Widget> children;
   final bool isExpanded;
   final void Function(bool value) onExpand;
-
-  Widget _buildChildrenTiles(Widget child) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10.0),
-      child: child is Divider
-          ? Divider(
-              key: PageStorageKey(child.key),
-              height: 0,
-              thickness: 1,
-            )
-          : ListTile(
-              title: child,
-              key: PageStorageKey(child.key),
-            ),
-    );
-  }
 
   Widget? _buildLeading() {
     if (isExpanded) {
@@ -193,14 +178,7 @@ class ExpansionGroup extends StatelessWidget {
             subtitle: _buildSubtitle(),
           ),
           children: [
-            Form(
-              key: ledger.formKey,
-              child: Column(
-                children: [
-                  ...children.map(_buildChildrenTiles).toList(),
-                ],
-              ),
-            ),
+            LedgerForm(ledger: ledger, children: children),
           ],
         ),
       ),
