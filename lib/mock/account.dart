@@ -5,14 +5,14 @@ final Map<String, List<String>> accountGroups = {
   'Cash': ['Cash'],
   'Card': [
     'Citibank Premier Miles',
-    'Standard Chartered Unlimited Cashback',
+    'Standard Chartered Unlimited Cashbackkkkkkkkkkkkkkkkkkkkkkkkkkk',
   ],
   'Investment': ['CityIndex', 'TD Ameritrade'],
   'Savings': ['POSB Kids', 'Investment Capital']
 };
 
 final Map<String, List<String>> categoryGroups = {
-  'Food & Beverage': ['Eating Out', 'Groceries', 'Snacks', 'Drinks', 'Convenience Store'],
+  'Food & Beverage': ['Eating Out', 'Groceries', 'Snacks', 'Drinks', 'Convenience Storeeeeeeeeeeeeeeeeeeeeeeeeeee'],
   'Leisure': ['Videogames', 'Holiday', 'Arcade'],
   'Transport': ['Bus', 'MRT', 'Car', 'Taxi'],
   'Housing': ['Renovation', 'Maintenance', 'Furniture'],

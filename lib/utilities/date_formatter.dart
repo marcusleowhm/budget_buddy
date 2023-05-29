@@ -4,6 +4,7 @@
   final DateFormat dateLongFormatter = DateFormat('dd-MMM-yyyy (EEEE)');
   final DateFormat dateMonthYearFormatter = DateFormat('MMM yyyy');
   final DateFormat dateDayOfWeekFormatter = DateFormat('EEEE');
+  final DateFormat dateShortDayOfWeekFormatter = DateFormat('EEE');
   final DateFormat dayFormatter = DateFormat('dd');
   final DateFormat monthNameFormatter = DateFormat('MMM');
   final DateFormat monthNumFormatter = DateFormat('MM');
