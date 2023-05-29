@@ -31,8 +31,8 @@ class LedgerForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Form(
+      key: ledger.formKey,
       child: Column(
-        key: ledger.formKey,
         children: [
           ...children.map(_buildChildrenTiles).toList(),
         ],

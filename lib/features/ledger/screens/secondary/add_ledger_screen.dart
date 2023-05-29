@@ -30,7 +30,7 @@ class AddLedgerScreen extends StatefulWidget {
 
 class _AddLedgerScreenState extends State<AddLedgerScreen> {
   //Date for the datepicker
-  DateTime now = DateTime.now();
+  DateTime localNow = DateTime.now();
 
   //Keep track of whether the form is valid
   bool isValid = false;
@@ -105,9 +105,9 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
   Future<DateTime?> _selectDate(BuildContext context, int index) async {
     final DateTime? selectedDate = await showDatePicker(
       context: context,
-      initialDate: now.toLocal(),
+      initialDate: localNow.toLocal(),
       firstDate: DateTime(1970),
-      lastDate: now.add(
+      lastDate: localNow.add(
         const Duration(days: 365 * 10),
       ),
     );
@@ -323,11 +323,11 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                   ),
                                   DateField(
                                     input: input,
-                                    now: now,
+                                    now: localNow,
                                     onTapTrailing: () {
                                       BlocProvider.of<UTransactionCubit>(
                                               context)
-                                          .resetDateAtToToday(index, now);
+                                          .resetDateAtToToday(index, localNow);
                                     },
                                     onTap: () {
                                       _closeBottomSheet();

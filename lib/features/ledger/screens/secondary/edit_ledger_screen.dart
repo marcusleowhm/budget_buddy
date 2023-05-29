@@ -1,3 +1,4 @@
+import 'package:budget_buddy/features/ledger/components/inputs/form_fields/date_field.dart';
 import 'package:budget_buddy/features/ledger/components/inputs/form_fields/submit_button.dart';
 import 'package:budget_buddy/features/ledger/components/inputs/type_picker.dart';
 import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
@@ -20,18 +21,51 @@ class EditLedgerScreen extends StatefulWidget {
 }
 
 class _EditLedgerScreenState extends State<EditLedgerScreen> {
+  //Date for the datepicker
+  DateTime localNow = DateTime.now();
+
   //Keep track of whether the form is valid
   bool isValid = false;
 
   // Key to get Scaffold and show bottom sheet.
   // Also a controller to close the bottom sheet when tapped outside
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  late PersistentBottomSheetController? _bottomSheetController;
 
   //Scroll controller for scrolling down
   final ScrollController _scrollController = ScrollController();
 
   //Create temporary state to change it all one shot when user submits
   late TransactionType type;
+  late DateTime localDateTime;
+
+  Future<DateTime?> _selectDate(BuildContext context, LedgerInput ledger) async {
+    final DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: ledger.utcDateTime.toLocal(),
+      firstDate: DateTime(1970),
+      lastDate: localNow.add(
+        const Duration(days: 365 * 10),
+      ),
+    );
+    return selectedDate;
+  }
+
+  void _setDate(BuildContext context) {
+    _selectDate(context, widget.input).then((selectedDate) {
+      if (selectedDate != null) {
+        //Set value and close the dialog
+        setState(() => localDateTime = selectedDate);
+        //Move focus to account after selecting date
+        // _moveFocusTo(ledger.accountOrAccountFromFocus);
+        // _selectAccount(ledger, index);
+      }
+    });
+  }
+
+  void _resetDate() {
+    setState(() => localDateTime = widget.input.utcDateTime.toLocal());
+  }
 
   @override
   void initState() {
@@ -80,6 +114,21 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                 type: type,
                                 setType: (TransactionType newSelection) {
                                   setState(() => type = newSelection);
+                                  // if (_bottomSheetController != null) {
+                                  //   _bottomSheetController?.setState!(
+                                  //     () {
+
+                                  //     },
+                                  //   );
+                                  // }
+                                },
+                              ),
+                              DateField(
+                                input: widget.input,
+                                now: localNow,
+                                onTapTrailing: _resetDate,
+                                onTap: () {
+                                  _setDate(context);
                                 },
                               ),
                               SubmitButton(

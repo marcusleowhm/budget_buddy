@@ -30,11 +30,11 @@ class CTransactionList extends StatelessWidget {
   Map<DateTime, LedgerDisplay> getData(CTransactionState state) {
     //Do some mapping by date and return the card
     Map<DateTime, LedgerDisplay> data = {};
-    for (LedgerInput input in state.committedEntries) {
+    for (LedgerInput ledger in state.committedEntries.values) {
       DateTime localDateTime = DateTime(
-        input.utcDateTime.toLocal().year,
-        input.utcDateTime.toLocal().month,
-        input.utcDateTime.toLocal().day,
+        ledger.utcDateTime.toLocal().year,
+        ledger.utcDateTime.toLocal().month,
+        ledger.utcDateTime.toLocal().day,
       );
 
       if (currentLocalDate.month == localDateTime.month &&
@@ -42,26 +42,26 @@ class CTransactionList extends StatelessWidget {
         data.putIfAbsent(localDateTime, () => LedgerDisplay());
 
         //Add the elements back into the date
-        data[localDateTime]!.inputs.add(input);
+        data[localDateTime]!.inputs.add(ledger);
 
         //Sum up the amount according to transaction type
-        switch (input.type) {
+        switch (ledger.type) {
           case TransactionType.income:
             double cumulativeIncome = data[localDateTime]?.sum['income'] ?? 0.0;
             data[localDateTime]?.sum['income'] =
-                cumulativeIncome + input.amount;
+                cumulativeIncome + ledger.amount;
             break;
           case TransactionType.expense:
             double cumulativeExpense =
                 data[localDateTime]?.sum['expense'] ?? 0.0;
             data[localDateTime]?.sum['expense'] =
-                cumulativeExpense + input.amount;
+                cumulativeExpense + ledger.amount;
             break;
           case TransactionType.transfer:
             double cumulativeTransfer =
                 data[localDateTime]?.sum['transfer'] ?? 0.0;
             data[localDateTime]?.sum['transfer'] =
-                cumulativeTransfer + input.amount;
+                cumulativeTransfer + ledger.amount;
             break;
         }
       }

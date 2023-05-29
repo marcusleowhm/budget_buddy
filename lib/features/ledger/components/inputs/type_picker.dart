@@ -50,7 +50,7 @@ class TypePicker extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     color: type == TransactionType.expense
-                        ? Colors.blue[100]
+                        ? Colors.red[100]
                         : Theme.of(context).canvasColor,
                     border: Border.all(
                       width: 0.5,
@@ -78,7 +78,7 @@ class TypePicker extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     color: type == TransactionType.transfer
-                        ? Colors.blue[100]
+                        ? Colors.grey[200]
                         : Theme.of(context).canvasColor,
                     border: Border.all(
                       width: 0.5,

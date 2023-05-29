@@ -178,7 +178,10 @@ class ExpansionGroup extends StatelessWidget {
             subtitle: _buildSubtitle(),
           ),
           children: [
-            LedgerForm(ledger: ledger, children: children),
+            LedgerForm(
+              ledger: ledger,
+              children: children,
+            ),
           ],
         ),
       ),
