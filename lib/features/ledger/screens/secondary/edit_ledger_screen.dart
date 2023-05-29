@@ -1,3 +1,4 @@
+import 'package:budget_buddy/features/ledger/components/inputs/form_fields/submit_button.dart';
 import 'package:budget_buddy/features/ledger/components/inputs/type_picker.dart';
 import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
 import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
@@ -28,6 +29,15 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
 
   //Scroll controller for scrolling down
   final ScrollController _scrollController = ScrollController();
+
+  //Create temporary state to change it all one shot when user submits
+  late TransactionType type;
+
+  @override
+  void initState() {
+    setState(() => type = widget.input.type);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,20 +74,27 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                         margin: const EdgeInsets.only(bottom: 10.0),
                         child: Form(
                             child: Column(
-                              children: [
-                                LedgerForm(ledger: widget.input, children: [
-                                  TypePicker(
-                                    type: widget.input.type,
-                                    setType: (TransactionType newSelection) {
-                                      BlocProvider.of<CTransactionCubit>(
-                                              context)
-                                          .changeTypeWhereIdEquals(
-                                              widget.input.id, newSelection);
-                                    },
-                                  )
-                                ])
-                              ],
-                            )),
+                          children: [
+                            LedgerForm(ledger: widget.input, children: [
+                              TypePicker(
+                                type: type,
+                                setType: (TransactionType newSelection) {
+                                  setState(() => type = newSelection);
+                                },
+                              ),
+                              SubmitButton(
+                                action: () {
+                                  BlocProvider.of<CTransactionCubit>(context)
+                                      .changeTypeWhereIdEquals(
+                                          widget.input.id, type);
+
+                                  //Go to previous page
+                                  Navigator.of(context).pop();
+                                },
+                              )
+                            ])
+                          ],
+                        )),
                       ),
                     ],
                   ),
