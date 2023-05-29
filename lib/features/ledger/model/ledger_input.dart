@@ -7,6 +7,7 @@ class LedgerInput {
       {required this.id,
       this.isExpanded = true,
       required this.formKey,
+      required this.dateTimeController,
       required this.accountOrAccountFromController,
       required this.categoryOrAccountToController,
       required this.amountController,
@@ -47,7 +48,8 @@ class LedgerInput {
   GlobalKey<FormState> formKey;
 
   //Not instantiated in this class
-  //Will be instantiated in the add_ledeger_screen
+  //Will be instantiated in the add_ledger_screen
+  final TextEditingController dateTimeController;
   final TextEditingController accountOrAccountFromController;
   final TextEditingController categoryOrAccountToController;
   final TextEditingController amountController;

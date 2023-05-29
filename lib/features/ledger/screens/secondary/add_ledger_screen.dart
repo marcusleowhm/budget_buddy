@@ -59,13 +59,6 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     super.initState();
   }
 
-  TextEditingController _createDateTimeController(LedgerInput input) {
-    TextEditingController controller = TextEditingController();
-    //Set the initial date to be now (When adding ledger)
-    controller.text = dateLongFormatter.format(input.utcDateTime.toLocal());
-    return controller;
-  }
-
   void _removeRowAt(BuildContext context, LedgerInput input, int index) {
     BlocProvider.of<UTransactionCubit>(context).removeRowAt(index);
     ScaffoldMessenger.of(context).showSnackBar(
@@ -282,9 +275,6 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                           int index = entry.key;
                           LedgerInput input = entry.value;
 
-                          TextEditingController dateTimeController =
-                              _createDateTimeController(input);
-
                           return ShakeError(
                             key: input.formShakerKey,
                             duration: const Duration(milliseconds: 600),
@@ -342,23 +332,24 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                   ),
                                   DateField(
                                     input: input,
-                                    controller: dateTimeController,
+                                    controller: input.dateTimeController,
                                     now: localNow,
                                     onTapTrailing: () {
                                       BlocProvider.of<UTransactionCubit>(
                                               context)
                                           .resetDateAtToToday(index, localNow);
-                                      dateTimeController.text =
+                                      input.dateTimeController.text =
                                           dateLongFormatter.format(localNow);
                                     },
                                     onTap: () {
                                       _closeBottomSheet();
                                       _setDate(context, index,
-                                          dateTimeController, input);
+                                          input.dateTimeController, input);
                                     },
                                   ),
                                   AccountFromField(
                                     input: input,
+                                    controller: input.accountOrAccountFromController,
                                     onTapTrailing: () {
                                       BlocProvider.of<UTransactionCubit>(
                                               context)
@@ -378,6 +369,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                   ),
                                   CategoryAccountToField(
                                     input: input,
+                                    controller: input.categoryOrAccountToController,
                                     onTapTrailing: () {
                                       BlocProvider.of<UTransactionCubit>(
                                               context)
@@ -397,6 +389,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                   ),
                                   AmountField(
                                     input: input,
+                                    controller: input.amountController,
                                     onCurrencyChange: (String? selection) {
                                       BlocProvider.of<UTransactionCubit>(
                                               context)
@@ -420,6 +413,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                   ),
                                   NoteField(
                                     input: input,
+                                    controller: input.noteController,
                                     onTapTrailing: () {
                                       BlocProvider.of<UTransactionCubit>(
                                               context)
@@ -443,6 +437,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                   Divider(key: input.dividerKey),
                                   AdditionalNoteField(
                                     input: input,
+                                    controller: input.additionalNoteController,
                                     onTapTrailing: () {
                                       BlocProvider.of<UTransactionCubit>(
                                               context)

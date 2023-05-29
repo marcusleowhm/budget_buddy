@@ -7,12 +7,14 @@ class AmountField extends StatelessWidget {
   const AmountField({
     super.key,
     required this.input,
+    required this.controller,
     required this.onCurrencyChange,
     required this.onTapTrailing,
     required this.onTap,
   });
 
   final LedgerInput input;
+  final TextEditingController controller;
   final void Function(String?) onCurrencyChange;
   final VoidCallback onTapTrailing;
   final VoidCallback onTap;
@@ -53,15 +55,15 @@ class AmountField extends StatelessWidget {
           child: TextField(
             key: input.amountKey,
             focusNode: input.amountFocus,
-            controller: input.amountController,
+            controller: controller,
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               labelText: 'Amount',
-              suffixIcon: input.amountController.text.isEmpty
+              suffixIcon: controller.text.isEmpty
                   ? null
                   : IconButton(
                       onPressed: () {
-                        input.amountController.clear();
+                        controller.clear();
                         onTapTrailing();
                       },
                       icon: const Icon(Icons.cancel_outlined),

@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:budget_buddy/features/ledger/widgets/widget_shaker.dart';
+import 'package:budget_buddy/utilities/date_formatter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
@@ -16,6 +17,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
 
   void addInputRow() {
     //Init controllers first
+    TextEditingController dateTimeController = TextEditingController();
     TextEditingController accountOrAccountFromController =
         TextEditingController();
     TextEditingController categoryOrAccountToController =
@@ -55,6 +57,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     LedgerInput newLedger = LedgerInput(
       id: const Uuid().v4(),
       formKey: formKey,
+      dateTimeController: dateTimeController,
       accountOrAccountFromController: accountOrAccountFromController,
       categoryOrAccountToController: categoryOrAccountToController,
       amountController: amountController,
@@ -77,6 +80,9 @@ class UTransactionCubit extends Cubit<UTransactionState> {
       noteFocus: noteFocus,
       additionalNoteFocus: additionalNoteFocus,
     );
+
+    //Set initial value for date
+    dateTimeController.text = dateLongFormatter.format(newLedger.utcDateTime.toLocal());
 
     //Add listeners to controllers
     amountController
@@ -146,8 +152,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
   }
 
   void setTypeAt(int index, TransactionType type) {
-    LedgerInput input = state.entries.elementAt(index);
-    input.type = type;
+    state.entries.elementAt(index).type = type;
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,

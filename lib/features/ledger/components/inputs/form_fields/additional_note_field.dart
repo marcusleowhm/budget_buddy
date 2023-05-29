@@ -5,11 +5,13 @@ class AdditionalNoteField extends StatelessWidget {
   const AdditionalNoteField({
     super.key,
     required this.input,
+    required this.controller,
     required this.onTapTrailing,
     required this.onTap,
   });
 
   final LedgerInput input;
+  final TextEditingController controller;
   final VoidCallback onTapTrailing;
   final VoidCallback onTap;
 
@@ -18,14 +20,14 @@ class AdditionalNoteField extends StatelessWidget {
     return TextField(
       key: input.additionalNoteKey,
       focusNode: input.additionalNoteFocus,
-      controller: input.additionalNoteController,
+      controller: controller,
       decoration: InputDecoration(
           border: const OutlineInputBorder(),
-          suffixIcon: input.additionalNoteController.text.isEmpty
+          suffixIcon: controller.text.isEmpty
               ? null
               : IconButton(
                   onPressed: () {
-                    input.additionalNoteController.clear();
+                    controller.clear();
                     onTapTrailing();
                   },
                   icon: const Icon(Icons.cancel_outlined),

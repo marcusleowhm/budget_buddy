@@ -7,11 +7,13 @@ class AccountFromField extends StatelessWidget {
   const AccountFromField({
     super.key,
     required this.input,
+    required this.controller,
     required this.onTapTrailing,
     required this.onTap,
   });
 
   final LedgerInput input;
+  final TextEditingController controller;
   final VoidCallback onTapTrailing;
   final VoidCallback onTap;
 
@@ -24,6 +26,7 @@ class AccountFromField extends StatelessWidget {
       shakeOffset: 10,
       child: TextFormField(
         key: input.accountOrAccountFromKey,
+        controller: controller,
         focusNode: input.accountOrAccountFromFocus,
         validator: (value) {
           if (value == null || value.isEmpty) {
@@ -31,17 +34,16 @@ class AccountFromField extends StatelessWidget {
           }
           return null;
         },
-        controller: input.accountOrAccountFromController,
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
           labelText: input.type == TransactionType.transfer
               ? 'Account From'
               : 'Account',
-          suffixIcon: input.accountOrAccountFromController.text.isEmpty
+          suffixIcon: controller.text.isEmpty
               ? null
               : IconButton(
                   onPressed: () {
-                    input.accountOrAccountFromController.clear();
+                    controller.clear();
                     onTapTrailing();
                   },
                   icon: const Icon(Icons.cancel_outlined),

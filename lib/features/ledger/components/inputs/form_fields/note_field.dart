@@ -6,12 +6,14 @@ class NoteField extends StatelessWidget {
   const NoteField({
     super.key,
     required this.input,
+    required this.controller,
     required this.onTapTrailing,
     required this.onTap,
     required this.onEditingComplete,
   });
 
   final LedgerInput input;
+  final TextEditingController controller;
   final VoidCallback onTapTrailing;
   final VoidCallback onTap;
   final VoidCallback onEditingComplete;
@@ -21,7 +23,7 @@ class NoteField extends StatelessWidget {
     return TextField(
       key: input.noteKey,
       focusNode: input.noteFocus,
-      controller: input.noteController,
+      controller: controller,
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
         labelText: 'Note',
@@ -29,7 +31,7 @@ class NoteField extends StatelessWidget {
             ? null
             : IconButton(
                 onPressed: () {
-                  input.noteController.clear();
+                  controller.clear();
                   onTapTrailing();
                 },
                 icon: const Icon(Icons.cancel_outlined),

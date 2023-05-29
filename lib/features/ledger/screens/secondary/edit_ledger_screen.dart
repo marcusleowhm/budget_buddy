@@ -158,7 +158,7 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                           widget.input.id, type);
                                   BlocProvider.of<CTransactionCubit>(context)
                                       .changeDateTimeWhereIdEquals(
-                                          widget.input.id, localDateTime);
+                                          widget.input.id, localDateTime.toUtc());
 
                                   //Go to previous page
                                   Navigator.of(context).pop();
