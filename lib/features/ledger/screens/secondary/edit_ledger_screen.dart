@@ -1,14 +1,19 @@
 import 'package:budget_buddy/features/ledger/components/inputs/account/account_picker.dart';
+import 'package:budget_buddy/features/ledger/components/inputs/amount_typer.dart';
 import 'package:budget_buddy/features/ledger/components/inputs/category/category_picker.dart';
 import 'package:budget_buddy/features/ledger/components/inputs/form_fields/account_from_field.dart';
+import 'package:budget_buddy/features/ledger/components/inputs/form_fields/additional_note_field.dart';
+import 'package:budget_buddy/features/ledger/components/inputs/form_fields/amount_field.dart';
 import 'package:budget_buddy/features/ledger/components/inputs/form_fields/category_account_to_field.dart';
 import 'package:budget_buddy/features/ledger/components/inputs/form_fields/date_field.dart';
+import 'package:budget_buddy/features/ledger/components/inputs/form_fields/note_field.dart';
 import 'package:budget_buddy/features/ledger/components/inputs/form_fields/submit_button.dart';
 import 'package:budget_buddy/features/ledger/components/inputs/type_picker.dart';
 import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
 import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
 import 'package:budget_buddy/features/ledger/widgets/ledger_form.dart';
 import 'package:budget_buddy/nav/routes.dart';
+import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -46,12 +51,19 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
   TextEditingController accountOrAccountFromController =
       TextEditingController();
   TextEditingController categoryOrAccountToController = TextEditingController();
+  TextEditingController amountController = TextEditingController();
+  TextEditingController noteController = TextEditingController();
+  TextEditingController additionalNoteController = TextEditingController();
 
   //Create temporary state to change it all one shot when user submits
   late TransactionType type;
   late DateTime localDateTime;
-  late String accountOrAccountFrom;
-  late String categoryOrAccountTo;
+  late String account;
+  late String category;
+  late String currency;
+  late double amount;
+  late String note;
+  late String additionalNote;
 
   @override
   void initState() {
@@ -62,12 +74,34 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
     dateTimeController.text = dateLongFormatter.format(localDateTime);
 
     //Account
-    setState(() => accountOrAccountFrom = widget.input.accountOrAccountFrom);
-    accountOrAccountFromController.text = accountOrAccountFrom;
+    setState(() => account = widget.input.accountOrAccountFrom);
+    accountOrAccountFromController.text = account;
 
     //Category
-    setState(() => categoryOrAccountTo = widget.input.categoryOrAccountTo);
-    categoryOrAccountToController.text = categoryOrAccountTo;
+    setState(() => category = widget.input.categoryOrAccountTo);
+    categoryOrAccountToController.text = category;
+
+    //Currency
+    setState(() => currency = widget.input.currency);
+
+    //Amount
+    setState(() => amount = widget.input.amount);
+    amountController.text =
+        englishDisplayCurrencyFormatter.format(widget.input.amount);
+
+    //Note
+    setState(() => note = widget.input.note);
+    noteController.text = note;
+    noteController.addListener(() {
+      setState(() => note = noteController.text);
+    });
+
+    //Additional note
+    setState(() => additionalNote = widget.input.additionalNote);
+    additionalNoteController.text = additionalNote;
+    additionalNoteController.addListener(() {
+      setState(() => additionalNote = additionalNoteController.text);
+    });
 
     super.initState();
   }
@@ -135,8 +169,8 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                 if (selectedAccount != null) {
                   //Set value and close the dialog
                   setState(() {
-                    accountOrAccountFrom = selectedAccount;
-                    accountOrAccountFromController.text = accountOrAccountFrom;
+                    account = selectedAccount;
+                    accountOrAccountFromController.text = account;
                   });
                 }
               },
@@ -150,7 +184,7 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
   void _clearAccount() {
     setState(() {
       accountOrAccountFromController.clear();
-      accountOrAccountFrom = accountOrAccountFromController.text;
+      account = accountOrAccountFromController.text;
     });
   }
 
@@ -163,8 +197,8 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
           if (selectedCategory != null) {
             //Set value and close the dialog
             setState(() {
-              categoryOrAccountTo = selectedCategory;
-              categoryOrAccountToController.text = categoryOrAccountTo;
+              category = selectedCategory;
+              categoryOrAccountToController.text = category;
             });
             //Move focus to amount input,
             //Then show the keypad
@@ -182,7 +216,59 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
   void _clearCategory() {
     setState(() {
       categoryOrAccountToController.clear();
-      categoryOrAccountTo = categoryOrAccountToController.text;
+      category = categoryOrAccountToController.text;
+    });
+  }
+
+  void _setCurrency(String? selection) {
+    if (selection != null) {
+      setState(() => currency = selection);
+    }
+  }
+
+  void _clearAmount() {
+    setState(() {
+      amountController.clear();
+      amount = 0.0;
+    });
+  }
+
+  void _selectAmount(
+      LedgerInput input, TextEditingController amountController) {
+    _bottomSheetController =
+        _scaffoldKey.currentState?.showBottomSheet<void>((context) {
+      return AmountTyper(
+        currentAmount: amount,
+        controller: amountController,
+        onCancelPressed: _closeBottomSheet,
+        onKeystroke: (amountString) {
+          double newAmount = double.tryParse(
+                  amountString.replaceAll('\$', '').replaceAll(',', '')) ??
+              0.0;
+          setState(() => amount = newAmount);
+        },
+        onDonePressed: (amountString) {
+          double newAmount = double.tryParse(
+                  amountString.replaceAll('\$', '').replaceAll(',', '')) ??
+              0.0;
+          setState(() => amount = newAmount);
+        },
+        closeBottomSheet: _closeBottomSheet,
+      );
+    });
+  }
+
+  void _clearNote() {
+    setState(() {
+      noteController.clear();
+      note = noteController.text;
+    });
+  }
+
+  void _clearAdditionalNote() {
+    setState(() {
+      additionalNoteController.clear();
+      additionalNote = additionalNoteController.text;
     });
   }
 
@@ -212,6 +298,7 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
+                        padding: const EdgeInsets.only(top: 16.0),
                         decoration: BoxDecoration(
                           color: Theme.of(context).canvasColor,
                           borderRadius: const BorderRadius.all(
@@ -258,17 +345,69 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                 onTapTrailing: _clearCategory,
                                 onTap: _selectCategory,
                               ),
+                              AmountField(
+                                input: widget.input,
+                                controller: amountController,
+                                onCurrencyChange: (String? newCurrency) {
+                                  _setCurrency(newCurrency);
+                                },
+                                onTapTrailing: _clearAmount,
+                                onTap: () {
+                                  _selectAmount(widget.input, amountController);
+                                },
+                              ),
+                              NoteField(
+                                input: widget.input,
+                                controller: noteController,
+                                onTapTrailing: _clearNote,
+                                onTap: _closeBottomSheet,
+                                onEditingComplete: () {
+                                  //TODO
+                                  print('move to additional note');
+                                },
+                              ),
+                              const Divider(),
+                              AdditionalNoteField(
+                                input: widget.input,
+                                controller: additionalNoteController,
+                                onTapTrailing: _clearAdditionalNote,
+                                onTap: _closeBottomSheet,
+                              ),
                               SubmitButton(
                                 action: () {
                                   BlocProvider.of<CTransactionCubit>(context)
                                     ..changeTypeWhereIdEquals(
-                                        widget.input.id, type)
+                                      widget.input.id,
+                                      type,
+                                    )
                                     ..changeDateTimeWhereIdEquals(
-                                        widget.input.id, localDateTime.toUtc())
+                                      widget.input.id,
+                                      localDateTime.toUtc(),
+                                    )
                                     ..changeAccountFromWhereIdEquals(
-                                        widget.input.id, accountOrAccountFrom)
+                                      widget.input.id,
+                                      account,
+                                    )
                                     ..changeCategoryWhereIdEquals(
-                                        widget.input.id, categoryOrAccountTo);
+                                      widget.input.id,
+                                      category,
+                                    )
+                                    ..changeCurrenyWhereIdEquals(
+                                      widget.input.id,
+                                      currency,
+                                    )
+                                    ..changeAmountWhereIdEquals(
+                                      widget.input.id,
+                                      amount,
+                                    )
+                                    ..changeNoteWhereIdEquals(
+                                      widget.input.id,
+                                      note,
+                                    )
+                                    ..changeAdditionalNoteWhereIdEquals(
+                                      widget.input.id,
+                                      additionalNote,
+                                    );
 
                                   //Close the bottom sheet if open
                                   _closeBottomSheet();
