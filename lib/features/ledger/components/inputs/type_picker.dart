@@ -11,6 +11,10 @@ class TypePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
+    const EdgeInsets buttonPadding =
+        EdgeInsets.symmetric(vertical: 10.0, horizontal: 30.0);
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -28,8 +32,7 @@ class TypePicker extends StatelessWidget {
                   ),
                   borderRadius: BorderRadius.circular(10.0),
                 ),
-                padding: const EdgeInsets.symmetric(
-                    vertical: 20.0, horizontal: 30.0),
+                padding: buttonPadding,
                 child: const Column(
                   children: [
                     FaIcon(FontAwesomeIcons.handHoldingDollar),
@@ -57,8 +60,7 @@ class TypePicker extends StatelessWidget {
                     ),
                     borderRadius: BorderRadius.circular(10.0),
                   ),
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 20.0, horizontal: 30.0),
+                  padding: buttonPadding,
                   child: const Column(
                     children: [
                       FaIcon(FontAwesomeIcons.moneyBill),
@@ -85,8 +87,7 @@ class TypePicker extends StatelessWidget {
                     ),
                     borderRadius: BorderRadius.circular(10.0),
                   ),
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 20.0, horizontal: 30.0),
+                  padding: buttonPadding,
                   child: const Column(
                     children: [
                       FaIcon(FontAwesomeIcons.moneyBillTransfer),

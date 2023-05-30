@@ -17,4 +17,4 @@ Project Struture:
     - main.dart (program entry point)
     
 Current Known Issues:
-- When editing existing data entry, the existing controller in the ledger object used in the input widgets are causing edits to not turn up
+- Moving focus through the inputs require a lot of passing parameters around. Will need to refactor the move focus function
