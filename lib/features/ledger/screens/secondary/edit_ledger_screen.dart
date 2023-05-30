@@ -51,8 +51,7 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
 
   //Controller for the edit page form only
   TextEditingController dateTimeController = TextEditingController();
-  TextEditingController accountController =
-      TextEditingController();
+  TextEditingController accountController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
   TextEditingController amountController = TextEditingController();
   TextEditingController noteController = TextEditingController();
@@ -281,6 +280,8 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
     setState(() {
       note = widget.input.note;
       noteController.text = note;
+      noteController.selection =
+          TextSelection.collapsed(offset: noteController.text.length);
     });
   }
 
@@ -288,6 +289,8 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
     setState(() {
       additionalNote = widget.input.additionalNote;
       additionalNoteController.text = additionalNote;
+      additionalNoteController.selection =
+          TextSelection.collapsed(offset: additionalNoteController.text.length);
     });
   }
 
@@ -402,8 +405,10 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                 input: widget.input,
                                 controller: additionalNoteController,
                                 onTapTrailing: _resetAdditionalNote,
-                                showIcon: additionalNote != widget.input.additionalNote,
-                                trailingIcon: const Icon(Icons.refresh_outlined),
+                                showIcon: additionalNote !=
+                                    widget.input.additionalNote,
+                                trailingIcon:
+                                    const Icon(Icons.refresh_outlined),
                                 onTap: _closeBottomSheet,
                               ),
                               SubmitButton(
