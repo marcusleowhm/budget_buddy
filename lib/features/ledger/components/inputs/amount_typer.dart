@@ -121,7 +121,8 @@ class AmountTyper extends StatelessWidget {
   void _handleDoneKey() {
     //When the user has not entered anything
     //When the user has entered a number, doesn't matter whether a dot was pressed
-    if (controller.text.isEmpty) {
+    double enteredAmount = double.tryParse(controller.text) ?? 0.0;
+    if (controller.text.isEmpty || enteredAmount == 0.0) {
       controller.text = englishDisplayCurrencyFormatter.format(0);
       onDonePressed(controller.text);
     }

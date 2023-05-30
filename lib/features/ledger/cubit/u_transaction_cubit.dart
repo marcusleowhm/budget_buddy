@@ -98,10 +98,10 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     });
     amountFocus.addListener(() {
       if (!amountFocus.hasFocus) {
-        if (newLedger.amount != 0.0) {
-          amountController.text =
-              englishDisplayCurrencyFormatter.format(newLedger.amount);
-        }
+        double enteredAmount =
+            double.tryParse(newLedger.amountController.text) ?? 0.0;
+        newLedger.amountController.text =
+            englishDisplayCurrencyFormatter.format(enteredAmount);
       }
     });
 
@@ -353,12 +353,10 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     for (LedgerInput input in state.entries) {
       if (input.isExpanded) {
         if (!input.accountKey.currentState!.validate()) {
-          fieldStatesToShake
-              .add(input.accountShakerKey.currentState);
+          fieldStatesToShake.add(input.accountShakerKey.currentState);
         }
         if (!input.categoryKey.currentState!.validate()) {
-          fieldStatesToShake
-              .add(input.categoryShakerKey.currentState);
+          fieldStatesToShake.add(input.categoryShakerKey.currentState);
         }
       } else {
         //If expanded and the whole form has error, collect the whole form state

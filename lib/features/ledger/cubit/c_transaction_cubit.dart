@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:flutter/cupertino.dart';
 
 import '../components/inputs/type_picker.dart';
 import '../model/ledger_input.dart';
@@ -82,18 +81,13 @@ class CTransactionCubit extends Cubit<CTransactionState> {
     );
   }
 
-  bool _validateFormAndShake(
-    GlobalKey<FormFieldState> accountKey,
-    GlobalKey<FormFieldState> categoryKey,
-    GlobalKey<ShakeErrorState> accountShakerKey,
-    GlobalKey<ShakeErrorState> categoryShakerKey,
-  ) {
+  bool _validateFormAndShake(LedgerInput input) {
     List<ShakeErrorState?> fieldStatesToShake = [];
-    if (!accountKey.currentState!.validate()) {
-      fieldStatesToShake.add(accountShakerKey.currentState);
+    if (!input.accountKey.currentState!.validate()) {
+      fieldStatesToShake.add(input.accountShakerKey.currentState);
     }
-    if (!categoryKey.currentState!.validate()) {
-      fieldStatesToShake.add(categoryShakerKey.currentState);
+    if (!input.categoryKey.currentState!.validate()) {
+      fieldStatesToShake.add(input.categoryShakerKey.currentState);
     }
     //if no error detected
     if (fieldStatesToShake.isEmpty) {
@@ -106,14 +100,8 @@ class CTransactionCubit extends Cubit<CTransactionState> {
     return false;
   }
 
-  bool handleEditSubmit(
-    GlobalKey<FormFieldState> accountKey,
-    GlobalKey<FormFieldState> categoryKey,
-    GlobalKey<ShakeErrorState> accountShakerKey,
-    GlobalKey<ShakeErrorState> categoryShakerKey,
-  ) {
-    if (!_validateFormAndShake(
-        accountKey, categoryKey, accountShakerKey, categoryShakerKey)) {
+  bool handleEditSubmit(LedgerInput input) {
+    if (!_validateFormAndShake(input)) {
       return false;
     }
 

@@ -405,13 +405,7 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                 action: () {
                                   if (BlocProvider.of<CTransactionCubit>(
                                           context)
-                                      .handleEditSubmit(
-                                    widget.input.accountKey,
-                                    widget.input.categoryKey,
-                                    widget.input.accountShakerKey,
-                                    widget.input.categoryShakerKey,
-                                  )) {
-
+                                      .handleEditSubmit(widget.input)) {
                                     BlocProvider.of<CTransactionCubit>(context)
                                       ..changeTypeWhereIdEquals(
                                         widget.input.id,
