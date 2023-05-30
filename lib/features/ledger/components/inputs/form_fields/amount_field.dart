@@ -10,6 +10,8 @@ class AmountField extends StatelessWidget {
     required this.controller,
     required this.onCurrencyChange,
     required this.onTapTrailing,
+    required this.showIcon,
+    required this.trailingIcon,
     required this.onTap,
   });
 
@@ -17,6 +19,8 @@ class AmountField extends StatelessWidget {
   final TextEditingController controller;
   final void Function(String?) onCurrencyChange;
   final VoidCallback onTapTrailing;
+  final bool showIcon;
+  final Icon trailingIcon;
   final VoidCallback onTap;
 
   @override
@@ -37,7 +41,8 @@ class AmountField extends StatelessWidget {
             child: DropdownButtonHideUnderline(
               child: DropdownButton(
                 value: input.currency,
-                items: currencyKeys.keys //TODO change this mapping to another configuration when ready
+                items: currencyKeys
+                    .keys //TODO change this mapping to another configuration when ready
                     .map((currency) => DropdownMenuItem(
                         value: currency,
                         child: Text(currency,
@@ -59,15 +64,15 @@ class AmountField extends StatelessWidget {
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               labelText: 'Amount',
-              suffixIcon: controller.text.isEmpty
-                  ? null
-                  : IconButton(
+              suffixIcon: showIcon
+                  ? IconButton(
                       onPressed: () {
                         controller.clear();
                         onTapTrailing();
                       },
-                      icon: const Icon(Icons.cancel_outlined),
-                    ),
+                      icon: trailingIcon,
+                    )
+                  : null,
             ),
             readOnly: true,
             showCursor: false,

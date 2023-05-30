@@ -9,12 +9,16 @@ class AccountFromField extends StatelessWidget {
     required this.input,
     required this.controller,
     required this.onTapTrailing,
+    required this.showIcon,
+    required this.trailingIcon,
     required this.onTap,
   });
 
   final LedgerInput input;
   final TextEditingController controller;
   final VoidCallback onTapTrailing;
+  final Icon trailingIcon;
+  final bool showIcon;
   final VoidCallback onTap;
 
   @override
@@ -39,15 +43,14 @@ class AccountFromField extends StatelessWidget {
           labelText: input.type == TransactionType.transfer
               ? 'Account From'
               : 'Account',
-          suffixIcon: controller.text.isEmpty
-              ? null
-              : IconButton(
+          suffixIcon: showIcon
+              ? IconButton(
                   onPressed: () {
                     controller.clear();
                     onTapTrailing();
                   },
-                  icon: const Icon(Icons.cancel_outlined),
-                ),
+                  icon: trailingIcon)
+              : null,
         ),
         readOnly: true,
         showCursor: false,

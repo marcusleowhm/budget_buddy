@@ -10,6 +10,8 @@ class CategoryAccountToField extends StatelessWidget {
     required this.type,
     required this.controller,
     required this.onTapTrailing,
+    required this.showIcon,
+    required this.trailingIcon,
     required this.onTap,
   });
 
@@ -17,6 +19,8 @@ class CategoryAccountToField extends StatelessWidget {
   final TransactionType type;
   final TextEditingController controller;
   final VoidCallback onTapTrailing;
+  final bool showIcon;
+  final Icon trailingIcon;
   final VoidCallback onTap;
 
   @override
@@ -41,15 +45,15 @@ class CategoryAccountToField extends StatelessWidget {
           labelText: type == TransactionType.transfer
               ? 'Account To'
               : 'Category',
-          suffixIcon: controller.text.isEmpty
-              ? null
-              : IconButton(
+          suffixIcon: showIcon
+              ? IconButton(
                   onPressed: () {
                     controller.clear();
                     onTapTrailing();
                   },
-                  icon: const Icon(Icons.cancel_outlined),
-                ),
+                  icon: trailingIcon,
+                )
+              : null,
         ),
         readOnly: true,
         showCursor: false,

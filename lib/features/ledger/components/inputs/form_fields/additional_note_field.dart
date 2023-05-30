@@ -7,12 +7,16 @@ class AdditionalNoteField extends StatelessWidget {
     required this.input,
     required this.controller,
     required this.onTapTrailing,
+    required this.showIcon,
+    required this.trailingIcon,
     required this.onTap,
   });
 
   final LedgerInput input;
   final TextEditingController controller;
   final VoidCallback onTapTrailing;
+  final bool showIcon;
+  final Icon trailingIcon;
   final VoidCallback onTap;
 
   @override
@@ -23,15 +27,15 @@ class AdditionalNoteField extends StatelessWidget {
       controller: controller,
       decoration: InputDecoration(
           border: const OutlineInputBorder(),
-          suffixIcon: controller.text.isEmpty
-              ? null
-              : IconButton(
+          suffixIcon: showIcon
+              ? IconButton(
                   onPressed: () {
                     controller.clear();
                     onTapTrailing();
                   },
-                  icon: const Icon(Icons.cancel_outlined),
-                ),
+                  icon: trailingIcon,
+                )
+              : null,
           hintText: 'Additional Notes',
           helperText:
               'Write notes here for transactions that require more details'),

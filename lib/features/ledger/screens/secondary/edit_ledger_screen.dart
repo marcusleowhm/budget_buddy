@@ -51,9 +51,9 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
 
   //Controller for the edit page form only
   TextEditingController dateTimeController = TextEditingController();
-  TextEditingController accountOrAccountFromController =
+  TextEditingController accountController =
       TextEditingController();
-  TextEditingController categoryOrAccountToController = TextEditingController();
+  TextEditingController categoryController = TextEditingController();
   TextEditingController amountController = TextEditingController();
   TextEditingController noteController = TextEditingController();
   TextEditingController additionalNoteController = TextEditingController();
@@ -78,11 +78,11 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
 
     //Account
     setState(() => account = widget.input.account);
-    accountOrAccountFromController.text = account;
+    accountController.text = account;
 
     //Category
     setState(() => category = widget.input.category);
-    categoryOrAccountToController.text = category;
+    categoryController.text = category;
 
     //Currency
     setState(() => currency = widget.input.currency);
@@ -113,7 +113,7 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
   void dispose() {
     super.dispose();
     dateTimeController.dispose();
-    accountOrAccountFromController.dispose();
+    accountController.dispose();
   }
 
   void _moveFocusTo(FocusNode focus) {
@@ -188,7 +188,7 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                   //Set value and close the dialog
                   setState(() {
                     account = selectedAccount;
-                    accountOrAccountFromController.text = account;
+                    accountController.text = account;
                   });
                   _moveFocusTo(widget.input.categoryFocus);
                   _selectCategory();
@@ -204,10 +204,10 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
     );
   }
 
-  void _clearAccount() {
+  void _resetAccount() {
     setState(() {
-      accountOrAccountFromController.clear();
-      account = accountOrAccountFromController.text;
+      account = widget.input.account;
+      accountController.text = account;
     });
   }
 
@@ -221,7 +221,7 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
             //Set value and close the dialog
             setState(() {
               category = selectedCategory;
-              categoryOrAccountToController.text = category;
+              categoryController.text = category;
             });
             //Move focus to amount input,
             //Then show the keypad
@@ -236,10 +236,10 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
     });
   }
 
-  void _clearCategory() {
+  void _resetCategory() {
     setState(() {
-      categoryOrAccountToController.clear();
-      category = categoryOrAccountToController.text;
+      category = widget.input.category;
+      categoryController.text = category;
     });
   }
 
@@ -249,10 +249,10 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
     }
   }
 
-  void _clearAmount() {
+  void _resetAmount() {
     setState(() {
-      amountController.clear();
-      amount = 0.0;
+      amount = widget.input.amount;
+      amountController.text = englishDisplayCurrencyFormatter.format(amount);
     });
   }
 
@@ -283,17 +283,17 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
     });
   }
 
-  void _clearNote() {
+  void _resetNote() {
     setState(() {
-      noteController.clear();
-      note = noteController.text;
+      note = widget.input.note;
+      noteController.text = note;
     });
   }
 
-  void _clearAdditionalNote() {
+  void _resetAdditionalNote() {
     setState(() {
-      additionalNoteController.clear();
-      additionalNote = additionalNoteController.text;
+      additionalNote = widget.input.additionalNote;
+      additionalNoteController.text = additionalNote;
     });
   }
 
@@ -361,15 +361,19 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                               ),
                               AccountFromField(
                                 input: widget.input,
-                                controller: accountOrAccountFromController,
-                                onTapTrailing: _clearAccount,
+                                controller: accountController,
+                                onTapTrailing: _resetAccount,
+                                showIcon: account != widget.input.account,
+                                trailingIcon: const Icon(Icons.refresh),
                                 onTap: _selectAccount,
                               ),
                               CategoryAccountToField(
                                 input: widget.input,
                                 type: type,
-                                controller: categoryOrAccountToController,
-                                onTapTrailing: _clearCategory,
+                                controller: categoryController,
+                                onTapTrailing: _resetCategory,
+                                showIcon: category != widget.input.category,
+                                trailingIcon: const Icon(Icons.refresh),
                                 onTap: _selectCategory,
                               ),
                               AmountField(
@@ -378,7 +382,9 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                 onCurrencyChange: (String? newCurrency) {
                                   _setCurrency(newCurrency);
                                 },
-                                onTapTrailing: _clearAmount,
+                                onTapTrailing: _resetAmount,
+                                showIcon: amount != widget.input.amount,
+                                trailingIcon: const Icon(Icons.refresh),
                                 onTap: () {
                                   _selectAmount();
                                 },
@@ -386,7 +392,9 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                               NoteField(
                                 input: widget.input,
                                 controller: noteController,
-                                onTapTrailing: _clearNote,
+                                onTapTrailing: _resetNote,
+                                showIcon: note != widget.input.note,
+                                trailingIcon: const Icon(Icons.refresh),
                                 onTap: _closeBottomSheet,
                                 onEditingComplete: () {
                                   _moveFocusTo(
@@ -399,7 +407,9 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                               AdditionalNoteField(
                                 input: widget.input,
                                 controller: additionalNoteController,
-                                onTapTrailing: _clearAdditionalNote,
+                                onTapTrailing: _resetAdditionalNote,
+                                showIcon: additionalNote != widget.input.additionalNote,
+                                trailingIcon: const Icon(Icons.refresh_outlined),
                                 onTap: _closeBottomSheet,
                               ),
                               SubmitButton(

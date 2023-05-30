@@ -9,6 +9,8 @@ class NoteField extends StatelessWidget {
     required this.controller,
     required this.onTapTrailing,
     required this.onTap,
+    required this.showIcon,
+    required this.trailingIcon,
     required this.onEditingComplete,
   });
 
@@ -16,6 +18,8 @@ class NoteField extends StatelessWidget {
   final TextEditingController controller;
   final VoidCallback onTapTrailing;
   final VoidCallback onTap;
+  final bool showIcon;
+  final Icon trailingIcon;
   final VoidCallback onEditingComplete;
 
   @override
@@ -27,15 +31,15 @@ class NoteField extends StatelessWidget {
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
         labelText: 'Note',
-        suffixIcon: input.note.isEmpty
-            ? null
-            : IconButton(
+        suffixIcon: showIcon
+            ? IconButton(
                 onPressed: () {
                   controller.clear();
                   onTapTrailing();
                 },
-                icon: const Icon(Icons.cancel_outlined),
-              ),
+                icon: trailingIcon,
+              )
+            : null,
       ),
       onTap: onTap,
       onEditingComplete: onEditingComplete,
