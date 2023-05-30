@@ -43,4 +43,22 @@ class CTransactionCubit extends Cubit<CTransactionState> {
       ),
     );
   }
+
+  void changeAccountFromWhereIdEquals(String id, String accountOrAccountFrom) {
+    state.committedEntries[id]?.accountOrAccountFrom = accountOrAccountFrom;
+    emit(
+      CTransactionState(
+        committedEntries: state.committedEntries,
+      ),
+    );
+  }
+
+  void changeCategoryWhereIdEquals(String id, String categoryOrAccountTo) {
+    state.committedEntries[id]?.categoryOrAccountTo = categoryOrAccountTo;
+    emit(
+      CTransactionState(
+        committedEntries: state.committedEntries,
+      ),
+    );
+  }
 }

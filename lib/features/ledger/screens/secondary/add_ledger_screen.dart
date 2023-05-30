@@ -480,6 +480,12 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                 .handleSubmit()) {
                               BlocProvider.of<CTransactionCubit>(context)
                                   .addTransactions(state.entries);
+
+                              //Close the bottom sheet if open (Usually the sheet will block the submit button)
+                              if (_bottomSheetController != null) {
+                                _bottomSheetController?.close();
+                              }
+                              
                               //Close the snackbar because we are navigating back
                               ScaffoldMessenger.of(context)
                                   .hideCurrentSnackBar();
