@@ -64,7 +64,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
       noteController: noteController,
       additionalNoteController: additionalNoteController,
       dateTimeKey: dateTimeKey,
-      accountOrAccountFromKey: accountOrAccountFromKey,
+      accountKey: accountOrAccountFromKey,
       categoryOrAccountToKey: categoryOrAccountToKey,
       amountKey: amountKey,
       noteKey: noteKey,
@@ -82,14 +82,8 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     );
 
     //Set initial value for date
-    dateTimeController.text = dateLongFormatter.format(newLedger.utcDateTime.toLocal());
-
-    //Add listeners to controllers
-    amountController
-        .addListener(() => setAmountOf(newLedger, amountController.text));
-    noteController.addListener(() => setNoteOf(newLedger, noteController.text));
-    additionalNoteController.addListener(
-        () => setAdditionalNoteOf(newLedger, additionalNoteController.text));
+    dateTimeController.text =
+        dateLongFormatter.format(newLedger.utcDateTime.toLocal());
 
     //Add listeners for when losing focus
     accountOrAccountFromFocus.addListener(() {
@@ -141,18 +135,18 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     ));
   }
 
-  void setDateAt(int index, DateTime selectedDate) {
-    //Set state of the LedgerInput to the user selected date
-    //Note: Whenever setting the date time state, use UTC
-    state.entries.elementAt(index).utcDateTime = selectedDate.toUtc();
+  void setTypeAt(int index, TransactionType type) {
+    state.entries.elementAt(index).type = type;
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
     ));
   }
 
-  void setTypeAt(int index, TransactionType type) {
-    state.entries.elementAt(index).type = type;
+  void setDateAt(int index, DateTime selectedDate) {
+    //Set state of the LedgerInput to the user selected date
+    //Note: Whenever setting the date time state, use UTC
+    state.entries.elementAt(index).utcDateTime = selectedDate.toUtc();
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
@@ -190,28 +184,27 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     ));
   }
 
-  void setAmountOf(LedgerInput input, String amountString) {
+  void setAmountAt(int index, String amountString) {
     double number = double.tryParse(
             amountString.replaceAll(',', '').replaceAll('\$', '')) ??
         0.0;
-    input.amount = number;
-    tallyAllCurrencies();
+    state.entries.elementAt(index).amount = number;
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
     ));
   }
 
-  void setNoteOf(LedgerInput input, String note) {
-    input.note = note;
+  void setNoteAt(int index, String note) {
+    state.entries.elementAt(index).note = note;
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
     ));
   }
 
-  void setAdditionalNoteOf(LedgerInput input, String additionalNote) {
-    input.additionalNote = additionalNote;
+  void setAdditionalNoteAt(int index, String additionalNote) {
+    state.entries.elementAt(index).additionalNote = additionalNote;
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
@@ -286,7 +279,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     input.accountOrAccountFrom = input.accountOrAccountFromController.text;
 
     //Trigger the validation error
-    input.accountOrAccountFromKey.currentState?.validate();
+    input.accountKey.currentState?.validate();
 
     emit(UTransactionState(
       entries: state.entries,
@@ -335,8 +328,8 @@ class UTransactionCubit extends Cubit<UTransactionState> {
   bool validateForm() {
     List<TextEditingController> invalidInputs = [];
     for (LedgerInput input in state.entries) {
-      if (input.accountOrAccountFromKey.currentState != null) {
-        if (!input.accountOrAccountFromKey.currentState!.validate()) {
+      if (input.accountKey.currentState != null) {
+        if (!input.accountKey.currentState!.validate()) {
           invalidInputs.add(input.accountOrAccountFromController);
         }
       }
@@ -359,7 +352,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     List<ShakeErrorState?> fieldStatesToShake = [];
     for (LedgerInput input in state.entries) {
       if (input.isExpanded) {
-        if (!input.accountOrAccountFromKey.currentState!.validate()) {
+        if (!input.accountKey.currentState!.validate()) {
           fieldStatesToShake
               .add(input.accountOrAccountFromShakerKey.currentState);
         }

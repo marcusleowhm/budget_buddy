@@ -52,10 +52,20 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
 
   @override
   void initState() {
-    //The first entry is already added before the widget is built
     UTransactionState state = context.read<UTransactionCubit>().state;
-    _moveFocusTo(state.entries.first.accountOrAccountFromFocus);
-    _selectAccount(state.entries.first, 0);
+    LedgerInput firstInput = state.entries.first;
+
+    //init the note and additional note controller with listeners
+    firstInput.noteController.addListener(() {
+      BlocProvider.of<UTransactionCubit>(context).setNoteAt(0, firstInput.noteController.text);
+    });
+    firstInput.additionalNoteController.addListener(() {
+      BlocProvider.of<UTransactionCubit>(context).setAdditionalNoteAt(0, firstInput.additionalNoteController.text);
+    });
+
+    //The first entry is already added before the widget is built
+    _moveFocusTo(firstInput.accountOrAccountFromFocus);
+    _selectAccount(firstInput, firstInput.amountController, 0);
     super.initState();
   }
 
@@ -118,7 +128,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
   void _setDate(
     BuildContext context,
     int index,
-    TextEditingController controller,
+    TextEditingController dateController,
+    TextEditingController amountController,
     LedgerInput input,
   ) {
     _selectDate(context, input).then((selectedDate) {
@@ -126,44 +137,56 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
         //Set value and close the dialog
         BlocProvider.of<UTransactionCubit>(context)
             .setDateAt(index, selectedDate);
-        controller.text = dateLongFormatter.format(selectedDate);
+        dateController.text = dateLongFormatter.format(selectedDate);
 
         //Move focus to account after selecting date
         _moveFocusTo(input.accountOrAccountFromFocus);
-        _selectAccount(input, index);
+        _selectAccount(input, amountController, index);
       }
     });
   }
 
-  void _selectAccount(LedgerInput input, int index) {
+  void _selectAccount(LedgerInput input, TextEditingController amountController, int index) {
+    _scrollToWidget(
+      input.accountKey,
+      scrollAlignment,
+    );
     //To allow initState to call this function and open the account selection
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _bottomSheetController =
-          _scaffoldKey.currentState?.showBottomSheet<void>((context) {
-        return AccountPicker(
-          onPressed: (selectedAccount) {
-            if (selectedAccount != null) {
-              //Set value and close the dialog
-              BlocProvider.of<UTransactionCubit>(context)
-                  .setAccountAt(index, selectedAccount);
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) {
+        _bottomSheetController =
+            _scaffoldKey.currentState?.showBottomSheet<void>(
+          (context) {
+            return AccountPicker(
+              onPressed: (selectedAccount) async {
+                if (selectedAccount != null) {
+                  //Set val ue and close the dialog
+                  BlocProvider.of<UTransactionCubit>(context)
+                      .setAccountAt(index, selectedAccount);
 
-              setState(() => isValid =
-                  BlocProvider.of<UTransactionCubit>(context).validateForm());
+                  setState(() => isValid =
+                      BlocProvider.of<UTransactionCubit>(context)
+                          .validateForm());
 
-              //Move focus to categoryOrAccountTo after selection
-              _moveFocusTo(input.categoryOrAccountToFocus);
-              _selectCategory(input, index);
-              _scrollToWidget(input.categoryOrAccountToKey, scrollAlignment);
-            } else {
-              _closeBottomSheet();
-            }
+                  //Move focus to category after selection
+                  _moveFocusTo(input.categoryOrAccountToFocus);
+                  _selectCategory(input, amountController, index);
+                } else {
+                  _closeBottomSheet();
+                }
+              },
+            );
           },
         );
-      });
-    });
+      },
+    );
   }
 
-  void _selectCategory(LedgerInput input, int index) {
+  void _selectCategory(LedgerInput input, TextEditingController amountController, int index) {
+    _scrollToWidget(
+      input.categoryOrAccountToKey,
+      scrollAlignment,
+    );
     _bottomSheetController =
         _scaffoldKey.currentState?.showBottomSheet<void>((context) {
       return CategoryPicker(
@@ -178,8 +201,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
             //Move focus to amount input,
             //Then show the keypad
             _moveFocusTo(input.amountFocus);
-            _selectAmount(input);
-            _scrollToWidget(input.amountKey, scrollAlignment);
+            _selectAmount(input, amountController, index);
           } else {
             _closeBottomSheet();
           }
@@ -188,14 +210,30 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     });
   }
 
-  void _selectAmount(LedgerInput input) {
+  void _selectAmount(LedgerInput input, TextEditingController amountController, int index) {
+    _scrollToWidget(
+      input.amountKey,
+      scrollAlignment,
+    );
     _bottomSheetController =
         _scaffoldKey.currentState?.showBottomSheet<void>((context) {
       return AmountTyper(
-        input: input,
+        currentAmount: context.read<UTransactionCubit>().state.entries.elementAt(index).amount,
+        controller: amountController,
         onCancelPressed: _closeBottomSheet,
-        moveFocusTo: _moveFocusTo,
-        scrollToWidget: _scrollToWidget,
+        onKeystroke: (amountString) {
+          BlocProvider.of<UTransactionCubit>(context)
+              .setAmountAt(index, amountString);
+          BlocProvider.of<UTransactionCubit>(context).tallyAllCurrencies();
+        },
+        onDonePressed: (amountString) {
+          BlocProvider.of<UTransactionCubit>(context)
+              .setAmountAt(index, amountString);
+          BlocProvider.of<UTransactionCubit>(context).tallyAllCurrencies();
+          
+          _moveFocusTo(input.noteFocus);
+          _scrollToWidget(input.noteKey, 1);
+        },
         closeBottomSheet: _closeBottomSheet,
       );
     });
@@ -343,13 +381,19 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                     },
                                     onTap: () {
                                       _closeBottomSheet();
-                                      _setDate(context, index,
-                                          input.dateTimeController, input);
+                                      _setDate(
+                                        context,
+                                        index,
+                                        input.dateTimeController,
+                                        input.amountController,
+                                        input,
+                                      );
                                     },
                                   ),
                                   AccountFromField(
                                     input: input,
-                                    controller: input.accountOrAccountFromController,
+                                    controller:
+                                        input.accountOrAccountFromController,
                                     onTapTrailing: () {
                                       BlocProvider.of<UTransactionCubit>(
                                               context)
@@ -360,16 +404,13 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                               .validateForm());
                                     },
                                     onTap: () {
-                                      _scrollToWidget(
-                                        input.accountOrAccountFromKey,
-                                        scrollAlignment,
-                                      );
-                                      _selectAccount(input, index);
+                                      _selectAccount(input, input.amountController, index);
                                     },
                                   ),
                                   CategoryAccountToField(
                                     input: input,
-                                    controller: input.categoryOrAccountToController,
+                                    controller:
+                                        input.categoryOrAccountToController,
                                     onTapTrailing: () {
                                       BlocProvider.of<UTransactionCubit>(
                                               context)
@@ -380,11 +421,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                               .validateForm());
                                     },
                                     onTap: () {
-                                      _scrollToWidget(
-                                        input.categoryOrAccountToKey,
-                                        scrollAlignment,
-                                      );
-                                      _selectCategory(input, index);
+                                      _selectCategory(input, input.amountController, index);
                                     },
                                   ),
                                   AmountField(
@@ -404,11 +441,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                           .clearAmountAt(index);
                                     },
                                     onTap: () {
-                                      _scrollToWidget(
-                                        input.amountKey,
-                                        scrollAlignment,
-                                      );
-                                      _selectAmount(input);
+                                      _selectAmount(input, input.amountController, index);
                                     },
                                   ),
                                   NoteField(
@@ -485,7 +518,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                               if (_bottomSheetController != null) {
                                 _bottomSheetController?.close();
                               }
-                              
+
                               //Close the snackbar because we are navigating back
                               ScaffoldMessenger.of(context)
                                   .hideCurrentSnackBar();

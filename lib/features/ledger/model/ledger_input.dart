@@ -14,7 +14,7 @@ class LedgerInput {
       required this.noteController,
       required this.additionalNoteController,
       required this.dateTimeKey,
-      required this.accountOrAccountFromKey,
+      required this.accountKey,
       required this.categoryOrAccountToKey,
       required this.amountKey,
       required this.noteKey,
@@ -59,7 +59,7 @@ class LedgerInput {
   //Not instantiated here
   //GlobalKey for moving the focus
   final GlobalKey<FormFieldState> dateTimeKey;
-  final GlobalKey<FormFieldState> accountOrAccountFromKey;
+  final GlobalKey<FormFieldState> accountKey;
   final GlobalKey<FormFieldState> categoryOrAccountToKey;
   final GlobalKey<FormFieldState> amountKey;
   final GlobalKey<FormFieldState> noteKey;

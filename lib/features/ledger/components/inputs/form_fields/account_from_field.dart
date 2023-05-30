@@ -25,7 +25,7 @@ class AccountFromField extends StatelessWidget {
       shakeCount: 4,
       shakeOffset: 10,
       child: TextFormField(
-        key: input.accountOrAccountFromKey,
+        key: input.accountKey,
         controller: controller,
         focusNode: input.accountOrAccountFromFocus,
         validator: (value) {
