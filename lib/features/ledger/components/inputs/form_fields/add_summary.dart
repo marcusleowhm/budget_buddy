@@ -1,16 +1,19 @@
 import 'package:budget_buddy/features/ledger/components/inputs/form_fields/submit_button.dart';
+import 'package:budget_buddy/features/ledger/widgets/widget_shaker.dart';
 import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:flutter/material.dart';
 
 class AddSummary extends StatelessWidget {
   const AddSummary({
     super.key,
+    required this.messageKey,
     required this.onSubmitPressed,
     required this.isValid,
     required this.totalTransactions,
     required this.currenciesTotal,
   });
 
+  final GlobalKey<ShakeErrorState> messageKey;
   final VoidCallback onSubmitPressed;
   final bool isValid;
   final int totalTransactions;
@@ -179,10 +182,16 @@ class AddSummary extends StatelessWidget {
             action: onSubmitPressed,
           ),
           if (!isValid)
-            const Text(
-              'There were some issues with your inputs',
-              style: TextStyle(color: Colors.red),
-            ),
+            ShakeError(
+              key: messageKey,
+              duration: const Duration(milliseconds: 600),
+              shakeCount: 4,
+              shakeOffset: 10,
+              child: const Text(
+                'There were some issues with your inputs',
+                style: TextStyle(color: Colors.red),
+              ),
+            )
         ],
       ),
     );

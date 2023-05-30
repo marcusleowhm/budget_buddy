@@ -14,10 +14,9 @@ import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
 import 'package:budget_buddy/features/ledger/widgets/ledger_form.dart';
 import 'package:budget_buddy/nav/routes.dart';
 import 'package:budget_buddy/utilities/currency_formatter.dart';
+import 'package:budget_buddy/utilities/date_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../utilities/date_formatter.dart';
 
 class EditLedgerScreen extends StatefulWidget {
   const EditLedgerScreen({
@@ -216,7 +215,7 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
     _bottomSheetController =
         _scaffoldKey.currentState?.showBottomSheet<void>((context) {
       return CategoryPicker(
-        isTransfer: (widget.input.type == TransactionType.transfer),
+        isTransfer: (type == TransactionType.transfer),
         onPressed: (selectedCategory) {
           if (selectedCategory != null) {
             //Set value and close the dialog
@@ -340,14 +339,15 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                               TypePicker(
                                 type: type,
                                 setType: (TransactionType newSelection) {
-                                  setState(() => type = newSelection);
-                                  // if (_bottomSheetController != null) {
-                                  //   _bottomSheetController?.setState!(
-                                  //     () {
-
-                                  //     },
-                                  //   );
-                                  // }
+                                  if (_bottomSheetController != null) {
+                                    _bottomSheetController?.setState!(
+                                      () {
+                                        setState(() => type = newSelection);
+                                      },
+                                    );
+                                  } else {
+                                    setState(() => type = newSelection);
+                                  }
                                 },
                               ),
                               DateField(
@@ -367,6 +367,7 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                               ),
                               CategoryAccountToField(
                                 input: widget.input,
+                                type: type,
                                 controller: categoryOrAccountToController,
                                 onTapTrailing: _clearCategory,
                                 onTap: _selectCategory,
@@ -450,7 +451,7 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                     Navigator.of(context).pop();
                                   }
                                 },
-                              )
+                              ),
                             ])
                           ],
                         )),

@@ -7,12 +7,14 @@ class CategoryAccountToField extends StatelessWidget {
   const CategoryAccountToField({
     super.key,
     required this.input,
+    required this.type,
     required this.controller,
     required this.onTapTrailing,
     required this.onTap,
   });
 
   final LedgerInput input;
+  final TransactionType type;
   final TextEditingController controller;
   final VoidCallback onTapTrailing;
   final VoidCallback onTap;
@@ -36,7 +38,7 @@ class CategoryAccountToField extends StatelessWidget {
         },
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
-          labelText: input.type == TransactionType.transfer
+          labelText: type == TransactionType.transfer
               ? 'Account To'
               : 'Category',
           suffixIcon: controller.text.isEmpty

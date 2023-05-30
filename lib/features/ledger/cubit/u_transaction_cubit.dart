@@ -98,8 +98,10 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     });
     amountFocus.addListener(() {
       if (!amountFocus.hasFocus) {
-        double enteredAmount =
-            double.tryParse(newLedger.amountController.text) ?? 0.0;
+        double enteredAmount = double.tryParse(newLedger.amountController.text
+                .replaceAll('\$', '')
+                .replaceAll(',', '')) ??
+            0.0;
         newLedger.amountController.text =
             englishDisplayCurrencyFormatter.format(enteredAmount);
       }
@@ -377,7 +379,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     return false;
   }
 
-  bool handleSubmit() {
+  bool hasSubmitted() {
     //Validate form first and shake if needed
     if (!_validateFormAndShake()) {
       return false;

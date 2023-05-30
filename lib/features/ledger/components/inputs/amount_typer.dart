@@ -93,8 +93,7 @@ class AmountTyper extends StatelessWidget {
     double newValue =
         double.tryParse(newText.replaceAll(',', '').replaceAll('\$', '')) ??
             0.0;
-    controller.text =
-        englishTypingCurrencyFormatter.format(newValue);
+    controller.text = englishTypingCurrencyFormatter.format(newValue);
     return;
   }
 
@@ -112,8 +111,7 @@ class AmountTyper extends StatelessWidget {
 
     //When the input is just a negative number
     if (controller.text.contains('-')) {
-      controller.text = controller.text
-          .substring(1, controller.text.length);
+      controller.text = controller.text.substring(1, controller.text.length);
       return;
     }
   }
@@ -121,14 +119,11 @@ class AmountTyper extends StatelessWidget {
   void _handleDoneKey() {
     //When the user has not entered anything
     //When the user has entered a number, doesn't matter whether a dot was pressed
-    double enteredAmount = double.tryParse(controller.text) ?? 0.0;
-    if (controller.text.isEmpty || enteredAmount == 0.0) {
-      controller.text = englishDisplayCurrencyFormatter.format(0);
-      onDonePressed(controller.text);
-    }
-    else {
-      onDonePressed(controller.text);
-    }
+    double enteredAmount = double.tryParse(
+            controller.text.replaceAll('\$', '').replaceAll(',', '')) ??
+        0.0;
+    controller.text = englishDisplayCurrencyFormatter.format(enteredAmount);
+    onDonePressed(controller.text);
     closeBottomSheet();
     return;
   }
@@ -169,8 +164,7 @@ class AmountTyper extends StatelessWidget {
       //If it's not zero, still an integer, and user have clicked on the dot
       //Value remains the same, but the text will have to display two more trailing zeros
       if (isInteger(maybeValue) && controller.text.contains('.')) {
-        controller.text =
-            englishDisplayCurrencyFormatter.format(maybeValue);
+        controller.text = englishDisplayCurrencyFormatter.format(maybeValue);
         return;
       }
 
@@ -178,7 +172,8 @@ class AmountTyper extends StatelessWidget {
       //Just add two zeros at the back by multiplying by 100
       //End result is still an integer value
       if (isInteger(maybeValue) && !controller.text.contains('.')) {
-        controller.text = englishTypingCurrencyFormatter.format(100 * maybeValue);
+        controller.text =
+            englishTypingCurrencyFormatter.format(100 * maybeValue);
         return;
       }
 
@@ -205,8 +200,7 @@ class AmountTyper extends StatelessWidget {
     int? numberInput = int.tryParse(keyPress);
     if (numberInput != null) {
       //When there is nothing in the field OR a negative sign
-      if (controller.text.isEmpty ||
-          controller.text == '-') {
+      if (controller.text.isEmpty || controller.text == '-') {
         controller.text += numberInput.toString();
         return;
       }
@@ -222,9 +216,9 @@ class AmountTyper extends StatelessWidget {
             return;
           case 2:
             //replace the digit in the hundredths digit
-            controller.text = controller.text
-                    .substring(0, controller.text.length - 1) +
-                numberInput.toString();
+            controller.text =
+                controller.text.substring(0, controller.text.length - 1) +
+                    numberInput.toString();
             return;
         }
       }
@@ -235,8 +229,7 @@ class AmountTyper extends StatelessWidget {
         double currentValue = double.parse(
             displayedText.replaceAll(',', '').replaceAll('\$', '') +
                 numberInput.toString());
-        controller.text =
-            englishTypingCurrencyFormatter.format(currentValue);
+        controller.text = englishTypingCurrencyFormatter.format(currentValue);
         return;
       }
     }
@@ -244,7 +237,6 @@ class AmountTyper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     Keyset keySet = currencyKeys['USD']; //TODO
 
     return FractionallySizedBox(

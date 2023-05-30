@@ -36,6 +36,9 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
   //Keep track of whether the form is valid
   bool isValid = false;
 
+  //Error message Shaker key
+  GlobalKey<ShakeErrorState> messageKey = GlobalKey<ShakeErrorState>();
+
   // Key to get Scaffold and show bottom sheet.
   // Also a controller to close the bottom sheet when tapped outside
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -57,10 +60,12 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
 
     //init the note and additional note controller with listeners
     firstInput.noteController.addListener(() {
-      BlocProvider.of<UTransactionCubit>(context).setNoteAt(0, firstInput.noteController.text);
+      BlocProvider.of<UTransactionCubit>(context)
+          .setNoteAt(0, firstInput.noteController.text);
     });
     firstInput.additionalNoteController.addListener(() {
-      BlocProvider.of<UTransactionCubit>(context).setAdditionalNoteAt(0, firstInput.additionalNoteController.text);
+      BlocProvider.of<UTransactionCubit>(context)
+          .setAdditionalNoteAt(0, firstInput.additionalNoteController.text);
     });
 
     //The first entry is already added before the widget is built
@@ -146,7 +151,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     });
   }
 
-  void _selectAccount(LedgerInput input, TextEditingController amountController, int index) {
+  void _selectAccount(
+      LedgerInput input, TextEditingController amountController, int index) {
     _scrollToWidget(
       input.accountKey,
       scrollAlignment,
@@ -182,7 +188,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     );
   }
 
-  void _selectCategory(LedgerInput input, TextEditingController amountController, int index) {
+  void _selectCategory(
+      LedgerInput input, TextEditingController amountController, int index) {
     _scrollToWidget(
       input.categoryKey,
       scrollAlignment,
@@ -210,7 +217,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     });
   }
 
-  void _selectAmount(LedgerInput input, TextEditingController amountController, int index) {
+  void _selectAmount(
+      LedgerInput input, TextEditingController amountController, int index) {
     _scrollToWidget(
       input.amountKey,
       scrollAlignment,
@@ -218,7 +226,12 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     _bottomSheetController =
         _scaffoldKey.currentState?.showBottomSheet<void>((context) {
       return AmountTyper(
-        currentAmount: context.read<UTransactionCubit>().state.entries.elementAt(index).amount,
+        currentAmount: context
+            .read<UTransactionCubit>()
+            .state
+            .entries
+            .elementAt(index)
+            .amount,
         controller: amountController,
         onCancelPressed: _closeBottomSheet,
         onKeystroke: (amountString) {
@@ -230,7 +243,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
           BlocProvider.of<UTransactionCubit>(context)
               .setAmountAt(index, amountString);
           BlocProvider.of<UTransactionCubit>(context).tallyAllCurrencies();
-          
+
           _moveFocusTo(input.noteFocus);
           _scrollToWidget(input.noteKey, 1);
         },
@@ -392,8 +405,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                   ),
                                   AccountFromField(
                                     input: input,
-                                    controller:
-                                        input.accountController,
+                                    controller: input.accountController,
                                     onTapTrailing: () {
                                       BlocProvider.of<UTransactionCubit>(
                                               context)
@@ -404,13 +416,14 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                               .validateForm());
                                     },
                                     onTap: () {
-                                      _selectAccount(input, input.amountController, index);
+                                      _selectAccount(
+                                          input, input.amountController, index);
                                     },
                                   ),
                                   CategoryAccountToField(
                                     input: input,
-                                    controller:
-                                        input.categoryController,
+                                    type: input.type,
+                                    controller: input.categoryController,
                                     onTapTrailing: () {
                                       BlocProvider.of<UTransactionCubit>(
                                               context)
@@ -421,7 +434,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                               .validateForm());
                                     },
                                     onTap: () {
-                                      _selectCategory(input, input.amountController, index);
+                                      _selectCategory(
+                                          input, input.amountController, index);
                                     },
                                   ),
                                   AmountField(
@@ -441,7 +455,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                           .clearAmountAt(index);
                                     },
                                     onTap: () {
-                                      _selectAmount(input, input.amountController, index);
+                                      _selectAmount(
+                                          input, input.amountController, index);
                                     },
                                   ),
                                   NoteField(
@@ -496,6 +511,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                           },
                         ),
                         AddSummary(
+                          messageKey: messageKey,
                           onSubmitPressed: () {
                             //If no entries have been inputted, don't allow submission
                             if (state.entries.isEmpty) {
@@ -510,7 +526,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                             }
                             //Submission
                             if (BlocProvider.of<UTransactionCubit>(context)
-                                .handleSubmit()) {
+                                .hasSubmitted()) {
                               BlocProvider.of<CTransactionCubit>(context)
                                   .addTransactions(state.entries);
 
@@ -523,6 +539,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                               ScaffoldMessenger.of(context)
                                   .hideCurrentSnackBar();
                               Navigator.of(context).pop();
+                            } else {
+                              messageKey.currentState?.shake();
                             }
                           },
                           isValid: isValid,
