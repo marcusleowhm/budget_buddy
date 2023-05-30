@@ -215,7 +215,7 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
     _bottomSheetController =
         _scaffoldKey.currentState?.showBottomSheet<void>((context) {
       return CategoryPicker(
-        isTransfer: (type == TransactionType.transfer),
+        type: type,
         onPressed: (selectedCategory) {
           if (selectedCategory != null) {
             //Set value and close the dialog

@@ -41,15 +41,28 @@ class CategoryListView extends StatelessWidget {
                               color: Theme.of(context).dividerColor,
                             ),
                           ),
-                          child: ListTile(
-                            onTap: () => selectGroupIndex(index),
-                            title: Text(
-                              categoryGroups.keys.elementAt(index),
-                            ),
-                            trailing: const Icon(
-                              Icons.chevron_right,
-                            ),
-                          ),
+                          child: categoryGroups.values.elementAt(index).isEmpty
+                              //Without chevron, without sub groups
+                              ? ListTile(
+                                  onTap: () => onSelectCategory(
+                                      categoryGroups.keys.elementAt(index)),
+                                  title: Text(
+                                      categoryGroups.keys.elementAt(index)),
+                                  trailing: null,
+                                )
+                              //With chevron
+                              : ListTile(
+                                  onTap: selectedGroupIndex == index
+                                      ? () => onSelectCategory(
+                                          categoryGroups.keys.elementAt(index))
+                                      : () => selectGroupIndex(index),
+                                  title: Text(
+                                    categoryGroups.keys.elementAt(index),
+                                  ),
+                                  trailing: const Icon(
+                                    Icons.chevron_right,
+                                  ),
+                                ),
                         );
                       },
                     ),

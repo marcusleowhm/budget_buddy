@@ -20,7 +20,13 @@ class _AccountPickerState extends State<AccountPicker> {
   @override
   Widget build(BuildContext context) {
     List<String> accounts = [];
-    accountGroups.forEach((key, value) => accounts += value);
+    accountGroups.forEach((key, value) {
+      if (value.isEmpty) {
+        accounts.add(key);
+      } else {
+        accounts += value;
+      }
+    });
 
     return FractionallySizedBox(
         //This widget keeps the height of the bottom sheet be at 40% of screen

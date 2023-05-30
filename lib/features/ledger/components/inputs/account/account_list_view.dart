@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 class AccountListView extends StatelessWidget {
-  const AccountListView(
-      {super.key,
-      required this.selectedGroupIndex,
-      required this.accountGroups,
-      required this.selectGroupIndex,
-      required this.onSelectAccount,
-      });
+  const AccountListView({
+    super.key,
+    required this.selectedGroupIndex,
+    required this.accountGroups,
+    required this.selectGroupIndex,
+    required this.onSelectAccount,
+  });
 
   final int selectedGroupIndex;
   final Map<String, List<String>> accountGroups;
@@ -41,15 +41,28 @@ class AccountListView extends StatelessWidget {
                             color: Theme.of(context).dividerColor,
                           ),
                         ),
-                        child: ListTile(
-                          onTap: () => selectGroupIndex(index),
-                          title: Text(
-                            accountGroups.keys.elementAt(index),
-                          ),
-                          trailing: const Icon(
-                            Icons.chevron_right,
-                          ),
-                        ),
+                        child: accountGroups.values.elementAt(index).isEmpty
+                            //Without chevron, without sub groups
+                            ? ListTile(
+                                onTap: () => onSelectAccount(
+                                    accountGroups.keys.elementAt(index)),
+                                title:
+                                    Text(accountGroups.keys.elementAt(index)),
+                                trailing: null)
+                            //With chevron
+                            : ListTile(
+                                onTap: selectedGroupIndex == index
+                                    //If the group is already selected, return the group value, else open the group
+                                    ? () => onSelectAccount(
+                                        accountGroups.keys.elementAt(index))
+                                    : () => selectGroupIndex(index),
+                                title: Text(
+                                  accountGroups.keys.elementAt(index),
+                                ),
+                                trailing: const Icon(
+                                  Icons.chevron_right,
+                                ),
+                              ),
                       );
                     },
                   ),

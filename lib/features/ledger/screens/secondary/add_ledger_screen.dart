@@ -197,7 +197,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     _bottomSheetController =
         _scaffoldKey.currentState?.showBottomSheet<void>((context) {
       return CategoryPicker(
-        isTransfer: (input.type == TransactionType.transfer),
+        type: input.type,
         onPressed: (selectedCategory) {
           if (selectedCategory != null) {
             //Set value and close the dialog

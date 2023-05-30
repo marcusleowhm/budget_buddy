@@ -2,7 +2,7 @@ final Map<String, List<String>> accountGroups = {
   'Bank': [
     '222-19000-X Spending Account',
   ],
-  'Cash': ['Cash'],
+  'Cash': [],
   'Card': [
     'Citibank Premier Miles',
     'Standard Chartered Unlimited Cashbackkkkkkkkkkkkkkkkkkkkkkkkkkk',
@@ -11,7 +11,12 @@ final Map<String, List<String>> accountGroups = {
   'Savings': ['POSB Kids', 'Investment Capital']
 };
 
-final Map<String, List<String>> categoryGroups = {
+final Map<String, List<String>> inflowCategoryGroups = {
+  'Income': ['Salary', 'Interest'],
+  'Investment': ['Thinkorswim', 'CityIndex', 'Dividend']
+};
+
+final Map<String, List<String>> outflowCategoryGroups = {
   'Food & Beverage': ['Eating Out', 'Groceries', 'Snacks', 'Drinks', 'Convenience Storeeeeeeeeeeeeeeeeeeeeeeeeeee'],
   'Leisure': ['Videogames', 'Holiday', 'Arcade'],
   'Transport': ['Bus', 'MRT', 'Car', 'Taxi'],

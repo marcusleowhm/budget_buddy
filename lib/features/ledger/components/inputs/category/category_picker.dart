@@ -3,16 +3,17 @@ import 'package:flutter/material.dart';
 import '../../../../../mock/account.dart';
 import '../account/account_grid_view.dart';
 import '../account/account_list_view.dart';
+import '../type_picker.dart';
 import 'category_list_view.dart';
 
 class CategoryPicker extends StatefulWidget {
   const CategoryPicker({
     super.key,
-    required this.isTransfer,
+    required this.type,
     required this.onPressed,
   });
 
-  final bool isTransfer;
+  final TransactionType type;
   final void Function(String? selectedCategory) onPressed;
 
   @override
@@ -26,10 +27,21 @@ class _CategoryPickerState extends State<CategoryPicker> {
   @override
   Widget build(BuildContext context) {
     List<String> accounts = [];
-    accountGroups.forEach((key, value) => accounts += value);
+    accountGroups.forEach((key, value) {
+      if (value.isEmpty) {
+        accounts.add(key);
+      } else {
+        accounts += value;
+      }
+    });
 
-    List<String> categories = [];
-    categoryGroups.forEach((key, value) => categories += value);
+    @Deprecated('outflowCategories unused. Reserved for category grid view')
+    List<String> outflowCategories = [];
+    outflowCategoryGroups.forEach((key, value) => outflowCategories += value);
+
+    @Deprecated('inflowCategories unused. Reserved for category grid view')
+    List<String> inflowCategories = []; 
+    inflowCategoryGroups.forEach((key, value) => inflowCategories += value);
 
     return FractionallySizedBox(
         heightFactor: 0.4,
@@ -55,7 +67,7 @@ class _CategoryPickerState extends State<CategoryPicker> {
                       icon: const Icon(Icons.cancel_rounded),
                       color: Theme.of(context).canvasColor,
                     ),
-                    if (widget.isTransfer)
+                    if (widget.type == TransactionType.transfer)
                       IconButton(
                         onPressed: () =>
                             setState(() => isGridView = !isGridView),
@@ -72,7 +84,7 @@ class _CategoryPickerState extends State<CategoryPicker> {
                   ],
                 ),
               ),
-              widget.isTransfer
+              widget.type == TransactionType.transfer
                   ? isGridView
                       ? AccountGridView(
                           accounts: accounts,
@@ -85,15 +97,25 @@ class _CategoryPickerState extends State<CategoryPicker> {
                             setState(() => selectedGroupIndex = index);
                           },
                           onSelectAccount: widget.onPressed)
-                  : CategoryListView(
-                      selectedGroupIndex: selectedGroupIndex,
-                      categoryGroups: categoryGroups,
-                      selectGroupIndex: (index) {
-                        setState(() => selectedGroupIndex = index);
-                      },
-                      onSelectCategory: widget.onPressed)
+                  : widget.type == TransactionType.expense
+                      ? CategoryListView(
+                          selectedGroupIndex: selectedGroupIndex,
+                          categoryGroups: outflowCategoryGroups,
+                          selectGroupIndex: (index) {
+                            setState(() => selectedGroupIndex = index);
+                          },
+                          onSelectCategory: widget.onPressed,
+                        )
+                      : CategoryListView(
+                          selectedGroupIndex: selectedGroupIndex,
+                          categoryGroups: inflowCategoryGroups,
+                          selectGroupIndex: (index) {
+                            setState(() => selectedGroupIndex = index);
+                          },
+                          onSelectCategory: widget.onPressed,
+                        )
               // CategoryGridView(
-              //     categories: categories,
+              //     outflowC outflowC
               //     onItemPressed: widget.onPressed,
               //   ),
             ],
