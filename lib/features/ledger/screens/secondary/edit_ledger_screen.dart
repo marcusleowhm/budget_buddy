@@ -263,17 +263,11 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
         currentAmount: amount,
         controller: amountController,
         onCancelPressed: _closeBottomSheet,
-        onKeystroke: (amountString) {
-          double newAmount = double.tryParse(
-                  amountString.replaceAll('\$', '').replaceAll(',', '')) ??
-              0.0;
-          setState(() => amount = newAmount);
+        onKeystroke: (double newValue) {
+          setState(() => amount = newValue);
         },
-        onDonePressed: (amountString) {
-          double newAmount = double.tryParse(
-                  amountString.replaceAll('\$', '').replaceAll(',', '')) ??
-              0.0;
-          setState(() => amount = newAmount);
+        onDonePressed: (double newValue) {
+          setState(() => amount = newValue);
 
           _moveFocusTo(widget.input.noteFocus);
           _scrollToWidget(widget.input.noteKey, 1.0);

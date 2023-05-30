@@ -81,6 +81,14 @@ class UTransactionCubit extends Cubit<UTransactionState> {
       additionalNoteFocus: additionalNoteFocus,
     );
 
+    //Set listener for controllers
+    noteController.addListener(() {
+      setNoteOf(newLedger, noteController.text);
+    });
+    additionalNoteController.addListener(() {
+      setAdditionalNoteAt(newLedger, additionalNoteController.text);
+    });
+
     //Set initial value for date
     dateTimeController.text =
         dateLongFormatter.format(newLedger.utcDateTime.toLocal());
@@ -186,27 +194,24 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     ));
   }
 
-  void setAmountAt(int index, String amountString) {
-    double number = double.tryParse(
-            amountString.replaceAll(',', '').replaceAll('\$', '')) ??
-        0.0;
-    state.entries.elementAt(index).amount = number;
+  void setAmountAt(int index, double newValue) {
+    state.entries.elementAt(index).amount = newValue;
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
     ));
   }
 
-  void setNoteAt(int index, String note) {
-    state.entries.elementAt(index).note = note;
+  void setNoteOf(LedgerInput input, String note) {
+    input.note = note;
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
     ));
   }
 
-  void setAdditionalNoteAt(int index, String additionalNote) {
-    state.entries.elementAt(index).additionalNote = additionalNote;
+  void setAdditionalNoteAt(LedgerInput input, String additionalNote) {
+    input.additionalNote = additionalNote;
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,

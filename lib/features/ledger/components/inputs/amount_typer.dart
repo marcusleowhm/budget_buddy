@@ -18,8 +18,8 @@ class AmountTyper extends StatelessWidget {
   final double currentAmount;
   final TextEditingController controller;
   final VoidCallback onCancelPressed;
-  final void Function(String) onKeystroke;
-  final void Function(String) onDonePressed;
+  final void Function(double) onKeystroke;
+  final void Function(double) onDonePressed;
   final VoidCallback closeBottomSheet;
 
   void _formatAndSetAmount(dynamic keyPress) {
@@ -36,12 +36,15 @@ class AmountTyper extends StatelessWidget {
     }
 
     switch (keyPress) {
+      //Do nothing when empty key is pressed
+      case '':
+        break;
       //Handle the sign toggle keypress
       case '-/+':
         _handleSignToggleKey();
         break;
-      //Do nothing when empty key is pressed
-      case '':
+      case 'CE':
+        _handleClearEntryKey();
         break;
       //Handle when user press decimal key
       case '.':
@@ -116,6 +119,11 @@ class AmountTyper extends StatelessWidget {
     }
   }
 
+  void _handleClearEntryKey() {
+    //Clear all entries in the text box
+    controller.clear();
+  }
+
   void _handleDoneKey() {
     //When the user has not entered anything
     //When the user has entered a number, doesn't matter whether a dot was pressed
@@ -123,7 +131,7 @@ class AmountTyper extends StatelessWidget {
             controller.text.replaceAll('\$', '').replaceAll(',', '')) ??
         0.0;
     controller.text = englishDisplayCurrencyFormatter.format(enteredAmount);
-    onDonePressed(controller.text);
+    onDonePressed(enteredAmount);
     closeBottomSheet();
     return;
   }
@@ -272,7 +280,13 @@ class AmountTyper extends StatelessWidget {
                 keyset: keySet,
                 onPressed: (dynamic keyPress) {
                   _formatAndSetAmount(keyPress);
-                  onKeystroke(controller.text);
+
+                  //Continuous format and get a double value
+                  double newValue = double.tryParse(controller.text
+                          .replaceAll('\$', '')
+                          .replaceAll(',', '')) ??
+                      0.0;
+                  onKeystroke(newValue);
                 },
               ),
             ),

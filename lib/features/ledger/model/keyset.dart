@@ -19,7 +19,7 @@ List<String> smallNominalKeys = [
   '0',
   '00',
   '.',
-  ''
+  'CE'
 ];
 
 

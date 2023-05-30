@@ -58,16 +58,6 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     UTransactionState state = context.read<UTransactionCubit>().state;
     LedgerInput firstInput = state.entries.first;
 
-    //init the note and additional note controller with listeners
-    firstInput.noteController.addListener(() {
-      BlocProvider.of<UTransactionCubit>(context)
-          .setNoteAt(0, firstInput.noteController.text);
-    });
-    firstInput.additionalNoteController.addListener(() {
-      BlocProvider.of<UTransactionCubit>(context)
-          .setAdditionalNoteAt(0, firstInput.additionalNoteController.text);
-    });
-
     //The first entry is already added before the widget is built
     _moveFocusTo(firstInput.accountFocus);
     _selectAccount(firstInput, firstInput.amountController, 0);
@@ -234,14 +224,14 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
             .amount,
         controller: amountController,
         onCancelPressed: _closeBottomSheet,
-        onKeystroke: (amountString) {
+        onKeystroke: (double newValue) {
           BlocProvider.of<UTransactionCubit>(context)
-              .setAmountAt(index, amountString);
+              .setAmountAt(index, newValue);
           BlocProvider.of<UTransactionCubit>(context).tallyAllCurrencies();
         },
-        onDonePressed: (amountString) {
+        onDonePressed: (double newValue) {
           BlocProvider.of<UTransactionCubit>(context)
-              .setAmountAt(index, amountString);
+              .setAmountAt(index, newValue);
           BlocProvider.of<UTransactionCubit>(context).tallyAllCurrencies();
 
           _moveFocusTo(input.noteFocus);
