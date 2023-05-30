@@ -64,7 +64,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     });
 
     //The first entry is already added before the widget is built
-    _moveFocusTo(firstInput.accountOrAccountFromFocus);
+    _moveFocusTo(firstInput.accountFocus);
     _selectAccount(firstInput, firstInput.amountController, 0);
     super.initState();
   }
@@ -140,7 +140,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
         dateController.text = dateLongFormatter.format(selectedDate);
 
         //Move focus to account after selecting date
-        _moveFocusTo(input.accountOrAccountFromFocus);
+        _moveFocusTo(input.accountFocus);
         _selectAccount(input, amountController, index);
       }
     });
@@ -169,7 +169,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                           .validateForm());
 
                   //Move focus to category after selection
-                  _moveFocusTo(input.categoryOrAccountToFocus);
+                  _moveFocusTo(input.categoryFocus);
                   _selectCategory(input, amountController, index);
                 } else {
                   _closeBottomSheet();
@@ -184,7 +184,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
 
   void _selectCategory(LedgerInput input, TextEditingController amountController, int index) {
     _scrollToWidget(
-      input.categoryOrAccountToKey,
+      input.categoryKey,
       scrollAlignment,
     );
     _bottomSheetController =
@@ -393,7 +393,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                   AccountFromField(
                                     input: input,
                                     controller:
-                                        input.accountOrAccountFromController,
+                                        input.accountController,
                                     onTapTrailing: () {
                                       BlocProvider.of<UTransactionCubit>(
                                               context)
@@ -410,7 +410,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                   CategoryAccountToField(
                                     input: input,
                                     controller:
-                                        input.categoryOrAccountToController,
+                                        input.categoryController,
                                     onTapTrailing: () {
                                       BlocProvider.of<UTransactionCubit>(
                                               context)

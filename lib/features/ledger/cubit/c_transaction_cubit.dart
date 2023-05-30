@@ -1,7 +1,9 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../components/inputs/type_picker.dart';
 import '../model/ledger_input.dart';
+import '../widgets/widget_shaker.dart';
 
 part 'c_transaction_state.dart';
 
@@ -39,14 +41,14 @@ class CTransactionCubit extends Cubit<CTransactionState> {
   }
 
   void changeAccountFromWhereIdEquals(String id, String accountOrAccountFrom) {
-    state.committedEntries[id]?.accountOrAccountFrom = accountOrAccountFrom;
+    state.committedEntries[id]?.account = accountOrAccountFrom;
     emit(
       CTransactionState(committedEntries: state.committedEntries),
     );
   }
 
   void changeCategoryWhereIdEquals(String id, String categoryOrAccountTo) {
-    state.committedEntries[id]?.categoryOrAccountTo = categoryOrAccountTo;
+    state.committedEntries[id]?.category = categoryOrAccountTo;
     emit(
       CTransactionState(committedEntries: state.committedEntries),
     );
@@ -78,5 +80,43 @@ class CTransactionCubit extends Cubit<CTransactionState> {
     emit(
       CTransactionState(committedEntries: state.committedEntries),
     );
+  }
+
+  bool _validateFormAndShake(
+    GlobalKey<FormFieldState> accountKey,
+    GlobalKey<FormFieldState> categoryKey,
+    GlobalKey<ShakeErrorState> accountShakerKey,
+    GlobalKey<ShakeErrorState> categoryShakerKey,
+  ) {
+    List<ShakeErrorState?> fieldStatesToShake = [];
+    if (!accountKey.currentState!.validate()) {
+      fieldStatesToShake.add(accountShakerKey.currentState);
+    }
+    if (!categoryKey.currentState!.validate()) {
+      fieldStatesToShake.add(categoryShakerKey.currentState);
+    }
+    //if no error detected
+    if (fieldStatesToShake.isEmpty) {
+      return true;
+    }
+
+    for (var element in fieldStatesToShake) {
+      element?.shake();
+    }
+    return false;
+  }
+
+  bool handleEditSubmit(
+    GlobalKey<FormFieldState> accountKey,
+    GlobalKey<FormFieldState> categoryKey,
+    GlobalKey<ShakeErrorState> accountShakerKey,
+    GlobalKey<ShakeErrorState> categoryShakerKey,
+  ) {
+    if (!_validateFormAndShake(
+        accountKey, categoryKey, accountShakerKey, categoryShakerKey)) {
+      return false;
+    }
+
+    return true;
   }
 }

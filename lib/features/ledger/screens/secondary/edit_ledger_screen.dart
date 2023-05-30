@@ -46,6 +46,10 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
   //Scroll controller for scrolling down
   final ScrollController _scrollController = ScrollController();
 
+  //Scroll alignment for keeping the widget visible on click
+  static const double scrollAlignment = 0.55;
+  static const Duration scrollDuration = Duration(milliseconds: 300);
+
   //Controller for the edit page form only
   TextEditingController dateTimeController = TextEditingController();
   TextEditingController accountOrAccountFromController =
@@ -74,11 +78,11 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
     dateTimeController.text = dateLongFormatter.format(localDateTime);
 
     //Account
-    setState(() => account = widget.input.accountOrAccountFrom);
+    setState(() => account = widget.input.account);
     accountOrAccountFromController.text = account;
 
     //Category
-    setState(() => category = widget.input.categoryOrAccountTo);
+    setState(() => category = widget.input.category);
     categoryOrAccountToController.text = category;
 
     //Currency
@@ -113,6 +117,21 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
     accountOrAccountFromController.dispose();
   }
 
+  void _moveFocusTo(FocusNode focus) {
+    focus.requestFocus();
+  }
+
+  Future<void> _scrollToWidget(GlobalKey widgetKey, double alignment) async {
+    await Future.delayed(const Duration(milliseconds: 400));
+    Scrollable.ensureVisible(
+      widgetKey.currentContext!,
+      duration: scrollDuration,
+      alignment: alignment,
+      curve: Curves.easeInOut,
+    );
+    return;
+  }
+
   void _closeBottomSheet() {
     if (_bottomSheetController != null) {
       _bottomSheetController?.close();
@@ -144,8 +163,8 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
           },
         );
         //Move focus to account after selecting date
-        // _moveFocusTo(ledger.accountOrAccountFromFocus);
-        // _selectAccount(ledger, index);
+        _moveFocusTo(widget.input.accountFocus);
+        _selectAccount();
       }
     });
   }
@@ -172,6 +191,11 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                     account = selectedAccount;
                     accountOrAccountFromController.text = account;
                   });
+                  _moveFocusTo(widget.input.categoryFocus);
+                  _selectCategory();
+                  _scrollToWidget(widget.input.categoryKey, scrollAlignment);
+                } else {
+                  _closeBottomSheet();
                 }
               },
             );
@@ -202,9 +226,9 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
             });
             //Move focus to amount input,
             //Then show the keypad
-            // _moveFocusTo(input.amountFocus);
-            // _selectAmount(input);
-            // _scrollToWidget(input.amountKey, scrollAlignment);
+            _moveFocusTo(widget.input.amountFocus);
+            _selectAmount();
+            _scrollToWidget(widget.input.amountKey, scrollAlignment);
           } else {
             _closeBottomSheet();
           }
@@ -233,8 +257,7 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
     });
   }
 
-  void _selectAmount(
-      LedgerInput input, TextEditingController amountController) {
+  void _selectAmount() {
     _bottomSheetController =
         _scaffoldKey.currentState?.showBottomSheet<void>((context) {
       return AmountTyper(
@@ -252,6 +275,9 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                   amountString.replaceAll('\$', '').replaceAll(',', '')) ??
               0.0;
           setState(() => amount = newAmount);
+
+          _moveFocusTo(widget.input.noteFocus);
+          _scrollToWidget(widget.input.noteKey, 1.0);
         },
         closeBottomSheet: _closeBottomSheet,
       );
@@ -353,7 +379,7 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                 },
                                 onTapTrailing: _clearAmount,
                                 onTap: () {
-                                  _selectAmount(widget.input, amountController);
+                                  _selectAmount();
                                 },
                               ),
                               NoteField(
@@ -362,8 +388,10 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                 onTapTrailing: _clearNote,
                                 onTap: _closeBottomSheet,
                                 onEditingComplete: () {
-                                  //TODO
-                                  print('move to additional note');
+                                  _moveFocusTo(
+                                      widget.input.additionalNoteFocus);
+                                  _scrollToWidget(
+                                      widget.input.additionalNoteKey, 1.0);
                                 },
                               ),
                               const Divider(),
@@ -375,48 +403,58 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                               ),
                               SubmitButton(
                                 action: () {
-                                  BlocProvider.of<CTransactionCubit>(context)
-                                    ..changeTypeWhereIdEquals(
-                                      widget.input.id,
-                                      type,
-                                    )
-                                    ..changeDateTimeWhereIdEquals(
-                                      widget.input.id,
-                                      localDateTime.toUtc(),
-                                    )
-                                    ..changeAccountFromWhereIdEquals(
-                                      widget.input.id,
-                                      account,
-                                    )
-                                    ..changeCategoryWhereIdEquals(
-                                      widget.input.id,
-                                      category,
-                                    )
-                                    ..changeCurrenyWhereIdEquals(
-                                      widget.input.id,
-                                      currency,
-                                    )
-                                    ..changeAmountWhereIdEquals(
-                                      widget.input.id,
-                                      amount,
-                                    )
-                                    ..changeNoteWhereIdEquals(
-                                      widget.input.id,
-                                      note,
-                                    )
-                                    ..changeAdditionalNoteWhereIdEquals(
-                                      widget.input.id,
-                                      additionalNote,
-                                    );
+                                  if (BlocProvider.of<CTransactionCubit>(
+                                          context)
+                                      .handleEditSubmit(
+                                    widget.input.accountKey,
+                                    widget.input.categoryKey,
+                                    widget.input.accountShakerKey,
+                                    widget.input.categoryShakerKey,
+                                  )) {
 
-                                  //Close the bottom sheet if open
-                                  _closeBottomSheet();
+                                    BlocProvider.of<CTransactionCubit>(context)
+                                      ..changeTypeWhereIdEquals(
+                                        widget.input.id,
+                                        type,
+                                      )
+                                      ..changeDateTimeWhereIdEquals(
+                                        widget.input.id,
+                                        localDateTime.toUtc(),
+                                      )
+                                      ..changeAccountFromWhereIdEquals(
+                                        widget.input.id,
+                                        account,
+                                      )
+                                      ..changeCategoryWhereIdEquals(
+                                        widget.input.id,
+                                        category,
+                                      )
+                                      ..changeCurrenyWhereIdEquals(
+                                        widget.input.id,
+                                        currency,
+                                      )
+                                      ..changeAmountWhereIdEquals(
+                                        widget.input.id,
+                                        amount,
+                                      )
+                                      ..changeNoteWhereIdEquals(
+                                        widget.input.id,
+                                        note,
+                                      )
+                                      ..changeAdditionalNoteWhereIdEquals(
+                                        widget.input.id,
+                                        additionalNote,
+                                      );
 
-                                  //Close the snackbar because we are navigating back
-                                  ScaffoldMessenger.of(context)
-                                      .hideCurrentSnackBar();
-                                  //Go to previous page
-                                  Navigator.of(context).pop();
+                                    //Close the bottom sheet if open
+                                    _closeBottomSheet();
+
+                                    //Close the snackbar because we are navigating back
+                                    ScaffoldMessenger.of(context)
+                                        .hideCurrentSnackBar();
+                                    //Go to previous page
+                                    Navigator.of(context).pop();
+                                  }
                                 },
                               )
                             ])

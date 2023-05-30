@@ -20,14 +20,14 @@ class CategoryAccountToField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ShakeError(
-      key: input.categoryOrAccountToShakerKey,
+      key: input.categoryShakerKey,
       duration: const Duration(milliseconds: 600),
       shakeCount: 4,
       shakeOffset: 10,
       child: TextFormField(
-        key: input.categoryOrAccountToKey,
+        key: input.categoryKey,
         controller: controller,
-        focusNode: input.categoryOrAccountToFocus,
+        focusNode: input.categoryFocus,
         validator: (value) {
           if (value == null || value.isEmpty) {
             return 'Please select category';

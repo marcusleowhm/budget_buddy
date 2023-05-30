@@ -20,14 +20,14 @@ class AccountFromField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ShakeError(
-      key: input.accountOrAccountFromShakerKey,
+      key: input.accountShakerKey,
       duration: const Duration(milliseconds: 600),
       shakeCount: 4,
       shakeOffset: 10,
       child: TextFormField(
         key: input.accountKey,
         controller: controller,
-        focusNode: input.accountOrAccountFromFocus,
+        focusNode: input.accountFocus,
         validator: (value) {
           if (value == null || value.isEmpty) {
             return 'Please select account';

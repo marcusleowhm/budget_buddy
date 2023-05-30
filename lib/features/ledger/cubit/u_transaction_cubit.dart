@@ -58,24 +58,24 @@ class UTransactionCubit extends Cubit<UTransactionState> {
       id: const Uuid().v4(),
       formKey: formKey,
       dateTimeController: dateTimeController,
-      accountOrAccountFromController: accountOrAccountFromController,
-      categoryOrAccountToController: categoryOrAccountToController,
+      accountController: accountOrAccountFromController,
+      categoryController: categoryOrAccountToController,
       amountController: amountController,
       noteController: noteController,
       additionalNoteController: additionalNoteController,
       dateTimeKey: dateTimeKey,
       accountKey: accountOrAccountFromKey,
-      categoryOrAccountToKey: categoryOrAccountToKey,
+      categoryKey: categoryOrAccountToKey,
       amountKey: amountKey,
       noteKey: noteKey,
       dividerKey: dividerKey,
       additionalNoteKey: additionalNoteKey,
       formShakerKey: formShakerKey,
-      accountOrAccountFromShakerKey: accountOrAccountFromShakerKey,
-      categoryOrAccountToShakerKey: categoryOrAccountToShakerKey,
+      accountShakerKey: accountOrAccountFromShakerKey,
+      categoryShakerKey: categoryOrAccountToShakerKey,
       dateTimeFocus: dateTimeFocus,
-      accountOrAccountFromFocus: accountOrAccountFromFocus,
-      categoryOrAccountToFocus: categoryOrAccountToFocus,
+      accountFocus: accountOrAccountFromFocus,
+      categoryFocus: categoryOrAccountToFocus,
       amountFocus: amountFocus,
       noteFocus: noteFocus,
       additionalNoteFocus: additionalNoteFocus,
@@ -155,8 +155,8 @@ class UTransactionCubit extends Cubit<UTransactionState> {
 
   void setAccountAt(int index, String accountOrAccountFrom) {
     LedgerInput input = state.entries.elementAt(index);
-    input.accountOrAccountFrom = accountOrAccountFrom;
-    input.accountOrAccountFromController.text = accountOrAccountFrom;
+    input.account = accountOrAccountFrom;
+    input.accountController.text = accountOrAccountFrom;
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
@@ -165,8 +165,8 @@ class UTransactionCubit extends Cubit<UTransactionState> {
 
   void setCategoryAt(int index, String categoryOrAccountTo) {
     LedgerInput input = state.entries.elementAt(index);
-    input.categoryOrAccountTo = categoryOrAccountTo;
-    input.categoryOrAccountToController.text = categoryOrAccountTo;
+    input.category = categoryOrAccountTo;
+    input.categoryController.text = categoryOrAccountTo;
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
@@ -275,8 +275,8 @@ class UTransactionCubit extends Cubit<UTransactionState> {
 
   void clearAccountAt(int index) {
     LedgerInput input = state.entries.elementAt(index);
-    input.accountOrAccountFromController.clear();
-    input.accountOrAccountFrom = input.accountOrAccountFromController.text;
+    input.accountController.clear();
+    input.account = input.accountController.text;
 
     //Trigger the validation error
     input.accountKey.currentState?.validate();
@@ -289,11 +289,11 @@ class UTransactionCubit extends Cubit<UTransactionState> {
 
   void clearCategoryAt(int index) {
     LedgerInput input = state.entries.elementAt(index);
-    input.categoryOrAccountToController.clear();
-    input.categoryOrAccountTo = input.categoryOrAccountToController.text;
+    input.categoryController.clear();
+    input.category = input.categoryController.text;
 
     //Trigger validation
-    input.categoryOrAccountToKey.currentState?.validate();
+    input.categoryKey.currentState?.validate();
 
     emit(UTransactionState(
       entries: state.entries,
@@ -330,13 +330,13 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     for (LedgerInput input in state.entries) {
       if (input.accountKey.currentState != null) {
         if (!input.accountKey.currentState!.validate()) {
-          invalidInputs.add(input.accountOrAccountFromController);
+          invalidInputs.add(input.accountController);
         }
       }
 
-      if (input.categoryOrAccountToKey.currentState != null) {
-        if (!input.categoryOrAccountToKey.currentState!.validate()) {
-          invalidInputs.add(input.categoryOrAccountToController);
+      if (input.categoryKey.currentState != null) {
+        if (!input.categoryKey.currentState!.validate()) {
+          invalidInputs.add(input.categoryController);
         }
       }
     }
@@ -354,11 +354,11 @@ class UTransactionCubit extends Cubit<UTransactionState> {
       if (input.isExpanded) {
         if (!input.accountKey.currentState!.validate()) {
           fieldStatesToShake
-              .add(input.accountOrAccountFromShakerKey.currentState);
+              .add(input.accountShakerKey.currentState);
         }
-        if (!input.categoryOrAccountToKey.currentState!.validate()) {
+        if (!input.categoryKey.currentState!.validate()) {
           fieldStatesToShake
-              .add(input.categoryOrAccountToShakerKey.currentState);
+              .add(input.categoryShakerKey.currentState);
         }
       } else {
         //If expanded and the whole form has error, collect the whole form state
@@ -382,18 +382,10 @@ class UTransactionCubit extends Cubit<UTransactionState> {
   bool handleSubmit() {
     //Validate form first and shake if needed
     if (!_validateFormAndShake()) {
-      emit(UTransactionState(
-        entries: state.entries,
-        currenciesTotal: state.currenciesTotal,
-      ));
       return false;
     }
 
     //Submit the form to API and state
-    emit(const UTransactionState(
-      entries: [],
-      currenciesTotal: {},
-    ));
     return true;
   }
 }

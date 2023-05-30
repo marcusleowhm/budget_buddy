@@ -110,7 +110,7 @@ class TransactionBlock extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.all(5.0),
                                 child: Text(
-                                  input.accountOrAccountFrom,
+                                  input.account,
                                   style: const TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold),
@@ -120,7 +120,7 @@ class TransactionBlock extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.all(5.0),
                                 child: Text(
-                                  input.categoryOrAccountTo,
+                                  input.category,
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: input.type == TransactionType.income

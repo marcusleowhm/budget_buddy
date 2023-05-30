@@ -25,8 +25,8 @@ class ExpansionGroup extends StatelessWidget {
       return null;
     } else {
       //Check the fields directly because form state will be null when undoing dismiss
-      if (ledger.accountOrAccountFrom.isEmpty ||
-          ledger.categoryOrAccountTo.isEmpty) {
+      if (ledger.account.isEmpty ||
+          ledger.category.isEmpty) {
         return null;
       }
 
@@ -56,8 +56,8 @@ class ExpansionGroup extends StatelessWidget {
       );
     } else {
       //Check the fields directly because form state will be null when undoing dismiss
-      if (ledger.accountOrAccountFrom.isEmpty ||
-          ledger.categoryOrAccountTo.isEmpty) {
+      if (ledger.account.isEmpty ||
+          ledger.category.isEmpty) {
         return const Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -74,7 +74,7 @@ class ExpansionGroup extends StatelessWidget {
       }
     }
     return Text(
-      ledger.accountOrAccountFrom,
+      ledger.account,
       style: const TextStyle(fontSize: 14),
       overflow: TextOverflow.ellipsis,
     );
@@ -85,8 +85,8 @@ class ExpansionGroup extends StatelessWidget {
       return null;
     } else {
       //Check the fields directly because form state will be null when undoing dismiss
-      if (ledger.accountOrAccountFrom.isEmpty ||
-          ledger.categoryOrAccountTo.isEmpty) {
+      if (ledger.account.isEmpty ||
+          ledger.category.isEmpty) {
         return null;
       }
       return Row(
@@ -97,7 +97,7 @@ class ExpansionGroup extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  ledger.categoryOrAccountTo,
+                  ledger.category,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 14,
