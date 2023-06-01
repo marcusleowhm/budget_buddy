@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
-class RecentTransactionsList extends StatelessWidget {
+class RecentTransactionsList extends StatefulWidget {
   const RecentTransactionsList({super.key});
+
+  @override
+  State<RecentTransactionsList> createState() => _RecentTransactionsListState();
+}
+
+class _RecentTransactionsListState extends State<RecentTransactionsList> {
+  String sortCriteria = '';
 
   @override
   Widget build(BuildContext context) {
@@ -15,16 +22,31 @@ class RecentTransactionsList extends StatelessWidget {
         ),
         child: Container(
           padding: const EdgeInsets.all(10.0),
-          child: const Column(
+          child: Column(
             children: [
-              Text(
-                'Latest Transactions',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
+              Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Recent Transactions',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                    TextButton.icon(
+                      icon: const Text('Sort by'),
+                      label: const Icon(Icons.arrow_drop_down_rounded),
+                      onPressed: () {},
+                    ),
+                  ],
                 ),
               ),
-              Divider(),
+              const Divider(),
+              const ListTile(title: Text('test')),
+              const ListTile(title: Text('test')),
             ],
           ),
         ),

@@ -1,6 +1,5 @@
-enum MainRoutes { dashboard, statistics, ledger, balance, more }
 
-enum SubRoutes { useredit, reportbug, editLedger, addledger }
+import 'package:budget_buddy/features/constants/enum.dart';
 
 const titles = <Object, String> {
   MainRoutes.dashboard: 'Dashboard',

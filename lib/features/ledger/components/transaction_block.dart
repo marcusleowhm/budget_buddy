@@ -1,3 +1,4 @@
+import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -5,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import '../../../nav/routes.dart';
 import '../../../utilities/date_formatter.dart';
 import '../model/ledger_input.dart';
-import 'inputs/type_picker.dart';
 
 class TransactionBlock extends StatelessWidget {
   const TransactionBlock({

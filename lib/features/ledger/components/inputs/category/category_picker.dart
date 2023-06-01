@@ -1,9 +1,9 @@
+import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../mock/account.dart';
 import '../account/account_grid_view.dart';
 import '../account/account_list_view.dart';
-import '../type_picker.dart';
 import 'category_list_view.dart';
 
 class CategoryPicker extends StatefulWidget {

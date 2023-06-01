@@ -1,5 +1,6 @@
 import 'package:budget_buddy/features/configuration/widgets/menu_group.dart';
 import 'package:budget_buddy/features/configuration/widgets/menu_item.dart';
+import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/nav/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

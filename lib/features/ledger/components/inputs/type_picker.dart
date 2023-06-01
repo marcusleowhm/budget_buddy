@@ -1,7 +1,6 @@
+import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-enum TransactionType { income, expense, transfer }
 
 class TypePicker extends StatelessWidget {
   const TypePicker({super.key, required this.type, required this.setType});

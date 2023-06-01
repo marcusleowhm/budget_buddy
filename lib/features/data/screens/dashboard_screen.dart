@@ -1,3 +1,4 @@
+import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/features/data/components/basic_chart.dart';
 import 'package:budget_buddy/features/data/components/monthly_summary.dart';
 import 'package:budget_buddy/features/data/components/recent_transactions_list.dart';

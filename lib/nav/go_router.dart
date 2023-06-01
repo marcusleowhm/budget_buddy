@@ -1,6 +1,7 @@
 import 'package:budget_buddy/features/configuration/screens/primary/more_screen.dart';
 import 'package:budget_buddy/features/configuration/screens/secondary/report_bug_screen.dart';
 import 'package:budget_buddy/features/configuration/screens/secondary/user_edit_screen.dart';
+import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/features/data/screens/balance_screen.dart';
 import 'package:budget_buddy/features/data/screens/dashboard_screen.dart';
 import 'package:budget_buddy/features/data/screens/statistics_screen.dart';
