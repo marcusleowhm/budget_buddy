@@ -9,12 +9,17 @@ class BasicChart extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 5.0),
       child: Card(
         child: Container(
-          color: Colors.red,
-          margin: const EdgeInsets.all(64.0),
-          padding: const EdgeInsets.all(104.0),
+          padding: const EdgeInsets.all(10.0),
           child: const Column(
             children: [
-              Text('Basic Charts'),
+              Text(
+                'Basic Charts',
+                style: TextStyle(
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Divider(),
             ],
           ),
         ),

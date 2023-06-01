@@ -12,6 +12,8 @@ class CTransactionCubit extends Cubit<CTransactionState> {
   //Add into committed transaction from uncommitted ones
   void addTransactions(List<LedgerInput> uncommittedEntries) {
     Map<String, LedgerInput> newEntries = {};
+
+    //O(n) - n will not grow too big
     for (LedgerInput ledger in uncommittedEntries) {
       newEntries.addEntries({ledger.id: ledger}.entries);
     }

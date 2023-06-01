@@ -8,13 +8,23 @@ class RecentTransactionsList extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 5.0),
       child: Card(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(10.0),
+          ),
+        ),
         child: Container(
-          color: Colors.red,
-          margin: const EdgeInsets.all(64.0),
-          padding: const EdgeInsets.all(104.0),
+          padding: const EdgeInsets.all(10.0),
           child: const Column(
             children: [
-              Text('Recent Transactions'),
+              Text(
+                'Recent Transactions',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              ),
+              Divider(),
             ],
           ),
         ),

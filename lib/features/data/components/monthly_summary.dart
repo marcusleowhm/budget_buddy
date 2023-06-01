@@ -29,14 +29,14 @@ class MonthlySummary extends StatelessWidget {
                         'This month\'s total',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 18,
+                          fontSize: 16,
                         ),
                       ),
                       Text(
                         dateMonthYearFormatter.format(localNow),
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 18,
+                          fontSize: 16,
                         ),
                       ),
                     ],
