@@ -5,5 +5,5 @@ class CTransactionState {
     required this.committedEntries,
   });
 
-  final Map<String, LedgerInput> committedEntries;
+  final List<LedgerInput> committedEntries;
 }

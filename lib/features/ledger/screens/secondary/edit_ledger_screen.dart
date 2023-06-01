@@ -415,40 +415,20 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                 action: () {
                                   if (BlocProvider.of<CTransactionCubit>(
                                           context)
-                                      .handleEditSubmit(widget.input)) {
+                                      .isFormValid(widget.input)) {
+                                    Map<String, dynamic> payload = {
+                                      'type': type,
+                                      'dateTime': localDateTime.toUtc(),
+                                      'account': account,
+                                      'category': category,
+                                      'currency': currency,
+                                      'amount': amount,
+                                      'note': note,
+                                      'additionalNote': additionalNote
+                                    };
                                     BlocProvider.of<CTransactionCubit>(context)
-                                      ..changeTypeWhereIdEquals(
-                                        widget.input.id,
-                                        type,
-                                      )
-                                      ..changeDateTimeWhereIdEquals(
-                                        widget.input.id,
-                                        localDateTime.toUtc(),
-                                      )
-                                      ..changeAccountFromWhereIdEquals(
-                                        widget.input.id,
-                                        account,
-                                      )
-                                      ..changeCategoryWhereIdEquals(
-                                        widget.input.id,
-                                        category,
-                                      )
-                                      ..changeCurrenyWhereIdEquals(
-                                        widget.input.id,
-                                        currency,
-                                      )
-                                      ..changeAmountWhereIdEquals(
-                                        widget.input.id,
-                                        amount,
-                                      )
-                                      ..changeNoteWhereIdEquals(
-                                        widget.input.id,
-                                        note,
-                                      )
-                                      ..changeAdditionalNoteWhereIdEquals(
-                                        widget.input.id,
-                                        additionalNote,
-                                      );
+                                        .handleFormSubmit(
+                                            widget.input, payload);
 
                                     //Close the bottom sheet if open
                                     _closeBottomSheet();

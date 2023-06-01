@@ -406,7 +406,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                               .validateForm());
                                     },
                                     showIcon: input.account.isNotEmpty,
-                                    trailingIcon: const Icon(Icons.cancel_outlined),
+                                    trailingIcon:
+                                        const Icon(Icons.cancel_outlined),
                                     onTap: () {
                                       _selectAccount(
                                           input, input.amountController, index);
@@ -426,7 +427,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                               .validateForm());
                                     },
                                     showIcon: input.category.isNotEmpty,
-                                    trailingIcon: const Icon(Icons.cancel_outlined),
+                                    trailingIcon:
+                                        const Icon(Icons.cancel_outlined),
                                     onTap: () {
                                       _selectCategory(
                                           input, input.amountController, index);
@@ -448,8 +450,10 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                               context)
                                           .clearAmountAt(index);
                                     },
-                                    showIcon: input.amountController.text.isNotEmpty,
-                                    trailingIcon: const Icon(Icons.cancel_outlined),
+                                    showIcon:
+                                        input.amountController.text.isNotEmpty,
+                                    trailingIcon:
+                                        const Icon(Icons.cancel_outlined),
                                     onTap: () {
                                       _selectAmount(
                                           input, input.amountController, index);
@@ -464,7 +468,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                           .clearNoteAt(index);
                                     },
                                     showIcon: input.note.isNotEmpty,
-                                    trailingIcon: const Icon(Icons.cancel_outlined),
+                                    trailingIcon:
+                                        const Icon(Icons.cancel_outlined),
                                     onTap: () {
                                       _closeBottomSheet();
                                       _scrollToWidget(
@@ -490,7 +495,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                           .clearAdditionalNoteAt(index);
                                     },
                                     showIcon: input.additionalNote.isNotEmpty,
-                                    trailingIcon: const Icon(Icons.cancel_outlined),
+                                    trailingIcon:
+                                        const Icon(Icons.cancel_outlined),
                                     onTap: () {
                                       _closeBottomSheet();
                                       _scrollToWidget(

@@ -30,7 +30,7 @@ class CTransactionList extends StatelessWidget {
   Map<DateTime, LedgerDisplay> getData(CTransactionState state) {
     //Do some mapping by date and return the card
     Map<DateTime, LedgerDisplay> data = {};
-    for (LedgerInput ledger in state.committedEntries.values) {
+    for (LedgerInput ledger in state.committedEntries) {
       DateTime localDateTime = DateTime(
         ledger.utcDateTime.toLocal().year,
         ledger.utcDateTime.toLocal().month,
@@ -44,7 +44,7 @@ class CTransactionList extends StatelessWidget {
         //Add the elements back into the date
         data[localDateTime]!.inputs.add(ledger);
 
-        //Sum up the amount according to transaction type
+        //Sum up the amount according to transaction type for each date
         switch (ledger.type) {
           case TransactionType.income:
             double cumulativeIncome = data[localDateTime]?.sum['income'] ?? 0.0;

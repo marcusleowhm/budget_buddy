@@ -42,6 +42,10 @@ class LedgerInput {
   String note = '';
   String additionalNote = '';
 
+  //Metadata
+  DateTime? createdUtcDateTime;
+  DateTime? modifiedUtcDateTime;
+
   //Boolean to help with displaying data depending on state of the ExpansionTile
   bool isExpanded;
 

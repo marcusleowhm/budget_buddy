@@ -18,7 +18,7 @@ class RecentTransactionsList extends StatelessWidget {
           child: const Column(
             children: [
               Text(
-                'Recent Transactions',
+                'Latest Transactions',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 14,

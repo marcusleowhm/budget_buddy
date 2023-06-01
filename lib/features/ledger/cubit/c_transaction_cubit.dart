@@ -1,86 +1,30 @@
 import 'package:bloc/bloc.dart';
-
-import '../components/inputs/type_picker.dart';
 import '../model/ledger_input.dart';
 import '../widgets/widget_shaker.dart';
 
 part 'c_transaction_state.dart';
 
 class CTransactionCubit extends Cubit<CTransactionState> {
-  CTransactionCubit() : super(const CTransactionState(committedEntries: {}));
+  CTransactionCubit() : super(const CTransactionState(committedEntries: []));
 
   //Add into committed transaction from uncommitted ones
   void addTransactions(List<LedgerInput> uncommittedEntries) {
-    Map<String, LedgerInput> newEntries = {};
+    List<LedgerInput> transactions = List.from(state.committedEntries);
 
-    //O(n) - n will not grow too big
-    for (LedgerInput ledger in uncommittedEntries) {
-      newEntries.addEntries({ledger.id: ledger}.entries);
+    //Give each uncommitted transaction a datetime before adding to list
+    DateTime utcNow = DateTime.now().toUtc();
+    for (LedgerInput item in uncommittedEntries) {
+      item.createdUtcDateTime = utcNow;
     }
-    newEntries.addAll(state.committedEntries);
+    transactions.addAll(uncommittedEntries);
+
     emit(
-      CTransactionState(committedEntries: newEntries),
+      CTransactionState(committedEntries: transactions),
     );
   }
 
   void getTransactions() {
     //TODO implement API and local storage
-  }
-
-  void changeTypeWhereIdEquals(String id, TransactionType newSelection) {
-    state.committedEntries[id]?.type = newSelection;
-    emit(
-      CTransactionState(committedEntries: state.committedEntries),
-    );
-  }
-
-  void changeDateTimeWhereIdEquals(String id, DateTime newDateTime) {
-    state.committedEntries[id]?.utcDateTime = newDateTime;
-    emit(
-      CTransactionState(committedEntries: state.committedEntries),
-    );
-  }
-
-  void changeAccountFromWhereIdEquals(String id, String accountOrAccountFrom) {
-    state.committedEntries[id]?.account = accountOrAccountFrom;
-    emit(
-      CTransactionState(committedEntries: state.committedEntries),
-    );
-  }
-
-  void changeCategoryWhereIdEquals(String id, String categoryOrAccountTo) {
-    state.committedEntries[id]?.category = categoryOrAccountTo;
-    emit(
-      CTransactionState(committedEntries: state.committedEntries),
-    );
-  }
-
-  void changeCurrenyWhereIdEquals(String id, String currency) {
-    state.committedEntries[id]?.currency = currency;
-    emit(
-      CTransactionState(committedEntries: state.committedEntries),
-    );
-  }
-
-  void changeAmountWhereIdEquals(String id, double amount) {
-    state.committedEntries[id]?.amount = amount;
-    emit(
-      CTransactionState(committedEntries: state.committedEntries),
-    );
-  }
-
-  void changeNoteWhereIdEquals(String id, String note) {
-    state.committedEntries[id]?.note = note;
-    emit(
-      CTransactionState(committedEntries: state.committedEntries),
-    );
-  }
-
-  void changeAdditionalNoteWhereIdEquals(String id, String additionalNote) {
-    state.committedEntries[id]?.additionalNote = additionalNote;
-    emit(
-      CTransactionState(committedEntries: state.committedEntries),
-    );
   }
 
   bool _validateFormAndShake(LedgerInput input) {
@@ -102,11 +46,24 @@ class CTransactionCubit extends Cubit<CTransactionState> {
     return false;
   }
 
-  bool handleEditSubmit(LedgerInput input) {
+  bool isFormValid(LedgerInput input) {
     if (!_validateFormAndShake(input)) {
       return false;
     }
-
     return true;
+  }
+
+  void handleFormSubmit(LedgerInput input, Map<String, dynamic> payload) {
+    state.committedEntries.firstWhere((item) => item.id == input.id)
+      ..type = payload['type']
+      ..utcDateTime = payload['dateTime']
+      ..account = payload['account']
+      ..category = payload['category']
+      ..currency = payload['currency']
+      ..amount = payload['amount']
+      ..note = payload['note']
+      ..additionalNote = payload['additionalNote']
+      ..modifiedUtcDateTime = DateTime.now().toUtc();
+    emit(CTransactionState(committedEntries: state.committedEntries));
   }
 }
