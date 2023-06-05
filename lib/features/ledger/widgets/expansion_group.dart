@@ -24,8 +24,7 @@ class ExpansionGroup extends StatelessWidget {
       return null;
     } else {
       //Check the fields directly because form state will be null when undoing dismiss
-      if (ledger.account.isEmpty ||
-          ledger.category.isEmpty) {
+      if (ledger.account.isEmpty || ledger.category.isEmpty) {
         return null;
       }
 
@@ -55,8 +54,7 @@ class ExpansionGroup extends StatelessWidget {
       );
     } else {
       //Check the fields directly because form state will be null when undoing dismiss
-      if (ledger.account.isEmpty ||
-          ledger.category.isEmpty) {
+      if (ledger.account.isEmpty || ledger.category.isEmpty) {
         return const Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -72,10 +70,13 @@ class ExpansionGroup extends StatelessWidget {
         );
       }
     }
-    return Text(
-      ledger.account,
-      style: const TextStyle(fontSize: 14),
-      overflow: TextOverflow.ellipsis,
+    return Padding(
+      padding: const EdgeInsets.all(5.0),
+      child: Text(
+        ledger.account,
+        style: const TextStyle(fontSize: 14),
+        overflow: TextOverflow.ellipsis,
+      ),
     );
   }
 
@@ -84,8 +85,7 @@ class ExpansionGroup extends StatelessWidget {
       return null;
     } else {
       //Check the fields directly because form state will be null when undoing dismiss
-      if (ledger.account.isEmpty ||
-          ledger.category.isEmpty) {
+      if (ledger.account.isEmpty || ledger.category.isEmpty) {
         return null;
       }
       return Row(
@@ -95,57 +95,69 @@ class ExpansionGroup extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  ledger.category,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: ledger.type == TransactionType.income
-                        ? Colors.blue[700]!
-                        : ledger.type == TransactionType.expense
-                            ? Colors.red
-                            : Colors.grey,
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Text(
+                    ledger.category,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: ledger.type == TransactionType.income
+                          ? Colors.blue[700]!
+                          : ledger.type == TransactionType.expense
+                              ? Colors.red
+                              : Colors.grey,
+                    ),
                   ),
                 ),
-                Text(
-                  ledger.note,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 14,
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Text(
+                    ledger.note,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 14,
+                    ),
                   ),
-                ),
+                ), //Display the amount keyed in by the user
+                if (!isExpanded && ledger.amount != 0.0)
+                  Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(5.0),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                color: ledger.type == TransactionType.income
+                                    ? Colors.blue[700]!
+                                    : ledger.type == TransactionType.expense
+                                        ? Colors.red
+                                        : Colors.grey,
+                                width: 1,
+                              ),
+                              borderRadius: BorderRadius.circular(10.0)),
+                          child: Text(
+                            //The price to be displayed when expansion tile is collapsed
+                            '${englishDisplayCurrencyFormatter.format(ledger.amount)} ${ledger.currency}',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: ledger.type == TransactionType.income
+                                  ? Colors.blue[700]!
+                                  : ledger.type == TransactionType.expense
+                                      ? Colors.red
+                                      : Colors.grey,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
               ],
             ),
           ),
-
-          //Display the amount keyed in by the user
-          if (!isExpanded && ledger.amount != 0.0)
-            Container(
-              padding: const EdgeInsets.all(5.0),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                  border: Border.all(
-                    color: ledger.type == TransactionType.income
-                        ? Colors.blue[700]!
-                        : ledger.type == TransactionType.expense
-                            ? Colors.red
-                            : Colors.grey,
-                    width: 1,
-                  ),
-                  borderRadius: BorderRadius.circular(10.0)),
-              child: Text(
-                //The price to be displayed when expansion tile is collapsed
-                '${englishDisplayCurrencyFormatter.format(ledger.amount)} ${ledger.currency}',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: ledger.type == TransactionType.income
-                      ? Colors.blue[700]!
-                      : ledger.type == TransactionType.expense
-                          ? Colors.red
-                          : Colors.grey,
-                ),
-              ),
-            ),
         ],
       );
     }

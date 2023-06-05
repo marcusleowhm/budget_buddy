@@ -78,6 +78,7 @@ class CTransactionList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        //Month picker
         Container(
           color: Theme.of(context).cardColor,
           child: Row(
@@ -118,30 +119,38 @@ class CTransactionList extends StatelessWidget {
             ],
           ),
         ),
+
+        //Transaction list
         Expanded(
           child: SingleChildScrollView(
             controller: _scrollController,
             physics: const BouncingScrollPhysics(),
             child: BlocBuilder<CTransactionCubit, CTransactionState>(
               builder: (context, state) {
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: getData(state).keys.length,
-                      itemBuilder: (context, index) {
-                        return TransactionBlock(
-                          dateTime: getData(state).keys.elementAt(index),
-                          transactions:
-                              getData(state).values.elementAt(index).inputs,
-                          sum: getData(state).values.elementAt(index).sum,
-                        );
-                      },
-                    ),
-                  ],
-                );
+                return getData(state).keys.isEmpty
+                    ? const Card(
+                      child: Text('empty'), //TODO add some cool graphics here for no transaction
+                    )
+                    : Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: getData(state).keys.length,
+                            itemBuilder: (context, index) {
+                              return TransactionBlock(
+                                dateTime: getData(state).keys.elementAt(index),
+                                transactions: getData(state)
+                                    .values
+                                    .elementAt(index)
+                                    .inputs,
+                                sum: getData(state).values.elementAt(index).sum,
+                              );
+                            },
+                          ),
+                        ],
+                      );
               },
             ),
           ),
