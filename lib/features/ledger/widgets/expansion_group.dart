@@ -25,7 +25,7 @@ class ExpansionGroup extends StatelessWidget {
       children: [
         //Whenever displaying the date time, use Local date time
         Text(dayFormatter.format(ledger.utcDateTime.toLocal()),
-            style: const TextStyle(fontWeight: FontWeight.bold)),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         Text(monthNameFormatter.format(ledger.utcDateTime.toLocal())),
         Text(yearLongFormatter.format(ledger.utcDateTime.toLocal())),
       ],
@@ -34,10 +34,10 @@ class ExpansionGroup extends StatelessWidget {
 
   Widget? _buildTitle() {
     return Padding(
-      padding: const EdgeInsets.all(5.0),
+      padding: const EdgeInsets.all(3.0),
       child: Text(
         ledger.account.isEmpty ? 'No account selected' : ledger.account,
-        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         overflow: TextOverflow.ellipsis,
       ),
     );
@@ -48,11 +48,9 @@ class ExpansionGroup extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.all(5.0),
+          padding: const EdgeInsets.all(3.0),
           child: Text(
-            ledger.category.isEmpty
-                ? 'No category selected'
-                : ledger.category,
+            ledger.category.isEmpty ? 'No category selected' : ledger.category,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontSize: 14,
@@ -65,7 +63,7 @@ class ExpansionGroup extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.all(5.0),
+          padding: const EdgeInsets.all(3.0),
           child: Text(
             ledger.note.isEmpty ? '-' : ledger.note,
             overflow: TextOverflow.ellipsis,
@@ -75,7 +73,7 @@ class ExpansionGroup extends StatelessWidget {
           ),
         ), //Display the amount keyed in by the user
         Padding(
-          padding: const EdgeInsets.all(5.0),
+          padding: const EdgeInsets.all(3.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
