@@ -450,6 +450,9 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                       BlocProvider.of<UTransactionCubit>(
                                               context)
                                           .clearAmountAt(index);
+                                      BlocProvider.of<UTransactionCubit>(
+                                              context)
+                                          .tallyAllCurrencies();
                                     },
                                     showIcon:
                                         input.amountController.text.isNotEmpty,
