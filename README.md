@@ -18,3 +18,4 @@ Project Struture:
     
 Current Known Issues:
 - Moving focus through the inputs require a lot of passing parameters around. Will need to refactor the move focus function
+- Major refactor is needed to separate the textediting controllers from the data itself
