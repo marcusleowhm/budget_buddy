@@ -132,6 +132,7 @@ class ExpansionGroup extends StatelessWidget {
           ),
           children: [
             LedgerForm(
+              inputType: InputType.add,
               ledger: ledger,
               children: children,
             ),

@@ -333,7 +333,10 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                         child: Form(
                             child: Column(
                           children: [
-                            LedgerForm(ledger: widget.input, children: [
+                            LedgerForm(
+                              inputType: InputType.edit,
+                              ledger: widget.input, 
+                              children: [
                               TypePicker(
                                 type: type,
                                 setType: (TransactionType newSelection) {

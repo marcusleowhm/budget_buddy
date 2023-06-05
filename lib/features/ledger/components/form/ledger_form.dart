@@ -1,17 +1,81 @@
+import 'package:budget_buddy/features/constants/enum.dart';
+import 'package:budget_buddy/features/ledger/widgets/widget_shaker.dart';
 import 'package:flutter/material.dart';
 
 import '../../model/ledger_input.dart';
 
-class LedgerForm extends StatelessWidget {
+//This should be where all the text editing controllers, focus, and keys should reside
+class LedgerForm extends StatefulWidget {
   const LedgerForm({
     super.key,
+    required this.inputType,
     required this.ledger,
     required this.children,
   });
 
+  final InputType inputType;
   final LedgerInput ledger;
   final List<Widget> children;
 
+  @override
+  State<LedgerForm> createState() => _LedgerFormState();
+}
+
+class _LedgerFormState extends State<LedgerForm> {
+
+  //For tracking if form is expanded
+  late bool isExpanded;
+
+  //Controllers
+  final TextEditingController dateTimeController = TextEditingController();
+  final TextEditingController accountController = TextEditingController();
+  final TextEditingController categoryController = TextEditingController();
+  final TextEditingController amountController = TextEditingController();
+  final TextEditingController noteController = TextEditingController();
+  final TextEditingController addNoteController = TextEditingController();
+
+  //FocusNodes
+  final FocusNode dateTimeFocus = FocusNode();
+  final FocusNode accountFocus = FocusNode();
+  final FocusNode categoryFocus = FocusNode();
+  final FocusNode amountFocus = FocusNode();
+  final FocusNode noteFocus = FocusNode();
+  final FocusNode addNoteFocus = FocusNode();
+
+  //Form Field Keys
+  final GlobalKey<FormFieldState<DateTime>> dateTimeKey = GlobalKey();
+  final GlobalKey<FormFieldState<String>> accountKey = GlobalKey();
+  final GlobalKey<FormFieldState<String>> categoryKey = GlobalKey();
+  final GlobalKey<FormFieldState<double>> amountKey = GlobalKey();
+  final GlobalKey<FormFieldState<String>> noteKey = GlobalKey();
+  final GlobalKey<FormFieldState<String>> addNoteKey = GlobalKey();
+
+  //Form Shaker Keys
+  final GlobalKey<ShakeErrorState> formShakerKey = GlobalKey();
+  final GlobalKey<ShakeErrorState> accountShakerKey = GlobalKey();
+  final GlobalKey<ShakeErrorState> categoryShakerKey = GlobalKey();
+
+  @override
+  void initState() {
+
+    isExpanded = widget.inputType == InputType.add 
+    ? true 
+    : false;
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    dateTimeController.dispose();
+    accountController.dispose();
+    categoryController.dispose();
+    amountController.dispose();
+    noteController.dispose();
+    addNoteController.dispose();
+    super.dispose();
+  }
+  
   Widget _buildChildrenTiles(Widget child) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10.0),
@@ -31,10 +95,10 @@ class LedgerForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: ledger.formKey,
+      key: widget.ledger.formKey,
       child: Column(
         children: [
-          ...children.map(_buildChildrenTiles).toList(),
+          ...widget.children.map(_buildChildrenTiles).toList(),
         ],
       ),
     );
