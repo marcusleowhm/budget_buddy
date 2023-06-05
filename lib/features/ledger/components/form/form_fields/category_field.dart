@@ -3,8 +3,8 @@ import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
 import 'package:budget_buddy/features/ledger/widgets/widget_shaker.dart';
 import 'package:flutter/material.dart';
 
-class CategoryAccountToField extends StatelessWidget {
-  const CategoryAccountToField({
+class CategoryField extends StatelessWidget {
+  const CategoryField({
     super.key,
     required this.input,
     required this.type,

@@ -1,4 +1,4 @@
-import 'package:budget_buddy/features/ledger/components/inputs/form_fields/submit_button.dart';
+import 'package:budget_buddy/features/ledger/components/form/buttons/submit_button.dart';
 import 'package:budget_buddy/features/ledger/widgets/widget_shaker.dart';
 import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:flutter/material.dart';

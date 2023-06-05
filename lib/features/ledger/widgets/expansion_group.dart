@@ -1,6 +1,6 @@
 import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
-import 'package:budget_buddy/features/ledger/widgets/ledger_form.dart';
+import 'package:budget_buddy/features/ledger/components/form/ledger_form.dart';
 import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:budget_buddy/utilities/date_formatter.dart';
 import 'package:flutter/material.dart';

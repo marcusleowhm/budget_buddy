@@ -3,9 +3,9 @@ import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../nav/routes.dart';
-import '../../../utilities/date_formatter.dart';
-import '../model/ledger_input.dart';
+import '../../../../nav/routes.dart';
+import '../../../../utilities/date_formatter.dart';
+import '../../../ledger/model/ledger_input.dart';
 
 class TransactionBlock extends StatelessWidget {
   const TransactionBlock({
@@ -79,7 +79,7 @@ class TransactionBlock extends StatelessWidget {
                 ),
               ],
             ),
-          )
+          ),   
         ],
       ),
     );

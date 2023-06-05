@@ -1,5 +1,5 @@
 import 'package:budget_buddy/features/constants/enum.dart';
-import 'package:budget_buddy/features/ledger/components/c_transaction_list.dart';
+import 'package:budget_buddy/features/data/components/transaction/c_transaction_list.dart';
 import 'package:budget_buddy/nav/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

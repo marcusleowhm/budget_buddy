@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../model/ledger_input.dart';
+import '../../model/ledger_input.dart';
 
 class LedgerForm extends StatelessWidget {
   const LedgerForm({

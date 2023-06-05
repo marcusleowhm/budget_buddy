@@ -1,18 +1,18 @@
 import 'package:budget_buddy/features/constants/enum.dart';
-import 'package:budget_buddy/features/ledger/components/inputs/account/account_picker.dart';
-import 'package:budget_buddy/features/ledger/components/inputs/amount_typer.dart';
-import 'package:budget_buddy/features/ledger/components/inputs/category/category_picker.dart';
-import 'package:budget_buddy/features/ledger/components/inputs/form_fields/account_from_field.dart';
-import 'package:budget_buddy/features/ledger/components/inputs/form_fields/additional_note_field.dart';
-import 'package:budget_buddy/features/ledger/components/inputs/form_fields/amount_field.dart';
-import 'package:budget_buddy/features/ledger/components/inputs/form_fields/category_account_to_field.dart';
-import 'package:budget_buddy/features/ledger/components/inputs/form_fields/date_field.dart';
-import 'package:budget_buddy/features/ledger/components/inputs/form_fields/note_field.dart';
-import 'package:budget_buddy/features/ledger/components/inputs/form_fields/submit_button.dart';
-import 'package:budget_buddy/features/ledger/components/inputs/type_picker.dart';
+import 'package:budget_buddy/features/ledger/components/form/account/account_picker.dart';
+import 'package:budget_buddy/features/ledger/components/form/amount/amount_typer.dart';
+import 'package:budget_buddy/features/ledger/components/form/category/category_picker.dart';
+import 'package:budget_buddy/features/ledger/components/form/account/account_field.dart';
+import 'package:budget_buddy/features/ledger/components/form/form_fields/additional_note_field.dart';
+import 'package:budget_buddy/features/ledger/components/form/amount/amount_field.dart';
+import 'package:budget_buddy/features/ledger/components/form/form_fields/category_field.dart';
+import 'package:budget_buddy/features/ledger/components/form/datetime/date_field.dart';
+import 'package:budget_buddy/features/ledger/components/form/note/note_field.dart';
+import 'package:budget_buddy/features/ledger/components/form/buttons/submit_button.dart';
+import 'package:budget_buddy/features/ledger/components/form/type/type_picker.dart';
 import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
 import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
-import 'package:budget_buddy/features/ledger/widgets/ledger_form.dart';
+import 'package:budget_buddy/features/ledger/components/form/ledger_form.dart';
 import 'package:budget_buddy/nav/routes.dart';
 import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:budget_buddy/utilities/date_formatter.dart';
@@ -357,7 +357,7 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                   _setDate(context);
                                 },
                               ),
-                              AccountFromField(
+                              AccountField(
                                 input: widget.input,
                                 controller: accountController,
                                 onTapTrailing: _resetAccount,
@@ -365,7 +365,7 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                 trailingIcon: const Icon(Icons.refresh),
                                 onTap: _selectAccount,
                               ),
-                              CategoryAccountToField(
+                              CategoryField(
                                 input: widget.input,
                                 type: type,
                                 controller: categoryController,
