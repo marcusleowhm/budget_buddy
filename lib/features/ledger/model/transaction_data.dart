@@ -5,7 +5,7 @@ class TransactionData {
   TransactionData({
     this.account = '',
     this.category = '',
-    this.currency = 'USD', //TODO change
+    this.currency = 'USD', //TODO paramterize it in the settings
     this.amount = 0.0,
     this.note = '',
     this.additionalNote = '',
@@ -28,7 +28,7 @@ class TransactionData {
   }
 
   //Data
-  String id = const Uuid().v4();
+  final String id = const Uuid().v4();
   TransactionType type = TransactionType.expense;
   DateTime utcDateTime = DateTime.now().toUtc();
   String account;
@@ -38,7 +38,7 @@ class TransactionData {
   String note;
   String additionalNote;
 
-  //Metadata
+  //Metadata TODO delete these two properties because uncommitted transaction wont need
   DateTime? createdUtcDateTime;
   DateTime? modifiedUtcDateTime;
 

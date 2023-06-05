@@ -114,13 +114,8 @@ class ExpansionGroup extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).canvasColor,
-        borderRadius: const BorderRadius.all(
-          //Edit this to change the border radius for the ExpansionTile
-          Radius.circular(0),
-        ),
+        color: Theme.of(context).canvasColor, //TODO move this color out of the component
       ),
-      margin: const EdgeInsets.only(bottom: 10.0),
       child: ListTileTheme(
         horizontalTitleGap: 0.0,
         child: ExpansionTile(
