@@ -30,9 +30,9 @@ class DateField extends StatelessWidget {
         border: const OutlineInputBorder(),
         suffixIcon: dateLongFormatter.format(
                   DateTime(
-                    input.utcDateTime.toLocal().year,
-                    input.utcDateTime.toLocal().month,
-                    input.utcDateTime.toLocal().day,
+                    input.data.utcDateTime.toLocal().year,
+                    input.data.utcDateTime.toLocal().month,
+                    input.data.utcDateTime.toLocal().day,
                   ),
                 ) !=
                 dateLongFormatter.format(

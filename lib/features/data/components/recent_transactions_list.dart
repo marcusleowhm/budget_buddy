@@ -33,22 +33,22 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
     switch (filterCriteria) {
       case RecentTransactionFilterCriteria.transactionDate:
         copyOfState.sort(
-          (a, b) => b.utcDateTime.compareTo(a.utcDateTime),
+          (a, b) => b.data.utcDateTime.compareTo(a.data.utcDateTime),
         );
         return copyOfState.getRange(0, maxCount);
       case RecentTransactionFilterCriteria.createdDate:
         copyOfState.sort(
-          (a, b) => b.createdUtcDateTime!.compareTo(a.createdUtcDateTime!)
+          (a, b) => b.data.createdUtcDateTime!.compareTo(a.data.createdUtcDateTime!)
         );
         return copyOfState.getRange(0, maxCount);
       case RecentTransactionFilterCriteria.modifiedDate:
         copyOfState.sort(
           (a, b) {
-            if (a.modifiedUtcDateTime == null &&
-                b.modifiedUtcDateTime != null) {
+            if (a.data.modifiedUtcDateTime == null &&
+                b.data.modifiedUtcDateTime != null) {
               return 1;
-            } else if (a.modifiedUtcDateTime != null &&
-                b.modifiedUtcDateTime == null) {
+            } else if (a.data.modifiedUtcDateTime != null &&
+                b.data.modifiedUtcDateTime == null) {
               return -1;
             } else {
               return 0;
@@ -139,24 +139,24 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
                         children: [
                           Text(
                               dayFormatter.format(
-                                data.elementAt(index).utcDateTime.toLocal(),
+                                data.elementAt(index).data.utcDateTime.toLocal(),
                               ),
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold)),
                           Text(
                             monthNameFormatter.format(
-                              data.elementAt(index).utcDateTime.toLocal(),
+                              data.elementAt(index).data.utcDateTime.toLocal(),
                             ),
                           ),
                           Text(
                             yearLongFormatter.format(
-                              data.elementAt(index).utcDateTime.toLocal(),
+                              data.elementAt(index).data.utcDateTime.toLocal(),
                             ),
                           )
                         ],
                       ),
                       title: Text(
-                        data.elementAt(index).account,
+                        data.elementAt(index).data.account,
                         overflow: TextOverflow.ellipsis,
                         softWrap: true,
                         style: const TextStyle(fontSize: 14),
@@ -165,11 +165,11 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            data.elementAt(index).category,
+                            data.elementAt(index).data.category,
                             overflow: TextOverflow.ellipsis,
                           ),
                           Text(
-                            data.elementAt(index).note,
+                            data.elementAt(index).data.note,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ],
@@ -177,9 +177,9 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
                       trailing: Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Text(data.elementAt(index).currency),
+                          Text(data.elementAt(index).data.currency),
                           Text(englishDisplayCurrencyFormatter
-                              .format(data.elementAt(index).amount)),
+                              .format(data.elementAt(index).data.amount)),
                         ],
                       ),
                     ),

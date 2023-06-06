@@ -1,11 +1,11 @@
 import 'package:budget_buddy/features/constants/enum.dart';
+import 'package:budget_buddy/features/ledger/model/transaction_data.dart';
 import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../nav/routes.dart';
 import '../../../../utilities/date_formatter.dart';
-import '../../../ledger/model/ledger_input.dart';
 
 class TransactionBlock extends StatelessWidget {
   const TransactionBlock({
@@ -16,7 +16,7 @@ class TransactionBlock extends StatelessWidget {
   });
 
   final DateTime dateTime;
-  final List<LedgerInput> transactions;
+  final List<TransactionData> transactions;
   final Map<String, double> sum;
 
   Widget _buildFirstLine(BuildContext context) {
@@ -87,11 +87,11 @@ class TransactionBlock extends StatelessWidget {
 
   List<Widget> _buildSubsequentLines(BuildContext context) {
     return transactions
-        .map((input) => InkWell(
+        .map((data) => InkWell(
               onTap: () {
                 context.go(
                   '/${routes[MainRoutes.ledger]}/${routes[SubRoutes.editLedger]}',
-                  extra: input
+                  extra: data
                 );
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
               },
@@ -110,7 +110,7 @@ class TransactionBlock extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.all(5.0),
                                 child: Text(
-                                  input.account,
+                                  data.account,
                                   style: const TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold),
@@ -120,12 +120,12 @@ class TransactionBlock extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.all(5.0),
                                 child: Text(
-                                  input.category,
+                                  data.category,
                                   style: TextStyle(
                                     fontSize: 14,
-                                    color: input.type == TransactionType.income
+                                    color: data.type == TransactionType.income
                                         ? Theme.of(context).primaryColor
-                                        : input.type == TransactionType.expense
+                                        : data.type == TransactionType.expense
                                             ? Colors.red
                                             : Colors.grey,
                                   ),
@@ -141,7 +141,7 @@ class TransactionBlock extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.all(5.0),
                               child: Text(
-                                input.currency,
+                                data.currency,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -151,12 +151,12 @@ class TransactionBlock extends StatelessWidget {
                               padding: const EdgeInsets.all(5.0),
                               child: Text(
                                 englishDisplayCurrencyFormatter
-                                    .format(input.amount),
+                                    .format(data.amount),
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: input.type == TransactionType.income
+                                  color: data.type == TransactionType.income
                                       ? Theme.of(context).primaryColor
-                                      : input.type == TransactionType.expense
+                                      : data.type == TransactionType.expense
                                           ? Colors.red
                                           : Colors.grey,
                                 ),
@@ -172,7 +172,7 @@ class TransactionBlock extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 5.0),
                           child: Text(
-                            input.note.isEmpty ? '-' : input.note,
+                            data.note.isEmpty ? '-' : data.note,
                             style: const TextStyle(fontSize: 14),
                             overflow: TextOverflow.ellipsis,
                           ),

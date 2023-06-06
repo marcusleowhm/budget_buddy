@@ -40,7 +40,7 @@ class AmountField extends StatelessWidget {
                     borderRadius: BorderRadius.circular(5.0))),
             child: DropdownButtonHideUnderline(
               child: DropdownButton(
-                value: input.currency,
+                value: input.data.currency,
                 items: currencyKeys
                     .keys //TODO change this mapping to another configuration when ready
                     .map((currency) => DropdownMenuItem(

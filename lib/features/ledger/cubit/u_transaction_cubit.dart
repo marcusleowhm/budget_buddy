@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:budget_buddy/features/constants/enum.dart';
+import 'package:budget_buddy/features/ledger/model/transaction_data.dart';
 import 'package:budget_buddy/features/ledger/widgets/widget_shaker.dart';
 import 'package:budget_buddy/utilities/date_formatter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../../utilities/currency_formatter.dart';
 import '../model/ledger_input.dart';
@@ -15,67 +15,62 @@ class UTransactionCubit extends Cubit<UTransactionState> {
   UTransactionCubit()
       : super(const UTransactionState(entries: [], currenciesTotal: {}));
 
-  void addInputRow() {
-    //Init controllers first
+  LedgerInput createFormControl() {
+    GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+    // Controllers first
     TextEditingController dateTimeController = TextEditingController();
-    TextEditingController accountOrAccountFromController =
-        TextEditingController();
-    TextEditingController categoryOrAccountToController =
-        TextEditingController();
+    TextEditingController accountController = TextEditingController();
+    TextEditingController categoryController = TextEditingController();
     TextEditingController amountController = TextEditingController();
     TextEditingController noteController = TextEditingController();
     TextEditingController additionalNoteController = TextEditingController();
 
-    GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
     //Add GlobalKey for each LedgerInput's input widget
     GlobalKey<FormFieldState> dateTimeKey = GlobalKey<FormFieldState>();
-    GlobalKey<FormFieldState> accountOrAccountFromKey =
-        GlobalKey<FormFieldState>();
-    GlobalKey<FormFieldState> categoryOrAccountToKey =
-        GlobalKey<FormFieldState>();
+    GlobalKey<FormFieldState> accountKey = GlobalKey<FormFieldState>();
+    GlobalKey<FormFieldState> categoryKey = GlobalKey<FormFieldState>();
     GlobalKey<FormFieldState> amountKey = GlobalKey<FormFieldState>();
     GlobalKey<FormFieldState> noteKey = GlobalKey<FormFieldState>();
-    GlobalKey dividerKey = GlobalKey();
     GlobalKey<FormFieldState> additionalNoteKey = GlobalKey<FormFieldState>();
 
     GlobalKey<ShakeErrorState> formShakerKey = GlobalKey<ShakeErrorState>();
-    GlobalKey<ShakeErrorState> accountOrAccountFromShakerKey =
-        GlobalKey<ShakeErrorState>();
-    GlobalKey<ShakeErrorState> categoryOrAccountToShakerKey =
-        GlobalKey<ShakeErrorState>();
+    GlobalKey<ShakeErrorState> accountShakerKey = GlobalKey<ShakeErrorState>();
+    GlobalKey<ShakeErrorState> categoryShakerKey = GlobalKey<ShakeErrorState>();
 
     //Add focus nodes
     FocusNode dateTimeFocus = FocusNode();
-    FocusNode accountOrAccountFromFocus = FocusNode();
-    FocusNode categoryOrAccountToFocus = FocusNode();
+    FocusNode accountFocus = FocusNode();
+    FocusNode categoryFocus = FocusNode();
     FocusNode amountFocus = FocusNode();
     FocusNode noteFocus = FocusNode();
     FocusNode additionalNoteFocus = FocusNode();
 
+    //Data
+    TransactionData data = TransactionData();
+
     //Create a ledger and add controllers
-    LedgerInput newLedger = LedgerInput(
-      id: const Uuid().v4(),
+    LedgerInput input = LedgerInput(
+      data: data,
       formKey: formKey,
       dateTimeController: dateTimeController,
-      accountController: accountOrAccountFromController,
-      categoryController: categoryOrAccountToController,
+      accountController: accountController,
+      categoryController: categoryController,
       amountController: amountController,
       noteController: noteController,
       additionalNoteController: additionalNoteController,
       dateTimeKey: dateTimeKey,
-      accountKey: accountOrAccountFromKey,
-      categoryKey: categoryOrAccountToKey,
+      accountKey: accountKey,
+      categoryKey: categoryKey,
       amountKey: amountKey,
       noteKey: noteKey,
-      dividerKey: dividerKey,
       additionalNoteKey: additionalNoteKey,
       formShakerKey: formShakerKey,
-      accountShakerKey: accountOrAccountFromShakerKey,
-      categoryShakerKey: categoryOrAccountToShakerKey,
+      accountShakerKey: accountShakerKey,
+      categoryShakerKey: categoryShakerKey,
       dateTimeFocus: dateTimeFocus,
-      accountFocus: accountOrAccountFromFocus,
-      categoryFocus: categoryOrAccountToFocus,
+      accountFocus: accountFocus,
+      categoryFocus: categoryFocus,
       amountFocus: amountFocus,
       noteFocus: noteFocus,
       additionalNoteFocus: additionalNoteFocus,
@@ -83,40 +78,45 @@ class UTransactionCubit extends Cubit<UTransactionState> {
 
     //Set listener for controllers
     noteController.addListener(() {
-      setNoteOf(newLedger, noteController.text);
+      setNoteOf(input, noteController.text);
     });
     additionalNoteController.addListener(() {
-      setAdditionalNoteAt(newLedger, additionalNoteController.text);
+      setAdditionalNoteAt(input, additionalNoteController.text);
     });
 
     //Set initial value for date
     dateTimeController.text =
-        dateLongFormatter.format(newLedger.utcDateTime.toLocal());
+        dateLongFormatter.format(input.data.utcDateTime.toLocal());
 
     //Add listeners for when losing focus
-    accountOrAccountFromFocus.addListener(() {
-      if (!accountOrAccountFromFocus.hasFocus) {
-        accountOrAccountFromKey.currentState?.validate();
+    accountFocus.addListener(() {
+      if (!accountFocus.hasFocus) {
+        accountKey.currentState?.validate();
       }
     });
-    categoryOrAccountToFocus.addListener(() {
-      if (!categoryOrAccountToFocus.hasFocus) {
-        categoryOrAccountToKey.currentState?.validate();
+    categoryFocus.addListener(() {
+      if (!categoryFocus.hasFocus) {
+        categoryKey.currentState?.validate();
       }
     });
     amountFocus.addListener(() {
       if (!amountFocus.hasFocus) {
-        double enteredAmount = double.tryParse(newLedger.amountController.text
+        double enteredAmount = double.tryParse(input.amountController.text
                 .replaceAll('\$', '')
                 .replaceAll(',', '')) ??
             0.0;
-        newLedger.amountController.text =
+        input.amountController.text =
             englishDisplayCurrencyFormatter.format(enteredAmount);
       }
     });
 
+    return input;
+  }
+
+  void addInputRow() {
+    LedgerInput input = createFormControl();
     emit(UTransactionState(
-      entries: [...state.entries, newLedger],
+      entries: [...state.entries, input],
       currenciesTotal: state.currenciesTotal,
     ));
   }
@@ -146,7 +146,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
   }
 
   void setTypeAt(int index, TransactionType type) {
-    state.entries.elementAt(index).type = type;
+    state.entries.elementAt(index).data.type = type;
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
@@ -156,17 +156,17 @@ class UTransactionCubit extends Cubit<UTransactionState> {
   void setDateAt(int index, DateTime selectedDate) {
     //Set state of the LedgerInput to the user selected date
     //Note: Whenever setting the date time state, use UTC
-    state.entries.elementAt(index).utcDateTime = selectedDate.toUtc();
+    state.entries.elementAt(index).data.utcDateTime = selectedDate.toUtc();
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
     ));
   }
 
-  void setAccountAt(int index, String accountOrAccountFrom) {
+  void setAccountAt(int index, String account) {
     LedgerInput input = state.entries.elementAt(index);
-    input.account = accountOrAccountFrom;
-    input.accountController.text = accountOrAccountFrom;
+    input.data.account = account;
+    input.accountController.text = account;
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
@@ -175,7 +175,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
 
   void setCategoryAt(int index, String categoryOrAccountTo) {
     LedgerInput input = state.entries.elementAt(index);
-    input.category = categoryOrAccountTo;
+    input.data.category = categoryOrAccountTo;
     input.categoryController.text = categoryOrAccountTo;
     emit(UTransactionState(
       entries: state.entries,
@@ -186,7 +186,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
   void setCurrencyAt(int index, String? selectedCurrency) {
     if (selectedCurrency != null) {
       LedgerInput input = state.entries.elementAt(index);
-      input.currency = selectedCurrency;
+      input.data.currency = selectedCurrency;
     }
     emit(UTransactionState(
       entries: state.entries,
@@ -195,7 +195,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
   }
 
   void setAmountAt(int index, double newValue) {
-    state.entries.elementAt(index).amount = newValue;
+    state.entries.elementAt(index).data.amount = newValue;
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
@@ -203,7 +203,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
   }
 
   void setNoteOf(LedgerInput input, String note) {
-    input.note = note;
+    input.data.note = note;
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
@@ -211,7 +211,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
   }
 
   void setAdditionalNoteAt(LedgerInput input, String additionalNote) {
-    input.additionalNote = additionalNote;
+    input.data.additionalNote = additionalNote;
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
@@ -230,7 +230,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
 
     //For each of the currencies present in the entries, init their sum value
     Set<String> currencies =
-        state.entries.map((input) => input.currency).toSet();
+        state.entries.map((input) => input.data.currency).toSet();
 
     //Remove all currencies in the map first
     Map<String, Map<String, double>> calculatedTotal = {};
@@ -246,20 +246,24 @@ class UTransactionCubit extends Cubit<UTransactionState> {
 
     //Loop through and tally up
     for (LedgerInput input in state.entries) {
-      switch (input.type) {
+      switch (input.data.type) {
         case TransactionType.income:
-          double income = calculatedTotal[input.currency]?[incomeSum] ?? 0.0;
-          calculatedTotal[input.currency]?[incomeSum] = income + input.amount;
+          double income =
+              calculatedTotal[input.data.currency]?[incomeSum] ?? 0.0;
+          calculatedTotal[input.data.currency]?[incomeSum] =
+              income + input.data.amount;
           break;
         case TransactionType.expense:
-          double expense = calculatedTotal[input.currency]?[expenseSum] ?? 0.0;
-          calculatedTotal[input.currency]?[expenseSum] = expense + input.amount;
+          double expense =
+              calculatedTotal[input.data.currency]?[expenseSum] ?? 0.0;
+          calculatedTotal[input.data.currency]?[expenseSum] =
+              expense + input.data.amount;
           break;
         case TransactionType.transfer:
           double transfer =
-              calculatedTotal[input.currency]?[transferSum] ?? 0.0;
-          calculatedTotal[input.currency]?[transferSum] =
-              transfer + input.amount;
+              calculatedTotal[input.data.currency]?[transferSum] ?? 0.0;
+          calculatedTotal[input.data.currency]?[transferSum] =
+              transfer + input.data.amount;
           break;
       }
     }
@@ -273,7 +277,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     int index,
     DateTime localNow,
   ) {
-    state.entries.elementAt(index).utcDateTime = localNow.toUtc();
+    state.entries.elementAt(index).data.utcDateTime = localNow.toUtc();
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
@@ -283,7 +287,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
   void clearAccountAt(int index) {
     LedgerInput input = state.entries.elementAt(index);
     input.accountController.clear();
-    input.account = input.accountController.text;
+    input.data.account = input.accountController.text;
 
     //Trigger the validation error
     input.accountKey.currentState?.validate();
@@ -297,7 +301,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
   void clearCategoryAt(int index) {
     LedgerInput input = state.entries.elementAt(index);
     input.categoryController.clear();
-    input.category = input.categoryController.text;
+    input.data.category = input.categoryController.text;
 
     //Trigger validation
     input.categoryKey.currentState?.validate();
@@ -309,7 +313,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
   }
 
   void clearAmountAt(int index) {
-    state.entries.elementAt(index).amount = 0.0;
+    state.entries.elementAt(index).data.amount = 0.0;
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,

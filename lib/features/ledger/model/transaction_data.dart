@@ -3,6 +3,7 @@ import 'package:uuid/uuid.dart';
 
 class TransactionData {
   TransactionData({
+    this.type = TransactionType.expense,
     this.account = '',
     this.category = '',
     this.currency = 'USD', //TODO paramterize it in the settings
@@ -12,14 +13,15 @@ class TransactionData {
   });
 
   //Constructor for cloning
-  TransactionData cloneFrom({required TransactionData oldLedger}) {
+  TransactionData cloneFrom({required TransactionData previousData}) {
     return TransactionData(
-      account: oldLedger.account,
-      category: oldLedger.category,
-      currency: oldLedger.currency,
-      amount: oldLedger.amount,
-      note: oldLedger.note,
-      additionalNote: oldLedger.additionalNote
+      type: previousData.type,
+      account: previousData.account,
+      category: previousData.category,
+      currency: previousData.currency,
+      amount: previousData.amount,
+      note: previousData.note,
+      additionalNote: previousData.additionalNote,
     );
   }
 
@@ -28,22 +30,22 @@ class TransactionData {
   }
 
   //Data
-  final String id = const Uuid().v4();
+  String id = const Uuid().v4();
   TransactionType type = TransactionType.expense;
   DateTime utcDateTime = DateTime.now().toUtc();
   String account;
   String category;
-  String currency; 
+  String currency;
   double amount;
   String note;
   String additionalNote;
 
-  //Metadata TODO delete these two properties because uncommitted transaction wont need
+  //Null until added as committed transactions
   DateTime? createdUtcDateTime;
   DateTime? modifiedUtcDateTime;
 
   @override
   String toString() {
-    return '\nLedgerInput{\nid = $id,\ntype = $type,\ndateTime = $utcDateTime,\naccount = $account,\ncategory = $category,\ncurrency=$currency,\namount=$amount,\nnote=$note,\nadditionalNote=$additionalNote}';
+    return '\nTransactionData{\nid = $id,\ntype = $type,\ndateTime = $utcDateTime,\naccount = $account,\ncategory = $category,\ncurrency=$currency,\namount=$amount,\nnote=$note,\nadditionalNote=$additionalNote}';
   }
 }

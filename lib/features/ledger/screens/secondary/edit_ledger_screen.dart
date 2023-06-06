@@ -1,18 +1,19 @@
 import 'package:budget_buddy/features/constants/enum.dart';
-import 'package:budget_buddy/features/ledger/components/form/account/account_picker.dart';
-import 'package:budget_buddy/features/ledger/components/form/amount/amount_typer.dart';
-import 'package:budget_buddy/features/ledger/components/form/category/category_picker.dart';
 import 'package:budget_buddy/features/ledger/components/form/account/account_field.dart';
-import 'package:budget_buddy/features/ledger/components/form/form_fields/additional_note_field.dart';
+import 'package:budget_buddy/features/ledger/components/form/account/account_picker.dart';
 import 'package:budget_buddy/features/ledger/components/form/amount/amount_field.dart';
-import 'package:budget_buddy/features/ledger/components/form/form_fields/category_field.dart';
-import 'package:budget_buddy/features/ledger/components/form/datetime/date_field.dart';
-import 'package:budget_buddy/features/ledger/components/form/note/note_field.dart';
+import 'package:budget_buddy/features/ledger/components/form/amount/amount_typer.dart';
 import 'package:budget_buddy/features/ledger/components/form/buttons/submit_button.dart';
+import 'package:budget_buddy/features/ledger/components/form/category/category_picker.dart';
+import 'package:budget_buddy/features/ledger/components/form/datetime/date_field.dart';
+import 'package:budget_buddy/features/ledger/components/form/form_fields/additional_note_field.dart';
+import 'package:budget_buddy/features/ledger/components/form/form_fields/category_field.dart';
+import 'package:budget_buddy/features/ledger/components/form/ledger_form.dart';
+import 'package:budget_buddy/features/ledger/components/form/note/note_field.dart';
 import 'package:budget_buddy/features/ledger/components/form/type/type_picker.dart';
 import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
 import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
-import 'package:budget_buddy/features/ledger/components/form/ledger_form.dart';
+import 'package:budget_buddy/features/ledger/model/transaction_data.dart';
 import 'package:budget_buddy/nav/routes.dart';
 import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:budget_buddy/utilities/date_formatter.dart';
@@ -22,10 +23,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class EditLedgerScreen extends StatefulWidget {
   const EditLedgerScreen({
     super.key,
-    required this.input,
+    required this.data,
   });
 
-  final LedgerInput input;
+  final TransactionData data;
 
   @override
   State<EditLedgerScreen> createState() => _EditLedgerScreenState();
@@ -50,70 +51,52 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
   static const double scrollAlignment = 0.55;
   static const Duration scrollDuration = Duration(milliseconds: 300);
 
-  //Controller for the edit page form only
-  TextEditingController dateTimeController = TextEditingController();
-  TextEditingController accountController = TextEditingController();
-  TextEditingController categoryController = TextEditingController();
-  TextEditingController amountController = TextEditingController();
-  TextEditingController noteController = TextEditingController();
-  TextEditingController additionalNoteController = TextEditingController();
+  //Form control
+  late LedgerInput formControl;
 
   //Create temporary state to change it all one shot when user submits
-  late TransactionType type;
-  late DateTime localDateTime;
-  late String account;
-  late String category;
-  late String currency;
-  late double amount;
-  late String note;
-  late String additionalNote;
+  late TransactionData newData;
 
   @override
   void initState() {
-    setState(() => type = widget.input.type);
+
+    newData = TransactionData().cloneFrom(previousData: widget.data);
+
+    formControl = BlocProvider.of<CTransactionCubit>(context)
+        .createFormControl(widget.data);
+    
+    setState(() {
+      newData.type = widget.data.type;
+      newData.utcDateTime = widget.data.utcDateTime;
+      newData.account = widget.data.account;
+      newData.category = widget.data.category;
+      newData.currency = widget.data.currency;
+      newData.amount = widget.data.amount;
+      newData.note = widget.data.note;
+      newData.additionalNote = widget.data.additionalNote;
+    });
 
     //Date
-    setState(() => localDateTime = widget.input.utcDateTime.toLocal());
-    dateTimeController.text = dateLongFormatter.format(localDateTime);
-
+    formControl.dateTimeController.text = dateLongFormatter.format(newData.utcDateTime.toLocal());
     //Account
-    setState(() => account = widget.input.account);
-    accountController.text = account;
-
+    formControl.accountController.text = newData.account;
     //Category
-    setState(() => category = widget.input.category);
-    categoryController.text = category;
-
-    //Currency
-    setState(() => currency = widget.input.currency);
-
+    formControl.categoryController.text = newData.category;
     //Amount
-    setState(() => amount = widget.input.amount);
-    amountController.text =
-        englishDisplayCurrencyFormatter.format(widget.input.amount);
-
+    formControl.amountController.text = englishDisplayCurrencyFormatter.format(newData.amount);
     //Note
-    setState(() => note = widget.input.note);
-    noteController.text = note;
-    noteController.addListener(() {
-      setState(() => note = noteController.text);
-    });
-
+    formControl.noteController.text = newData.note;
     //Additional note
-    setState(() => additionalNote = widget.input.additionalNote);
-    additionalNoteController.text = additionalNote;
-    additionalNoteController.addListener(() {
-      setState(() => additionalNote = additionalNoteController.text);
+    formControl.additionalNoteController.text = newData.additionalNote;
+
+    formControl.noteController.addListener(() {
+      setState(() => newData.note = formControl.noteController.text);
     });
-
+    formControl.additionalNoteController.addListener(() {
+      setState(
+          () => newData.additionalNote = formControl.additionalNoteController.text);
+    });
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    dateTimeController.dispose();
-    accountController.dispose();
   }
 
   void _moveFocusTo(FocusNode focus) {
@@ -138,11 +121,10 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
     _bottomSheetController = null;
   }
 
-  Future<DateTime?> _selectDate(
-      BuildContext context, LedgerInput ledger) async {
+  Future<DateTime?> _selectDate(BuildContext context) async {
     final DateTime? selectedDate = await showDatePicker(
       context: context,
-      initialDate: ledger.utcDateTime.toLocal(),
+      initialDate: widget.data.utcDateTime.toLocal(),
       firstDate: DateTime(1970),
       lastDate: localNow.add(
         const Duration(days: 365 * 10),
@@ -152,17 +134,18 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
   }
 
   void _setDate(BuildContext context) {
-    _selectDate(context, widget.input).then((selectedDate) {
+    _selectDate(context).then((selectedDate) {
       if (selectedDate != null) {
         //Set value and close the dialog
         setState(
           () {
-            localDateTime = selectedDate;
-            dateTimeController.text = dateLongFormatter.format(localDateTime);
+            newData.utcDateTime = selectedDate.toUtc();
+            formControl.dateTimeController.text =
+                dateLongFormatter.format(selectedDate.toLocal());
           },
         );
         //Move focus to account after selecting date
-        _moveFocusTo(widget.input.accountFocus);
+        _moveFocusTo(formControl.accountFocus);
         _selectAccount();
       }
     });
@@ -170,8 +153,8 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
 
   void _resetDate() {
     setState(() {
-      localDateTime = widget.input.utcDateTime.toLocal();
-      dateTimeController.text = dateLongFormatter.format(localDateTime);
+      newData.utcDateTime = widget.data.utcDateTime;
+      formControl.dateTimeController.text = dateLongFormatter.format(newData.utcDateTime.toLocal());
     });
   }
 
@@ -187,12 +170,12 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                 if (selectedAccount != null) {
                   //Set value and close the dialog
                   setState(() {
-                    account = selectedAccount;
-                    accountController.text = account;
+                    newData.account = selectedAccount;
+                    formControl.accountController.text = newData.account;
                   });
-                  _moveFocusTo(widget.input.categoryFocus);
+                  _moveFocusTo(formControl.categoryFocus);
                   _selectCategory();
-                  _scrollToWidget(widget.input.categoryKey, scrollAlignment);
+                  _scrollToWidget(formControl.categoryKey, scrollAlignment);
                 } else {
                   _closeBottomSheet();
                 }
@@ -206,8 +189,8 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
 
   void _resetAccount() {
     setState(() {
-      account = widget.input.account;
-      accountController.text = account;
+      newData.account = widget.data.account;
+      formControl.accountController.text = newData.account;
     });
   }
 
@@ -215,19 +198,19 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
     _bottomSheetController =
         _scaffoldKey.currentState?.showBottomSheet<void>((context) {
       return CategoryPicker(
-        type: type,
+        type: newData.type,
         onPressed: (selectedCategory) {
           if (selectedCategory != null) {
             //Set value and close the dialog
             setState(() {
-              category = selectedCategory;
-              categoryController.text = category;
+              newData.category = selectedCategory;
+              formControl.categoryController.text = newData.category;
             });
             //Move focus to amount input,
             //Then show the keypad
-            _moveFocusTo(widget.input.amountFocus);
+            _moveFocusTo(formControl.amountFocus);
             _selectAmount();
-            _scrollToWidget(widget.input.amountKey, scrollAlignment);
+            _scrollToWidget(formControl.amountKey, scrollAlignment);
           } else {
             _closeBottomSheet();
           }
@@ -238,21 +221,22 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
 
   void _resetCategory() {
     setState(() {
-      category = widget.input.category;
-      categoryController.text = category;
+      newData.category = widget.data.category;
+      formControl.categoryController.text = newData.category;
     });
   }
 
   void _setCurrency(String? selection) {
     if (selection != null) {
-      setState(() => currency = selection);
+      setState(() => newData.currency = selection);
     }
   }
 
   void _resetAmount() {
     setState(() {
-      amount = widget.input.amount;
-      amountController.text = englishDisplayCurrencyFormatter.format(amount);
+      newData.amount = widget.data.amount;
+      formControl.amountController.text =
+          englishDisplayCurrencyFormatter.format(newData.amount);
     });
   }
 
@@ -260,17 +244,17 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
     _bottomSheetController =
         _scaffoldKey.currentState?.showBottomSheet<void>((context) {
       return AmountTyper(
-        currentAmount: amount,
-        controller: amountController,
+        currentAmount: newData.amount,
+        controller: formControl.amountController,
         onCancelPressed: _closeBottomSheet,
         onKeystroke: (double newValue) {
-          setState(() => amount = newValue);
+          setState(() => newData.amount = newValue);
         },
         onDonePressed: (double newValue) {
-          setState(() => amount = newValue);
+          setState(() => newData.amount = newValue);
 
-          _moveFocusTo(widget.input.noteFocus);
-          _scrollToWidget(widget.input.noteKey, 1.0);
+          _moveFocusTo(formControl.noteFocus);
+          _scrollToWidget(formControl.noteKey, 1.0);
         },
         closeBottomSheet: _closeBottomSheet,
       );
@@ -279,19 +263,21 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
 
   void _resetNote() {
     setState(() {
-      note = widget.input.note;
-      noteController.text = note;
-      noteController.selection =
-          TextSelection.collapsed(offset: noteController.text.length);
+      newData.note = widget.data.note;
+      formControl.noteController.text = newData.note;
+      formControl.noteController.selection = TextSelection.collapsed(
+        offset: formControl.noteController.text.length,
+      );
     });
   }
 
   void _resetAdditionalNote() {
     setState(() {
-      additionalNote = widget.input.additionalNote;
-      additionalNoteController.text = additionalNote;
-      additionalNoteController.selection =
-          TextSelection.collapsed(offset: additionalNoteController.text.length);
+      newData.additionalNote = widget.data.additionalNote;
+      formControl.additionalNoteController.text = newData.additionalNote;
+      formControl.additionalNoteController.selection = TextSelection.collapsed(
+        offset: formControl.additionalNoteController.text.length,
+      );
     });
   }
 
@@ -334,118 +320,104 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                             child: Column(
                           children: [
                             LedgerForm(
-                              inputType: InputType.edit,
-                              ledger: widget.input, 
-                              children: [
-                              TypePicker(
-                                type: type,
-                                setType: (TransactionType newSelection) {
-                                  if (_bottomSheetController != null) {
-                                    _bottomSheetController?.setState!(
-                                      () {
-                                        setState(() => type = newSelection);
-                                      },
-                                    );
-                                  } else {
-                                    setState(() => type = newSelection);
-                                  }
-                                },
-                              ),
-                              DateField(
-                                input: widget.input,
-                                controller: dateTimeController,
-                                now: localDateTime,
-                                onTapTrailing: _resetDate,
-                                onTap: () {
-                                  _setDate(context);
-                                },
-                              ),
-                              AccountField(
-                                input: widget.input,
-                                controller: accountController,
-                                onTapTrailing: _resetAccount,
-                                showIcon: account != widget.input.account,
-                                trailingIcon: const Icon(Icons.refresh),
-                                onTap: _selectAccount,
-                              ),
-                              CategoryField(
-                                input: widget.input,
-                                type: type,
-                                controller: categoryController,
-                                onTapTrailing: _resetCategory,
-                                showIcon: category != widget.input.category,
-                                trailingIcon: const Icon(Icons.refresh),
-                                onTap: _selectCategory,
-                              ),
-                              AmountField(
-                                input: widget.input,
-                                controller: amountController,
-                                onCurrencyChange: (String? newCurrency) {
-                                  _setCurrency(newCurrency);
-                                },
-                                onTapTrailing: _resetAmount,
-                                showIcon: amount != widget.input.amount,
-                                trailingIcon: const Icon(Icons.refresh),
-                                onTap: () {
-                                  _selectAmount();
-                                },
-                              ),
-                              NoteField(
-                                input: widget.input,
-                                controller: noteController,
-                                onTapTrailing: _resetNote,
-                                showIcon: note != widget.input.note,
-                                trailingIcon: const Icon(Icons.refresh),
-                                onTap: _closeBottomSheet,
-                                onEditingComplete: () {
-                                  _moveFocusTo(
-                                      widget.input.additionalNoteFocus);
-                                  _scrollToWidget(
-                                      widget.input.additionalNoteKey, 1.0);
-                                },
-                              ),
-                              const Divider(),
-                              AdditionalNoteField(
-                                input: widget.input,
-                                controller: additionalNoteController,
-                                onTapTrailing: _resetAdditionalNote,
-                                showIcon: additionalNote !=
-                                    widget.input.additionalNote,
-                                trailingIcon:
-                                    const Icon(Icons.refresh_outlined),
-                                onTap: _closeBottomSheet,
-                              ),
-                              SubmitButton(
-                                action: () {
-                                  if (BlocProvider.of<CTransactionCubit>(
-                                          context)
-                                      .isFormValid(widget.input)) {
-                                    Map<String, dynamic> payload = {
-                                      'type': type,
-                                      'dateTime': localDateTime.toUtc(),
-                                      'account': account,
-                                      'category': category,
-                                      'currency': currency,
-                                      'amount': amount,
-                                      'note': note,
-                                      'additionalNote': additionalNote
-                                    };
-                                    BlocProvider.of<CTransactionCubit>(context)
-                                        .handleFormSubmit(
-                                            widget.input, payload);
+                                inputType: InputType.edit,
+                                input: formControl,
+                                children: [
+                                  TypePicker(
+                                    type: newData.type,
+                                    setType: (TransactionType newSelection) {
+                                      if (_bottomSheetController != null) {
+                                        _bottomSheetController?.setState!(
+                                          () {
+                                            setState(() => newData.type = newSelection);
+                                          },
+                                        );
+                                      } else {
+                                        setState(() => newData.type = newSelection);
+                                      }
+                                    },
+                                  ),
+                                  DateField(
+                                    input: formControl,
+                                    controller: formControl.dateTimeController,
+                                    now: newData.utcDateTime.toLocal(),
+                                    onTapTrailing: _resetDate,
+                                    onTap: () {
+                                      _setDate(context);
+                                    },
+                                  ),
+                                  AccountField(
+                                    input: formControl,
+                                    controller: formControl.accountController,
+                                    onTapTrailing: _resetAccount,
+                                    showIcon: newData.account != widget.data.account,
+                                    trailingIcon: const Icon(Icons.refresh),
+                                    onTap: _selectAccount,
+                                  ),
+                                  CategoryField(
+                                    input: formControl,
+                                    type: newData.type,
+                                    controller: formControl.categoryController,
+                                    onTapTrailing: _resetCategory,
+                                    showIcon: newData.category != widget.data.category,
+                                    trailingIcon: const Icon(Icons.refresh),
+                                    onTap: _selectCategory,
+                                  ),
+                                  AmountField(
+                                    input: formControl,
+                                    controller: formControl.amountController,
+                                    onCurrencyChange: (String? newCurrency) {
+                                      _setCurrency(newCurrency);
+                                    },
+                                    onTapTrailing: _resetAmount,
+                                    showIcon: newData.amount != widget.data.amount,
+                                    trailingIcon: const Icon(Icons.refresh),
+                                    onTap: () {
+                                      _selectAmount();
+                                    },
+                                  ),
+                                  NoteField(
+                                    input: formControl,
+                                    controller: formControl.noteController,
+                                    onTapTrailing: _resetNote,
+                                    showIcon: newData.note != widget.data.note,
+                                    trailingIcon: const Icon(Icons.refresh),
+                                    onTap: _closeBottomSheet,
+                                    onEditingComplete: () {
+                                      _moveFocusTo(
+                                          formControl.additionalNoteFocus);
+                                      _scrollToWidget(
+                                          formControl.additionalNoteKey, 1.0);
+                                    },
+                                  ),
+                                  const Divider(),
+                                  AdditionalNoteField(
+                                    input: formControl,
+                                    controller:
+                                        formControl.additionalNoteController,
+                                    onTapTrailing: _resetAdditionalNote,
+                                    showIcon: newData.additionalNote !=
+                                        widget.data.additionalNote,
+                                    trailingIcon:
+                                        const Icon(Icons.refresh_outlined),
+                                    onTap: _closeBottomSheet,
+                                  ),
+                                  SubmitButton(
+                                    action: () {
+                                      if (BlocProvider.of<CTransactionCubit>(context).isFormValid(formControl)) {
+                                        BlocProvider.of<CTransactionCubit>(context).handleFormSubmit(widget.data.id, newData);
 
-                                    //Close the bottom sheet if open
-                                    _closeBottomSheet();
+                                        //Close the bottom sheet if open
+                                        _closeBottomSheet();
 
-                                    //Close the snackbar because we are navigating back
-                                    ScaffoldMessenger.of(context)
-                                        .hideCurrentSnackBar();
-                                    //Go to previous page
-                                    Navigator.of(context).pop();
-                                  }
-                                },
-                              ),
-                            ])
+                                        //Close the snackbar because we are navigating back
+                                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                        //Go to previous page
+                                        Navigator.of(context).pop();
+                                      }
+                                    },
+                                  ),
+                                ])
                           ],
                         )),
                       ),

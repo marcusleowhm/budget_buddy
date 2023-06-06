@@ -112,7 +112,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
   Future<DateTime?> _selectDate(BuildContext context, LedgerInput input) async {
     final DateTime? selectedDate = await showDatePicker(
       context: context,
-      initialDate: input.utcDateTime.toLocal(),
+      initialDate: input.data.utcDateTime.toLocal(),
       firstDate: DateTime(1970),
       lastDate: localNow.add(
         const Duration(days: 365 * 10),
@@ -157,7 +157,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
             return AccountPicker(
               onPressed: (selectedAccount) async {
                 if (selectedAccount != null) {
-                  //Set val ue and close the dialog
+                  //Set value and close the dialog
                   BlocProvider.of<UTransactionCubit>(context)
                       .setAccountAt(index, selectedAccount);
 
@@ -188,7 +188,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     _bottomSheetController =
         _scaffoldKey.currentState?.showBottomSheet<void>((context) {
       return CategoryPicker(
-        type: input.type,
+        type: input.data.type,
         onPressed: (selectedCategory) {
           if (selectedCategory != null) {
             //Set value and close the dialog
@@ -222,7 +222,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
             .state
             .entries
             .elementAt(index)
-            .amount,
+            .data.amount,
         controller: amountController,
         onCancelPressed: _closeBottomSheet,
         onKeystroke: (double newValue) {
@@ -323,7 +323,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                             shakeCount: 4,
                             shakeOffset: 10,
                             child: Dismissible(
-                              key: PageStorageKey<String>(input.id),
+                              key: PageStorageKey<String>(input.data.id),
                               //Show red background when swiped left to right
                               background: _buildDismissibleBackground(
                                   Alignment.centerLeft),
@@ -351,12 +351,12 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                 ledger: input,
                                 children: [
                                   TypePicker(
-                                    type: input.type,
+                                    type: input.data.type,
                                     setType: (TransactionType newSelection) {
                                       if (_bottomSheetController != null) {
                                         _bottomSheetController?.setState!(
                                           () {
-                                            input.type = newSelection;
+                                            input.data.type = newSelection;
                                             BlocProvider.of<UTransactionCubit>(
                                                     context)
                                                 .tallyAllCurrencies();
@@ -406,7 +406,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                                   context)
                                               .validateForm());
                                     },
-                                    showIcon: input.account.isNotEmpty,
+                                    showIcon: input.data.account.isNotEmpty,
                                     trailingIcon:
                                         const Icon(Icons.cancel_outlined),
                                     onTap: () {
@@ -416,7 +416,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                   ),
                                   CategoryField(
                                     input: input,
-                                    type: input.type,
+                                    type: input.data.type,
                                     controller: input.categoryController,
                                     onTapTrailing: () {
                                       BlocProvider.of<UTransactionCubit>(
@@ -427,7 +427,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                                   context)
                                               .validateForm());
                                     },
-                                    showIcon: input.category.isNotEmpty,
+                                    showIcon: input.data.category.isNotEmpty,
                                     trailingIcon:
                                         const Icon(Icons.cancel_outlined),
                                     onTap: () {
@@ -471,7 +471,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                               context)
                                           .clearNoteAt(index);
                                     },
-                                    showIcon: input.note.isNotEmpty,
+                                    showIcon: input.data.note.isNotEmpty,
                                     trailingIcon:
                                         const Icon(Icons.cancel_outlined),
                                     onTap: () {
@@ -489,7 +489,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                       );
                                     },
                                   ),
-                                  Divider(key: input.dividerKey),
+                                  const Divider(),
                                   AdditionalNoteField(
                                     input: input,
                                     controller: input.additionalNoteController,
@@ -498,7 +498,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                               context)
                                           .clearAdditionalNoteAt(index);
                                     },
-                                    showIcon: input.additionalNote.isNotEmpty,
+                                    showIcon: input.data.additionalNote.isNotEmpty,
                                     trailingIcon:
                                         const Icon(Icons.cancel_outlined),
                                     onTap: () {
@@ -538,7 +538,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                             if (BlocProvider.of<UTransactionCubit>(context)
                                 .hasSubmitted()) {
                               BlocProvider.of<CTransactionCubit>(context)
-                                  .addTransactions(state.entries);
+                                  .addTransactions(state.entries.map((input) => input.data).toList());
 
                               //Close the bottom sheet if open (Usually the sheet will block the submit button)
                               if (_bottomSheetController != null) {

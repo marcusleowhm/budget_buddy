@@ -6,6 +6,7 @@ import 'package:budget_buddy/features/data/screens/balance_screen.dart';
 import 'package:budget_buddy/features/data/screens/dashboard_screen.dart';
 import 'package:budget_buddy/features/data/screens/statistics_screen.dart';
 import 'package:budget_buddy/features/ledger/cubit/u_transaction_cubit.dart';
+import 'package:budget_buddy/features/ledger/model/transaction_data.dart';
 import 'package:budget_buddy/features/ledger/screens/primary/ledger_screen.dart';
 import 'package:budget_buddy/features/ledger/screens/secondary/add_ledger_screen.dart';
 import 'package:budget_buddy/features/ledger/screens/secondary/edit_ledger_screen.dart';
@@ -14,8 +15,6 @@ import 'package:budget_buddy/nav/tab_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
-import '../features/ledger/model/ledger_input.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -57,9 +56,9 @@ final goRouter = GoRouter(
               parentNavigatorKey: _rootNavigatorKey,
               path: '${routes[SubRoutes.editLedger]}',
               builder: (context, state) {
-                LedgerInput input = state.extra as LedgerInput;
+                TransactionData data = state.extra as TransactionData;
                 return EditLedgerScreen(
-                  input: input,
+                  data: data,
                 );
               },
             ),

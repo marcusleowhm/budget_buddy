@@ -1,11 +1,11 @@
-import 'package:budget_buddy/features/constants/enum.dart';
+import 'package:budget_buddy/features/ledger/model/transaction_data.dart';
 import 'package:budget_buddy/features/ledger/widgets/widget_shaker.dart';
 import 'package:flutter/material.dart';
 
 class LedgerInput {
   LedgerInput({
-    required this.id,
     this.isExpanded = true,
+    required this.data,
     required this.formKey,
     required this.dateTimeController,
     required this.accountController,
@@ -18,7 +18,6 @@ class LedgerInput {
     required this.categoryKey,
     required this.amountKey,
     required this.noteKey,
-    required this.dividerKey,
     required this.additionalNoteKey,
     required this.formShakerKey,
     required this.accountShakerKey,
@@ -32,19 +31,7 @@ class LedgerInput {
   });
 
   //Data
-  String id;
-  TransactionType type = TransactionType.expense;
-  DateTime utcDateTime = DateTime.now().toUtc();
-  String account = '';
-  String category = '';
-  String currency = 'USD'; //TODO change
-  double amount = 0.0;
-  String note = '';
-  String additionalNote = '';
-
-  //Metadata
-  DateTime? createdUtcDateTime;
-  DateTime? modifiedUtcDateTime;
+  final TransactionData data;
 
   //Boolean to help with displaying data depending on state of the ExpansionTile
   bool isExpanded;
@@ -68,7 +55,6 @@ class LedgerInput {
   final GlobalKey<FormFieldState> categoryKey;
   final GlobalKey<FormFieldState> amountKey;
   final GlobalKey<FormFieldState> noteKey;
-  final GlobalKey dividerKey;
   final GlobalKey<FormFieldState> additionalNoteKey;
 
   //GlobalKey for shaker animation
@@ -85,8 +71,4 @@ class LedgerInput {
   final FocusNode noteFocus;
   final FocusNode additionalNoteFocus;
 
-  @override
-  String toString() {
-    return '\nLedgerInput{\nid = $id,\ntype = $type,\ndateTime = $utcDateTime,\naccount = $account,\ncategory = $category,\ncurrency=$currency,\namount=$amount,\nnote=$note,\nadditionalNote=$additionalNote}';
-  }
 }

@@ -9,12 +9,12 @@ class LedgerForm extends StatefulWidget {
   const LedgerForm({
     super.key,
     required this.inputType,
-    required this.ledger,
+    required this.input,
     required this.children,
   });
 
   final InputType inputType;
-  final LedgerInput ledger;
+  final LedgerInput input;
   final List<Widget> children;
 
   @override
@@ -95,7 +95,7 @@ class _LedgerFormState extends State<LedgerForm> {
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: widget.ledger.formKey,
+      key: widget.input.formKey,
       child: Column(
         children: [
           ...widget.children.map(_buildChildrenTiles).toList(),

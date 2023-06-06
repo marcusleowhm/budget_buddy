@@ -5,5 +5,5 @@ class CTransactionState {
     required this.committedEntries,
   });
 
-  final List<LedgerInput> committedEntries;
+  final List<TransactionData> committedEntries;
 }

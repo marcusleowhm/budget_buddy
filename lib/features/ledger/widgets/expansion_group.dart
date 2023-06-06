@@ -24,10 +24,10 @@ class ExpansionGroup extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         //Whenever displaying the date time, use Local date time
-        Text(dayFormatter.format(ledger.utcDateTime.toLocal()),
+        Text(dayFormatter.format(ledger.data.utcDateTime.toLocal()),
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        Text(monthNameFormatter.format(ledger.utcDateTime.toLocal())),
-        Text(yearLongFormatter.format(ledger.utcDateTime.toLocal())),
+        Text(monthNameFormatter.format(ledger.data.utcDateTime.toLocal())),
+        Text(yearLongFormatter.format(ledger.data.utcDateTime.toLocal())),
       ],
     );
   }
@@ -36,7 +36,7 @@ class ExpansionGroup extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(3.0),
       child: Text(
-        ledger.account.isEmpty ? 'No account selected' : ledger.account,
+        ledger.data.account.isEmpty ? 'No account selected' : ledger.data.account,
         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         overflow: TextOverflow.ellipsis,
       ),
@@ -50,13 +50,13 @@ class ExpansionGroup extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(3.0),
           child: Text(
-            ledger.category.isEmpty ? 'No category selected' : ledger.category,
+            ledger.data.category.isEmpty ? 'No category selected' : ledger.data.category,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontSize: 14,
-              color: ledger.type == TransactionType.income
+              color: ledger.data.type == TransactionType.income
                   ? Colors.blue[700]!
-                  : ledger.type == TransactionType.expense
+                  : ledger.data.type == TransactionType.expense
                       ? Colors.red
                       : Colors.grey,
             ),
@@ -65,7 +65,7 @@ class ExpansionGroup extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(3.0),
           child: Text(
-            ledger.note.isEmpty ? '-' : ledger.note,
+            ledger.data.note.isEmpty ? '-' : ledger.data.note,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               fontSize: 14,
@@ -82,9 +82,9 @@ class ExpansionGroup extends StatelessWidget {
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                     border: Border.all(
-                      color: ledger.type == TransactionType.income
+                      color: ledger.data.type == TransactionType.income
                           ? Colors.blue[700]!
-                          : ledger.type == TransactionType.expense
+                          : ledger.data.type == TransactionType.expense
                               ? Colors.red
                               : Colors.grey,
                       width: 1,
@@ -92,12 +92,12 @@ class ExpansionGroup extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10.0)),
                 child: Text(
                   //The price to be displayed when expansion tile is collapsed
-                  '${englishDisplayCurrencyFormatter.format(ledger.amount)} ${ledger.currency}',
+                  '${englishDisplayCurrencyFormatter.format(ledger.data.amount)} ${ledger.data.currency}',
                   style: TextStyle(
                     fontSize: 12,
-                    color: ledger.type == TransactionType.income
+                    color: ledger.data.type == TransactionType.income
                         ? Colors.blue[700]!
-                        : ledger.type == TransactionType.expense
+                        : ledger.data.type == TransactionType.expense
                             ? Colors.red
                             : Colors.grey,
                   ),
@@ -122,7 +122,7 @@ class ExpansionGroup extends StatelessWidget {
           onExpansionChanged: (value) {
             onExpand(value);
           },
-          key: PageStorageKey<String>(ledger.id),
+          key: PageStorageKey<String>(ledger.data.id),
           maintainState: true,
           initiallyExpanded: true,
           leading: _buildLeading(),
@@ -133,7 +133,7 @@ class ExpansionGroup extends StatelessWidget {
           children: [
             LedgerForm(
               inputType: InputType.add,
-              ledger: ledger,
+              input: ledger,
               children: children,
             ),
           ],

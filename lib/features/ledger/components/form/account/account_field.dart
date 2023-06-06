@@ -40,7 +40,7 @@ class AccountField extends StatelessWidget {
         },
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
-          labelText: input.type == TransactionType.transfer
+          labelText: input.data.type == TransactionType.transfer
               ? 'Account From'
               : 'Account',
           suffixIcon: showIcon

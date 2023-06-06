@@ -2,11 +2,10 @@ import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/features/data/components/transaction/transaction_block.dart';
 import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
 import 'package:budget_buddy/features/ledger/model/ledger_display.dart';
+import 'package:budget_buddy/features/ledger/model/transaction_data.dart';
+import 'package:budget_buddy/utilities/date_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../utilities/date_formatter.dart';
-import '../../../ledger/model/ledger_input.dart';
 
 class CTransactionList extends StatelessWidget {
   CTransactionList({
@@ -29,39 +28,39 @@ class CTransactionList extends StatelessWidget {
 
   Map<DateTime, LedgerDisplay> getData(CTransactionState state) {
     //Do some mapping by date and return the card
-    Map<DateTime, LedgerDisplay> data = {};
-    for (LedgerInput ledger in state.committedEntries) {
+    Map<DateTime, LedgerDisplay> map = {};
+    for (TransactionData data in state.committedEntries) {
       DateTime localDateTime = DateTime(
-        ledger.utcDateTime.toLocal().year,
-        ledger.utcDateTime.toLocal().month,
-        ledger.utcDateTime.toLocal().day,
+        data.utcDateTime.toLocal().year,
+        data.utcDateTime.toLocal().month,
+        data.utcDateTime.toLocal().day,
       );
 
       if (currentLocalDate.month == localDateTime.month &&
           currentLocalDate.year == localDateTime.year) {
-        data.putIfAbsent(localDateTime, () => LedgerDisplay());
+        map.putIfAbsent(localDateTime, () => LedgerDisplay());
 
         //Add the elements back into the date
-        data[localDateTime]!.inputs.add(ledger);
+        map[localDateTime]!.inputs.add(data);
 
         //Sum up the amount according to transaction type for each date
-        switch (ledger.type) {
+        switch (data.type) {
           case TransactionType.income:
-            double cumulativeIncome = data[localDateTime]?.sum['income'] ?? 0.0;
-            data[localDateTime]?.sum['income'] =
-                cumulativeIncome + ledger.amount;
+            double cumulativeIncome = map[localDateTime]?.sum['income'] ?? 0.0;
+            map[localDateTime]?.sum['income'] =
+                cumulativeIncome + data.amount;
             break;
           case TransactionType.expense:
             double cumulativeExpense =
-                data[localDateTime]?.sum['expense'] ?? 0.0;
-            data[localDateTime]?.sum['expense'] =
-                cumulativeExpense + ledger.amount;
+                map[localDateTime]?.sum['expense'] ?? 0.0;
+            map[localDateTime]?.sum['expense'] =
+                cumulativeExpense + data.amount;
             break;
           case TransactionType.transfer:
             double cumulativeTransfer =
-                data[localDateTime]?.sum['transfer'] ?? 0.0;
-            data[localDateTime]?.sum['transfer'] =
-                cumulativeTransfer + ledger.amount;
+                map[localDateTime]?.sum['transfer'] ?? 0.0;
+            map[localDateTime]?.sum['transfer'] =
+                cumulativeTransfer + data.amount;
             break;
         }
       }
@@ -69,7 +68,7 @@ class CTransactionList extends StatelessWidget {
 
     //Sort the map by date
     Map<DateTime, LedgerDisplay> sortedData = Map.fromEntries(
-        data.entries.toList()..sort((e1, e2) => e1.key.compareTo(e2.key)));
+        map.entries.toList()..sort((e1, e2) => e1.key.compareTo(e2.key)));
     return sortedData;
   }
 

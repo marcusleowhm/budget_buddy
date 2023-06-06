@@ -1,4 +1,8 @@
 import 'package:bloc/bloc.dart';
+import 'package:budget_buddy/features/ledger/model/transaction_data.dart';
+import 'package:budget_buddy/utilities/currency_formatter.dart';
+import 'package:budget_buddy/utilities/date_formatter.dart';
+import 'package:flutter/material.dart';
 import '../model/ledger_input.dart';
 import '../widgets/widget_shaker.dart';
 
@@ -8,18 +12,105 @@ class CTransactionCubit extends Cubit<CTransactionState> {
   CTransactionCubit() : super(const CTransactionState(committedEntries: []));
 
   //Add into committed transaction from uncommitted ones
-  void addTransactions(List<LedgerInput> uncommittedEntries) {
-    List<LedgerInput> transactions = List.from(state.committedEntries);
+  void addTransactions(List<TransactionData> incomingTransactions) {
+    List<TransactionData> transactions = List.from(state.committedEntries);
 
     //Give each uncommitted transaction a datetime before adding to list
     DateTime utcNow = DateTime.now().toUtc();
-    for (LedgerInput item in uncommittedEntries) {
-      item.createdUtcDateTime = utcNow;
+    for (TransactionData data in incomingTransactions) {
+      data.createdUtcDateTime = utcNow;
     }
-    transactions.addAll(uncommittedEntries);
-
+    transactions.addAll(incomingTransactions);
     emit(
       CTransactionState(committedEntries: transactions),
+    );
+  }
+
+  LedgerInput createFormControl(TransactionData data) {
+    GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+    //Controller for the edit page form only
+    TextEditingController dateTimeController = TextEditingController();
+    TextEditingController accountController = TextEditingController();
+    TextEditingController categoryController = TextEditingController();
+    TextEditingController amountController = TextEditingController();
+    TextEditingController noteController = TextEditingController();
+    TextEditingController additionalNoteController = TextEditingController();
+
+    //Add GlobalKey for each LedgerInput's input widget
+    GlobalKey<FormFieldState> dateTimeKey = GlobalKey<FormFieldState>();
+    GlobalKey<FormFieldState> accountKey = GlobalKey<FormFieldState>();
+    GlobalKey<FormFieldState> categoryKey = GlobalKey<FormFieldState>();
+    GlobalKey<FormFieldState> amountKey = GlobalKey<FormFieldState>();
+    GlobalKey<FormFieldState> noteKey = GlobalKey<FormFieldState>();
+    GlobalKey<FormFieldState> additionalNoteKey = GlobalKey<FormFieldState>();
+
+    GlobalKey<ShakeErrorState> formShakerKey = GlobalKey<ShakeErrorState>();
+    GlobalKey<ShakeErrorState> accountShakerKey = GlobalKey<ShakeErrorState>();
+    GlobalKey<ShakeErrorState> categoryShakerKey = GlobalKey<ShakeErrorState>();
+
+    //Add focus nodes
+    FocusNode dateTimeFocus = FocusNode();
+    FocusNode accountFocus = FocusNode();
+    FocusNode categoryFocus = FocusNode();
+    FocusNode amountFocus = FocusNode();
+    FocusNode noteFocus = FocusNode();
+    FocusNode additionalNoteFocus = FocusNode();
+
+    //Set listener for controllers
+    noteController.addListener(() => data.note = noteController.text);
+    additionalNoteController.addListener(() => data.additionalNote = additionalNoteController.text);
+
+    //Set initial value for date
+    dateTimeController.text =
+        dateLongFormatter.format(data.utcDateTime.toLocal());
+
+    //Add listeners for when losing focus
+    accountFocus.addListener(() {
+      if (!accountFocus.hasFocus) {
+        accountKey.currentState?.validate();
+      }
+    });
+    categoryFocus.addListener(() {
+      if (!categoryFocus.hasFocus) {
+        categoryKey.currentState?.validate();
+      }
+    });
+    amountFocus.addListener(() {
+      if (!amountFocus.hasFocus) {
+        double enteredAmount = double.tryParse(amountController.text
+                .replaceAll('\$', '')
+                .replaceAll(',', '')) ??
+            0.0;
+        amountController.text =
+            englishDisplayCurrencyFormatter.format(enteredAmount);
+      }
+    });
+
+    return LedgerInput(
+      data: data,
+      formKey: formKey,
+      dateTimeController: dateTimeController,
+      accountController: accountController,
+      categoryController: categoryController,
+      amountController: amountController,
+      noteController: noteController,
+      additionalNoteController: additionalNoteController,
+      dateTimeKey: dateTimeKey,
+      accountKey: accountKey,
+      categoryKey: categoryKey,
+      amountKey: amountKey,
+      noteKey: noteKey,
+      additionalNoteKey: additionalNoteKey,
+      formShakerKey: formShakerKey,
+      accountShakerKey: accountShakerKey,
+      categoryShakerKey: categoryShakerKey,
+      dateTimeFocus: dateTimeFocus,
+      accountFocus: accountFocus,
+      categoryFocus: categoryFocus,
+      amountFocus: amountFocus,
+      noteFocus: noteFocus,
+      additionalNoteFocus: additionalNoteFocus,
     );
   }
 
@@ -53,17 +144,18 @@ class CTransactionCubit extends Cubit<CTransactionState> {
     return true;
   }
 
-  void handleFormSubmit(LedgerInput input, Map<String, dynamic> payload) {
-    state.committedEntries.firstWhere((item) => item.id == input.id)
-      ..type = payload['type']
-      ..utcDateTime = payload['dateTime']
-      ..account = payload['account']
-      ..category = payload['category']
-      ..currency = payload['currency']
-      ..amount = payload['amount']
-      ..note = payload['note']
-      ..additionalNote = payload['additionalNote']
+  //Updates all field of the data with submitted information, changing the modified datetime
+  void handleFormSubmit(String id, TransactionData data) {
+    state.committedEntries.firstWhere((entry) => entry.id == id)
+      ..utcDateTime = data.utcDateTime
+      ..account = data.account
+      ..category = data.category
+      ..currency = data.currency
+      ..amount = data.amount
+      ..note = data.note
+      ..additionalNote = data.additionalNote
       ..modifiedUtcDateTime = DateTime.now().toUtc();
+
     emit(CTransactionState(committedEntries: state.committedEntries));
   }
 }
