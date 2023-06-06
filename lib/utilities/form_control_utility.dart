@@ -116,4 +116,21 @@ class FormControlUtility {
     );
     return input;
   }
+
+  static void dispose(LedgerInput input) {
+    input.dateTimeController.dispose();
+    input.accountController.dispose();
+    input.categoryController.dispose();
+    input.amountController.dispose();
+    input.noteController.dispose();
+    input.additionalNoteController.dispose();
+
+    input.dateTimeFocus.dispose();
+    input.accountFocus.dispose();
+    input.categoryFocus.dispose();
+    input.amountFocus.dispose();
+    input.noteFocus.dispose();
+    input.additionalNoteFocus.dispose();
+  }
+
 }

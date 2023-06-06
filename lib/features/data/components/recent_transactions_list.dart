@@ -2,12 +2,11 @@ import 'dart:math';
 
 import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
+import 'package:budget_buddy/features/ledger/model/transaction_data.dart';
 import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:budget_buddy/utilities/date_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../ledger/model/ledger_input.dart';
 
 class RecentTransactionsList extends StatefulWidget {
   const RecentTransactionsList({super.key});
@@ -26,29 +25,29 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
     RecentTransactionFilterCriteria.modifiedDate: 'Modified Date'
   };
 
-  Iterable<LedgerInput> getData(CTransactionState state) {
-    List<LedgerInput> copyOfState = List.from(state.committedEntries);
+  Iterable<TransactionData> getData(CTransactionState state) {
+    List<TransactionData> copyOfState = List.from(state.committedEntries);
 
     int maxCount = min(10, state.committedEntries.length);
     switch (filterCriteria) {
       case RecentTransactionFilterCriteria.transactionDate:
         copyOfState.sort(
-          (a, b) => b.data.utcDateTime.compareTo(a.data.utcDateTime),
+          (a, b) => b.utcDateTime.compareTo(a.utcDateTime),
         );
         return copyOfState.getRange(0, maxCount);
       case RecentTransactionFilterCriteria.createdDate:
         copyOfState.sort(
-          (a, b) => b.data.createdUtcDateTime!.compareTo(a.data.createdUtcDateTime!)
+          (a, b) => b.createdUtcDateTime!.compareTo(a.createdUtcDateTime!)
         );
         return copyOfState.getRange(0, maxCount);
       case RecentTransactionFilterCriteria.modifiedDate:
         copyOfState.sort(
           (a, b) {
-            if (a.data.modifiedUtcDateTime == null &&
-                b.data.modifiedUtcDateTime != null) {
+            if (a.modifiedUtcDateTime == null &&
+                b.modifiedUtcDateTime != null) {
               return 1;
-            } else if (a.data.modifiedUtcDateTime != null &&
-                b.data.modifiedUtcDateTime == null) {
+            } else if (a.modifiedUtcDateTime != null &&
+                b.modifiedUtcDateTime == null) {
               return -1;
             } else {
               return 0;
@@ -74,7 +73,7 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
             child: BlocBuilder<CTransactionCubit, CTransactionState>(
                 builder: (context, state) {
               //Sort data depending on criteria selected
-              Iterable<LedgerInput> data = getData(state);
+              Iterable<TransactionData> data = getData(state);
 
               return Column(
                 children: [
@@ -139,24 +138,24 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
                         children: [
                           Text(
                               dayFormatter.format(
-                                data.elementAt(index).data.utcDateTime.toLocal(),
+                                data.elementAt(index).utcDateTime.toLocal(),
                               ),
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold)),
                           Text(
                             monthNameFormatter.format(
-                              data.elementAt(index).data.utcDateTime.toLocal(),
+                              data.elementAt(index).utcDateTime.toLocal(),
                             ),
                           ),
                           Text(
                             yearLongFormatter.format(
-                              data.elementAt(index).data.utcDateTime.toLocal(),
+                              data.elementAt(index).utcDateTime.toLocal(),
                             ),
                           )
                         ],
                       ),
                       title: Text(
-                        data.elementAt(index).data.account,
+                        data.elementAt(index).account,
                         overflow: TextOverflow.ellipsis,
                         softWrap: true,
                         style: const TextStyle(fontSize: 14),
@@ -165,11 +164,11 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            data.elementAt(index).data.category,
+                            data.elementAt(index).category,
                             overflow: TextOverflow.ellipsis,
                           ),
                           Text(
-                            data.elementAt(index).data.note,
+                            data.elementAt(index).note,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ],
@@ -177,9 +176,9 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
                       trailing: Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Text(data.elementAt(index).data.currency),
+                          Text(data.elementAt(index).currency),
                           Text(englishDisplayCurrencyFormatter
-                              .format(data.elementAt(index).data.amount)),
+                              .format(data.elementAt(index).amount)),
                         ],
                       ),
                     ),

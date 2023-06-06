@@ -68,8 +68,13 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
     formControl.additionalNoteController.addListener(() {
       setState(() => newData.additionalNote = formControl.additionalNoteController.text);
     });
-
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    FormControlUtility.dispose(formControl);
+    super.dispose();
   }
 
   void _moveFocusTo(FocusNode focus) {
