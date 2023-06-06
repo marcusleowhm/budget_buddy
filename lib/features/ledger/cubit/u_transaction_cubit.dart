@@ -1,12 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:budget_buddy/features/constants/enum.dart';
-import 'package:budget_buddy/features/ledger/model/transaction_data.dart';
 import 'package:budget_buddy/features/ledger/widgets/widget_shaker.dart';
-import 'package:budget_buddy/utilities/date_formatter.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:budget_buddy/utilities/form_control_utility.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../utilities/currency_formatter.dart';
 import '../model/ledger_input.dart';
 
 part 'u_transaction_state.dart';
@@ -15,106 +12,17 @@ class UTransactionCubit extends Cubit<UTransactionState> {
   UTransactionCubit()
       : super(const UTransactionState(entries: [], currenciesTotal: {}));
 
-  LedgerInput createFormControl() {
-    GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
-    // Controllers first
-    TextEditingController dateTimeController = TextEditingController();
-    TextEditingController accountController = TextEditingController();
-    TextEditingController categoryController = TextEditingController();
-    TextEditingController amountController = TextEditingController();
-    TextEditingController noteController = TextEditingController();
-    TextEditingController additionalNoteController = TextEditingController();
-
-    //Add GlobalKey for each LedgerInput's input widget
-    GlobalKey<FormFieldState> dateTimeKey = GlobalKey<FormFieldState>();
-    GlobalKey<FormFieldState> accountKey = GlobalKey<FormFieldState>();
-    GlobalKey<FormFieldState> categoryKey = GlobalKey<FormFieldState>();
-    GlobalKey<FormFieldState> amountKey = GlobalKey<FormFieldState>();
-    GlobalKey<FormFieldState> noteKey = GlobalKey<FormFieldState>();
-    GlobalKey<FormFieldState> additionalNoteKey = GlobalKey<FormFieldState>();
-
-    GlobalKey<ShakeErrorState> formShakerKey = GlobalKey<ShakeErrorState>();
-    GlobalKey<ShakeErrorState> accountShakerKey = GlobalKey<ShakeErrorState>();
-    GlobalKey<ShakeErrorState> categoryShakerKey = GlobalKey<ShakeErrorState>();
-
-    //Add focus nodes
-    FocusNode dateTimeFocus = FocusNode();
-    FocusNode accountFocus = FocusNode();
-    FocusNode categoryFocus = FocusNode();
-    FocusNode amountFocus = FocusNode();
-    FocusNode noteFocus = FocusNode();
-    FocusNode additionalNoteFocus = FocusNode();
-
-    //Data
-    TransactionData data = TransactionData();
-
-    //Create a ledger and add controllers
-    LedgerInput input = LedgerInput(
-      data: data,
-      formKey: formKey,
-      dateTimeController: dateTimeController,
-      accountController: accountController,
-      categoryController: categoryController,
-      amountController: amountController,
-      noteController: noteController,
-      additionalNoteController: additionalNoteController,
-      dateTimeKey: dateTimeKey,
-      accountKey: accountKey,
-      categoryKey: categoryKey,
-      amountKey: amountKey,
-      noteKey: noteKey,
-      additionalNoteKey: additionalNoteKey,
-      formShakerKey: formShakerKey,
-      accountShakerKey: accountShakerKey,
-      categoryShakerKey: categoryShakerKey,
-      dateTimeFocus: dateTimeFocus,
-      accountFocus: accountFocus,
-      categoryFocus: categoryFocus,
-      amountFocus: amountFocus,
-      noteFocus: noteFocus,
-      additionalNoteFocus: additionalNoteFocus,
-    );
-
-    //Set listener for controllers
-    noteController.addListener(() {
-      setNoteOf(input, noteController.text);
-    });
-    additionalNoteController.addListener(() {
-      setAdditionalNoteAt(input, additionalNoteController.text);
-    });
-
-    //Set initial value for date
-    dateTimeController.text =
-        dateLongFormatter.format(input.data.utcDateTime.toLocal());
-
-    //Add listeners for when losing focus
-    accountFocus.addListener(() {
-      if (!accountFocus.hasFocus) {
-        accountKey.currentState?.validate();
-      }
-    });
-    categoryFocus.addListener(() {
-      if (!categoryFocus.hasFocus) {
-        categoryKey.currentState?.validate();
-      }
-    });
-    amountFocus.addListener(() {
-      if (!amountFocus.hasFocus) {
-        double enteredAmount = double.tryParse(input.amountController.text
-                .replaceAll('\$', '')
-                .replaceAll(',', '')) ??
-            0.0;
-        input.amountController.text =
-            englishDisplayCurrencyFormatter.format(enteredAmount);
-      }
-    });
-
-    return input;
-  }
-
   void addInputRow() {
-    LedgerInput input = createFormControl();
+    LedgerInput input = FormControlUtility.create();
+
+    //Add listeners for note and additional note here
+    input.noteController.addListener(() {
+      setNoteOf(input, input.noteController.text);
+    });
+    input.additionalNoteController.addListener(() {
+      setAdditionalNoteAt(input, input.additionalNoteController.text);
+    });
+
     emit(UTransactionState(
       entries: [...state.entries, input],
       currenciesTotal: state.currenciesTotal,
@@ -334,29 +242,6 @@ class UTransactionCubit extends Cubit<UTransactionState> {
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
     ));
-  }
-
-  bool validateForm() {
-    List<TextEditingController> invalidInputs = [];
-    for (LedgerInput input in state.entries) {
-      if (input.accountKey.currentState != null) {
-        if (!input.accountKey.currentState!.validate()) {
-          invalidInputs.add(input.accountController);
-        }
-      }
-
-      if (input.categoryKey.currentState != null) {
-        if (!input.categoryKey.currentState!.validate()) {
-          invalidInputs.add(input.categoryController);
-        }
-      }
-    }
-
-    if (invalidInputs.isEmpty) {
-      return true;
-    }
-
-    return false;
   }
 
   bool _validateFormAndShake() {

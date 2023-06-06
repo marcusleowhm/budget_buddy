@@ -17,6 +17,7 @@ import 'package:budget_buddy/features/ledger/model/transaction_data.dart';
 import 'package:budget_buddy/nav/routes.dart';
 import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:budget_buddy/utilities/date_formatter.dart';
+import 'package:budget_buddy/utilities/form_control_utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -59,43 +60,15 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
 
   @override
   void initState() {
-
     newData = TransactionData().cloneFrom(previousData: widget.data);
-
-    formControl = BlocProvider.of<CTransactionCubit>(context)
-        .createFormControl(widget.data);
-    
-    setState(() {
-      newData.type = widget.data.type;
-      newData.utcDateTime = widget.data.utcDateTime;
-      newData.account = widget.data.account;
-      newData.category = widget.data.category;
-      newData.currency = widget.data.currency;
-      newData.amount = widget.data.amount;
-      newData.note = widget.data.note;
-      newData.additionalNote = widget.data.additionalNote;
-    });
-
-    //Date
-    formControl.dateTimeController.text = dateLongFormatter.format(newData.utcDateTime.toLocal());
-    //Account
-    formControl.accountController.text = newData.account;
-    //Category
-    formControl.categoryController.text = newData.category;
-    //Amount
-    formControl.amountController.text = englishDisplayCurrencyFormatter.format(newData.amount);
-    //Note
-    formControl.noteController.text = newData.note;
-    //Additional note
-    formControl.additionalNoteController.text = newData.additionalNote;
-
+    formControl = FormControlUtility.create(data: newData);
     formControl.noteController.addListener(() {
       setState(() => newData.note = formControl.noteController.text);
     });
     formControl.additionalNoteController.addListener(() {
-      setState(
-          () => newData.additionalNote = formControl.additionalNoteController.text);
+      setState(() => newData.additionalNote = formControl.additionalNoteController.text);
     });
+
     super.initState();
   }
 
@@ -154,7 +127,8 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
   void _resetDate() {
     setState(() {
       newData.utcDateTime = widget.data.utcDateTime;
-      formControl.dateTimeController.text = dateLongFormatter.format(newData.utcDateTime.toLocal());
+      formControl.dateTimeController.text =
+          dateLongFormatter.format(newData.utcDateTime.toLocal());
     });
   }
 
@@ -329,11 +303,13 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                       if (_bottomSheetController != null) {
                                         _bottomSheetController?.setState!(
                                           () {
-                                            setState(() => newData.type = newSelection);
+                                            setState(() =>
+                                                newData.type = newSelection);
                                           },
                                         );
                                       } else {
-                                        setState(() => newData.type = newSelection);
+                                        setState(
+                                            () => newData.type = newSelection);
                                       }
                                     },
                                   ),
@@ -350,7 +326,8 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                     input: formControl,
                                     controller: formControl.accountController,
                                     onTapTrailing: _resetAccount,
-                                    showIcon: newData.account != widget.data.account,
+                                    showIcon:
+                                        newData.account != widget.data.account,
                                     trailingIcon: const Icon(Icons.refresh),
                                     onTap: _selectAccount,
                                   ),
@@ -359,7 +336,8 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                     type: newData.type,
                                     controller: formControl.categoryController,
                                     onTapTrailing: _resetCategory,
-                                    showIcon: newData.category != widget.data.category,
+                                    showIcon: newData.category !=
+                                        widget.data.category,
                                     trailingIcon: const Icon(Icons.refresh),
                                     onTap: _selectCategory,
                                   ),
@@ -370,7 +348,8 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                       _setCurrency(newCurrency);
                                     },
                                     onTapTrailing: _resetAmount,
-                                    showIcon: newData.amount != widget.data.amount,
+                                    showIcon:
+                                        newData.amount != widget.data.amount,
                                     trailingIcon: const Icon(Icons.refresh),
                                     onTap: () {
                                       _selectAmount();
@@ -404,14 +383,20 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                   ),
                                   SubmitButton(
                                     action: () {
-                                      if (BlocProvider.of<CTransactionCubit>(context).isFormValid(formControl)) {
-                                        BlocProvider.of<CTransactionCubit>(context).handleFormSubmit(widget.data.id, newData);
+                                      if (BlocProvider.of<CTransactionCubit>(
+                                              context)
+                                          .isFormValid(formControl)) {
+                                        BlocProvider.of<CTransactionCubit>(
+                                                context)
+                                            .handleFormSubmit(
+                                                widget.data.id, newData);
 
                                         //Close the bottom sheet if open
                                         _closeBottomSheet();
 
                                         //Close the snackbar because we are navigating back
-                                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                        ScaffoldMessenger.of(context)
+                                            .hideCurrentSnackBar();
                                         //Go to previous page
                                         Navigator.of(context).pop();
                                       }

@@ -157,13 +157,10 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
             return AccountPicker(
               onPressed: (selectedAccount) async {
                 if (selectedAccount != null) {
-                  //Set value and close the dialog
+                  //Set value and validate account
                   BlocProvider.of<UTransactionCubit>(context)
                       .setAccountAt(index, selectedAccount);
-
-                  setState(() => isValid =
-                      BlocProvider.of<UTransactionCubit>(context)
-                          .validateForm());
+                  input.accountKey.currentState?.validate();
 
                   //Move focus to category after selection
                   _moveFocusTo(input.categoryFocus);
@@ -191,11 +188,11 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
         type: input.data.type,
         onPressed: (selectedCategory) {
           if (selectedCategory != null) {
-            //Set value and close the dialog
+            //Set value and validate category
             BlocProvider.of<UTransactionCubit>(context)
                 .setCategoryAt(index, selectedCategory);
-            setState(() => isValid =
-                BlocProvider.of<UTransactionCubit>(context).validateForm());
+            input.categoryKey.currentState?.validate();
+
             //Move focus to amount input,
             //Then show the keypad
             _moveFocusTo(input.amountFocus);
@@ -222,7 +219,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
             .state
             .entries
             .elementAt(index)
-            .data.amount,
+            .data
+            .amount,
         controller: amountController,
         onCancelPressed: _closeBottomSheet,
         onKeystroke: (double newValue) {
@@ -401,17 +399,25 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                       BlocProvider.of<UTransactionCubit>(
                                               context)
                                           .clearAccountAt(index);
-                                      setState(() => isValid =
-                                          BlocProvider.of<UTransactionCubit>(
-                                                  context)
-                                              .validateForm());
+                                      input.accountKey.currentState?.validate();
+
+                                      //Focus and select after clearing
+                                      _moveFocusTo(input.accountFocus);
+                                      _selectAccount(
+                                        input,
+                                        input.amountController,
+                                        index,
+                                      );
                                     },
                                     showIcon: input.data.account.isNotEmpty,
                                     trailingIcon:
                                         const Icon(Icons.cancel_outlined),
                                     onTap: () {
                                       _selectAccount(
-                                          input, input.amountController, index);
+                                        input,
+                                        input.amountController,
+                                        index,
+                                      );
                                     },
                                   ),
                                   CategoryField(
@@ -422,10 +428,16 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                       BlocProvider.of<UTransactionCubit>(
                                               context)
                                           .clearCategoryAt(index);
-                                      setState(() => isValid =
-                                          BlocProvider.of<UTransactionCubit>(
-                                                  context)
-                                              .validateForm());
+                                      input.categoryKey.currentState
+                                          ?.validate();
+
+                                      //Focus and select after clearing
+                                      _moveFocusTo(input.categoryFocus);
+                                      _selectCategory(
+                                        input,
+                                        input.amountController,
+                                        index,
+                                      );
                                     },
                                     showIcon: input.data.category.isNotEmpty,
                                     trailingIcon:
@@ -453,6 +465,10 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                       BlocProvider.of<UTransactionCubit>(
                                               context)
                                           .tallyAllCurrencies();
+
+                                      //Focus and select when clearing
+                                      _moveFocusTo(input.amountFocus);
+                                      _selectAmount(input, input.amountController, index);
                                     },
                                     showIcon:
                                         input.amountController.text.isNotEmpty,
@@ -470,6 +486,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                       BlocProvider.of<UTransactionCubit>(
                                               context)
                                           .clearNoteAt(index);
+                                      //Focus after clearing
+                                      _moveFocusTo(input.noteFocus);
                                     },
                                     showIcon: input.data.note.isNotEmpty,
                                     trailingIcon:
@@ -497,8 +515,11 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                       BlocProvider.of<UTransactionCubit>(
                                               context)
                                           .clearAdditionalNoteAt(index);
+                                      //Focus on it after clearing
+                                      _moveFocusTo(input.additionalNoteFocus);
                                     },
-                                    showIcon: input.data.additionalNote.isNotEmpty,
+                                    showIcon:
+                                        input.data.additionalNote.isNotEmpty,
                                     trailingIcon:
                                         const Icon(Icons.cancel_outlined),
                                     onTap: () {
@@ -538,7 +559,9 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                             if (BlocProvider.of<UTransactionCubit>(context)
                                 .hasSubmitted()) {
                               BlocProvider.of<CTransactionCubit>(context)
-                                  .addTransactions(state.entries.map((input) => input.data).toList());
+                                  .addTransactions(state.entries
+                                      .map((input) => input.data)
+                                      .toList());
 
                               //Close the bottom sheet if open (Usually the sheet will block the submit button)
                               if (_bottomSheetController != null) {
@@ -551,6 +574,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                               Navigator.of(context).pop();
                             } else {
                               messageKey.currentState?.shake();
+                              setState(() => isValid = false);
                             }
                           },
                           isValid: isValid,

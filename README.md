@@ -1,4 +1,4 @@
-The folders are separated by feature
+The folders are separated by features
 
 Project Struture:
 - cloud_functions: internal API calls
@@ -9,13 +9,14 @@ Project Struture:
         - providers (external API calls)
         - screens (split up into primary or secondary screens)
         - constants: Application constants
-        - widgets: Custom widgets functioning like a wrapper for Flutter widgets
+        - widgets: Custom widgets to wrap and extend Flutter widgets with additional properties or methods
     - mock: 
         - account.dart keeps mock data for building the app
     - theme (reserved for use in the future to customize the app look)
-    - utilities (Help functions (Json utilites, serializer, converter etc))
+    - utilities (Help functions (Json utilities, serializer, converter etc))
     - main.dart (program entry point)
     
 Current Known Issues:
 - Moving focus through the inputs require a lot of passing parameters around. Will need to refactor the move focus function
-- Major refactor is needed to separate the textediting controllers from the data itself
+- Refactor UTransactionCubit to use LedgerInput to match id instead of index whenever changing state
+- Move form validation logic from cubit into the formcontrol utility
