@@ -1,4 +1,3 @@
-import 'dart:js_interop';
 import 'dart:math';
 
 import 'package:budget_buddy/features/constants/enum.dart';
@@ -50,7 +49,8 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
                 b.modifiedUtcDateTime == null) {
               return -1;
             } else {
-              return a.utcDateTime.compareTo(b.utcDateTime);
+              //If both transactions were not modified, sort by their transaction date
+              return b.utcDateTime.compareTo(a.utcDateTime);
             }
           },
         );
@@ -127,70 +127,118 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
                       Text(labels[filterCriteria]!),
                     ],
                   ),
-                  const Divider(),
+                  const Divider(thickness: 1),
                   ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: min(10, state.committedEntries.length),
                     itemBuilder: (context, index) => ListTile(
-                      leading: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                              dayFormatter.format(
-                                data.elementAt(index).utcDateTime.toLocal(),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5.0),
+                            child: Text(
+                                dateFormatter.format(
+                                  data.elementAt(index).utcDateTime.toLocal(),
+                                ),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5.0),
+                            child: Text(
+                              data.elementAt(index).account,
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: true,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
                               ),
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold)),
-                          Text(
-                            monthNameFormatter.format(
-                              data.elementAt(index).utcDateTime.toLocal(),
                             ),
                           ),
-                          Text(
-                            yearLongFormatter.format(
-                              data.elementAt(index).utcDateTime.toLocal(),
-                            ),
-                          )
                         ],
-                      ),
-                      title: Text(
-                        data.elementAt(index).account,
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: true,
-                        style: const TextStyle(fontSize: 14),
                       ),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            data.elementAt(index).category,
-                            overflow: TextOverflow.ellipsis,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5.0),
+                            child: Text(
+                              data.elementAt(index).category,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: data.elementAt(index).type ==
+                                        TransactionType.income
+                                    ? Colors.blue[700]
+                                    : data.elementAt(index).type ==
+                                            TransactionType.expense
+                                        ? Colors.red
+                                        : Colors.grey,
+                              ),
+                            ),
                           ),
-                          Text(
-                            data.elementAt(index).note.isEmpty
-                                ? '-'
-                                : data.elementAt(index).note,
-                            overflow: TextOverflow.ellipsis,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5.0),
+                            child: Text(
+                              data.elementAt(index).note.isEmpty
+                                  ? '-'
+                                  : data.elementAt(index).note,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
-                          Text(
-                            'Created: ${dateFormatter.format(data.elementAt(index).createdUtcDateTime!)}',
-                            overflow: TextOverflow.ellipsis,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5.0),
+                            child: Container(
+                              padding: const EdgeInsets.all(5.0),
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: data.elementAt(index).type ==
+                                            TransactionType.income
+                                        ? Colors.blue[700]!
+                                        : data.elementAt(index).type ==
+                                                TransactionType.expense
+                                            ? Colors.red
+                                            : Colors.grey,
+                                    width: 1,
+                                  ),
+                                  borderRadius: BorderRadius.circular(10.0)),
+                              child: Text(
+                                '${data.elementAt(index).currency} ${englishDisplayCurrencyFormatter.format(data.elementAt(index).amount)}',
+                                style: TextStyle(
+                                  color: data.elementAt(index).type ==
+                                          TransactionType.income
+                                      ? Colors.blue[700]!
+                                      : data.elementAt(index).type ==
+                                              TransactionType.expense
+                                          ? Colors.red
+                                          : Colors.grey,
+                                ),
+                              ),
+                            ),
                           ),
-                          Text(
-                            data.elementAt(index).modifiedUtcDateTime.isNull
-                                ? 'Modified: -'
-                                : 'Modified: ${dateFormatter.format(data.elementAt(index).modifiedUtcDateTime!)}',
-                            overflow: TextOverflow.ellipsis,
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(bottom: 5.0, top: 20.0),
+                            child: Text(
+                                'Created: ${dateFormatter.format(data.elementAt(index).createdUtcDateTime!)}',
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(fontSize: 12)),
                           ),
-                        ],
-                      ),
-                      trailing: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(data.elementAt(index).currency),
-                          Text(englishDisplayCurrencyFormatter
-                              .format(data.elementAt(index).amount)),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5.0),
+                            child: Text(
+                                data.elementAt(index).modifiedUtcDateTime ==
+                                        null
+                                    ? 'Modified: -'
+                                    : 'Modified: ${dateFormatter.format(data.elementAt(index).modifiedUtcDateTime!)}',
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(fontSize: 12)),
+                          ),
+                          if (index !=
+                              min(10, state.committedEntries.length) - 1)
+                            const Divider(thickness: 1.0)
                         ],
                       ),
                     ),

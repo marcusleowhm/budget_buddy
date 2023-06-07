@@ -42,7 +42,7 @@ class MonthlySummary extends StatelessWidget {
                     ],
                   ),
                 ),
-                const Divider(),
+                const Divider(thickness: 1.0,),
                 const Padding(
                   padding: EdgeInsets.all(5.0),
                   child: Row(

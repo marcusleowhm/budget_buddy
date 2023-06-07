@@ -19,7 +19,7 @@ class BasicChart extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Divider(),
+              Divider(thickness: 1.0),
             ],
           ),
         ),
