@@ -40,7 +40,7 @@ class CTransactionList extends StatelessWidget {
           currentLocalDate.year == localDateTime.year) {
         map.putIfAbsent(localDateTime, () => LedgerDisplay());
 
-        //Add the elements back into the date
+        //Add the elements back into the map
         map[localDateTime]!.inputs.add(data);
 
         //Sum up the amount according to transaction type for each date
