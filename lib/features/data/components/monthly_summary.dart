@@ -241,15 +241,31 @@ class MonthlySummary extends StatelessWidget {
                                 const Text(
                                   'Net Change: ',
                                   style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16.0),
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16.0,
+                                  ),
                                 ),
-                                Text(
-                                    englishDisplayCurrencyFormatter.format(
-                                        sum['income']! - sum['expense']!),
-                                    style: const TextStyle(
+                                Row(
+                                  children: [
+                                    Text(
+                                      englishDisplayCurrencyFormatter.format(
+                                          sum['income']! - sum['expense']!),
+                                      style: const TextStyle(
                                         fontWeight: FontWeight.w600,
-                                        fontSize: 16.0))
+                                        fontSize: 16.0,
+                                      ),
+                                    ),
+                                    sum['income']! - sum['expense']! < 0
+                                        ? const Icon(
+                                            Icons.arrow_drop_down_rounded,
+                                            color: Colors.red)
+                                        : sum['income']! - sum['expense']! != 0
+                                            ? const Icon(
+                                                Icons.arrow_drop_up_rounded,
+                                                color: Colors.green)
+                                            : const Icon(Icons.remove)
+                                  ],
+                                ),
                               ],
                             ),
                           )
