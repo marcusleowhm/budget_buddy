@@ -1,3 +1,4 @@
+import 'dart:js_interop';
 import 'dart:math';
 
 import 'package:budget_buddy/features/constants/enum.dart';
@@ -37,8 +38,7 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
         return copyOfState.getRange(0, maxCount);
       case RecentTransactionFilterCriteria.createdDate:
         copyOfState.sort(
-          (a, b) => b.createdUtcDateTime!.compareTo(a.createdUtcDateTime!)
-        );
+            (a, b) => b.createdUtcDateTime!.compareTo(a.createdUtcDateTime!));
         return copyOfState.getRange(0, maxCount);
       case RecentTransactionFilterCriteria.modifiedDate:
         copyOfState.sort(
@@ -50,7 +50,7 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
                 b.modifiedUtcDateTime == null) {
               return -1;
             } else {
-              return 0;
+              return a.utcDateTime.compareTo(b.utcDateTime);
             }
           },
         );
@@ -83,7 +83,7 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          'Recent Transactions',
+                          '10 Recent Transactions',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
@@ -168,7 +168,19 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
                             overflow: TextOverflow.ellipsis,
                           ),
                           Text(
-                            data.elementAt(index).note,
+                            data.elementAt(index).note.isEmpty
+                                ? '-'
+                                : data.elementAt(index).note,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            'Created: ${dateFormatter.format(data.elementAt(index).createdUtcDateTime!)}',
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            data.elementAt(index).modifiedUtcDateTime.isNull
+                                ? 'Modified: -'
+                                : 'Modified: ${dateFormatter.format(data.elementAt(index).modifiedUtcDateTime!)}',
                             overflow: TextOverflow.ellipsis,
                           ),
                         ],
