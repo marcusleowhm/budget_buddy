@@ -69,12 +69,11 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
           ),
         ),
         child: Container(
-            padding: const EdgeInsets.all(10.0),
-            child: BlocBuilder<CTransactionCubit, CTransactionState>(
-                builder: (context, state) {
+          padding: const EdgeInsets.all(10.0),
+          child: BlocBuilder<CTransactionCubit, CTransactionState>(
+            builder: (context, state) {
               //Sort data depending on criteria selected
               Iterable<TransactionData> data = getData(state);
-
               return Column(
                 children: [
                   const Padding(
@@ -132,84 +131,70 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: min(10, state.committedEntries.length),
-                    itemBuilder: (context, index) => ListTile(
-                      title: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 5.0),
-                            child: Text(
+                    itemBuilder: (context, index) {
+                      final GlobalKey<TooltipState> tooltipKey =
+                          GlobalKey<TooltipState>();
+
+                      String createdDateTimeText =
+                          'Created: ${dateFormatter.format(data.elementAt(index).createdUtcDateTime!)}\n';
+                      String modifiedDateTimeText = data
+                                  .elementAt(index)
+                                  .modifiedUtcDateTime ==
+                              null
+                          ? 'Modified: -\n\n'
+                          : 'Modified: ${dateFormatter.format(data.elementAt(index).modifiedUtcDateTime!)}\n\n';
+                      String additionalNoteText =
+                          data.elementAt(index).additionalNote.isEmpty
+                              ? '-'
+                              : data.elementAt(index).additionalNote;
+                      String toolTipMessage = createdDateTimeText +
+                          modifiedDateTimeText +
+                          additionalNoteText;
+
+                      return ListTile(
+                        title: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 5.0, bottom: 10.0),
+                              child: Text(
                                 dateFormatter.format(
                                   data.elementAt(index).utcDateTime.toLocal(),
                                 ),
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.bold)),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 5.0),
-                            child: Text(
-                              data.elementAt(index).account,
-                              overflow: TextOverflow.ellipsis,
-                              softWrap: true,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 5.0),
-                            child: Text(
-                              data.elementAt(index).category,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: data.elementAt(index).type ==
-                                        TransactionType.income
-                                    ? Colors.blue[700]
-                                    : data.elementAt(index).type ==
-                                            TransactionType.expense
-                                        ? Colors.red
-                                        : Colors.grey,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 5.0),
-                            child: Text(
-                              data.elementAt(index).note.isEmpty
-                                  ? '-'
-                                  : data.elementAt(index).note,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 5.0),
-                            child: Container(
-                              padding: const EdgeInsets.all(5.0),
-                              decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: data.elementAt(index).type ==
-                                            TransactionType.income
-                                        ? Colors.blue[700]!
-                                        : data.elementAt(index).type ==
-                                                TransactionType.expense
-                                            ? Colors.red
-                                            : Colors.grey,
-                                    width: 1,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10.0)),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 5.0),
                               child: Text(
-                                '${data.elementAt(index).currency} ${englishDisplayCurrencyFormatter.format(data.elementAt(index).amount)}',
+                                data.elementAt(index).account,
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 5.0),
+                              child: Text(
+                                data.elementAt(index).category,
+                                overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
+                                  fontWeight: FontWeight.bold,
                                   color: data.elementAt(index).type ==
                                           TransactionType.income
-                                      ? Colors.blue[700]!
+                                      ? Colors.blue[700]
                                       : data.elementAt(index).type ==
                                               TransactionType.expense
                                           ? Colors.red
@@ -217,35 +202,69 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
                                 ),
                               ),
                             ),
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(bottom: 5.0, top: 20.0),
-                            child: Text(
-                                'Created: ${dateFormatter.format(data.elementAt(index).createdUtcDateTime!)}',
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 5.0),
+                              child: Text(
+                                data.elementAt(index).note.isEmpty
+                                    ? '-'
+                                    : data.elementAt(index).note,
                                 overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(fontSize: 12)),
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 5.0),
+                              child: Container(
+                                padding: const EdgeInsets.all(5.0),
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: data.elementAt(index).type ==
+                                              TransactionType.income
+                                          ? Colors.blue[700]!
+                                          : data.elementAt(index).type ==
+                                                  TransactionType.expense
+                                              ? Colors.red
+                                              : Colors.grey,
+                                      width: 1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(10.0)),
+                                child: Text(
+                                  '${data.elementAt(index).currency} ${englishDisplayCurrencyFormatter.format(data.elementAt(index).amount)}',
+                                  style: TextStyle(
+                                    color: data.elementAt(index).type ==
+                                            TransactionType.income
+                                        ? Colors.blue[700]!
+                                        : data.elementAt(index).type ==
+                                                TransactionType.expense
+                                            ? Colors.red
+                                            : Colors.grey,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        trailing: Tooltip(
+                          key: tooltipKey,
+                          triggerMode: TooltipTriggerMode.manual,
+                          showDuration: const Duration(seconds: 10),
+                          message: toolTipMessage,
+                          child: IconButton(
+                            icon: const Icon(Icons.info_outline_rounded),
+                            onPressed: () {
+                              tooltipKey.currentState?.ensureTooltipVisible();
+                            }, 
                           ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 5.0),
-                            child: Text(
-                                data.elementAt(index).modifiedUtcDateTime ==
-                                        null
-                                    ? 'Modified: -'
-                                    : 'Modified: ${dateFormatter.format(data.elementAt(index).modifiedUtcDateTime!)}',
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(fontSize: 12)),
-                          ),
-                          if (index !=
-                              min(10, state.committedEntries.length) - 1)
-                            const Divider(thickness: 1.0)
-                        ],
-                      ),
-                    ),
+                        ),
+                      );
+                    },
                   )
                 ],
               );
-            })),
+            },
+          ),
+        ),
       ),
     );
   }
