@@ -373,7 +373,16 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                                   DateField(
                                     input: input,
                                     controller: input.dateTimeController,
-                                    now: localNow,
+                                    showIcon: DateTime(
+                                          input.data.utcDateTime.toLocal().year,
+                                          input.data.utcDateTime.toLocal().month,
+                                          input.data.utcDateTime.toLocal().day,
+                                        ) !=
+                                        DateTime(
+                                          localNow.year,
+                                          localNow.month,
+                                          localNow.day,
+                                        ),
                                     onTapTrailing: () {
                                       BlocProvider.of<UTransactionCubit>(
                                               context)
@@ -468,7 +477,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
 
                                       //Focus and select when clearing
                                       _moveFocusTo(input.amountFocus);
-                                      _selectAmount(input, input.amountController, index);
+                                      _selectAmount(
+                                          input, input.amountController, index);
                                     },
                                     showIcon:
                                         input.amountController.text.isNotEmpty,

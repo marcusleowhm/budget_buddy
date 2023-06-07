@@ -1,21 +1,20 @@
+import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../utilities/date_formatter.dart';
-import '../../../model/ledger_input.dart';
 
 class DateField extends StatelessWidget {
   const DateField({
     super.key,
     required this.input,
     required this.controller,
-    required this.now,
+    required this.showIcon,
     required this.onTapTrailing,
     required this.onTap,
   });
 
   final LedgerInput input;
   final TextEditingController controller;
-  final DateTime now;
+  final bool showIcon;
   final VoidCallback onTapTrailing;
   final VoidCallback onTap;
 
@@ -28,20 +27,7 @@ class DateField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: 'Date',
         border: const OutlineInputBorder(),
-        suffixIcon: dateLongFormatter.format(
-                  DateTime(
-                    input.data.utcDateTime.toLocal().year,
-                    input.data.utcDateTime.toLocal().month,
-                    input.data.utcDateTime.toLocal().day,
-                  ),
-                ) !=
-                dateLongFormatter.format(
-                  DateTime(
-                    now.year,
-                    now.month,
-                    now.day,
-                  ),
-                )
+        suffixIcon: showIcon
             ? IconButton(
                 onPressed: onTapTrailing,
                 icon: const Icon(Icons.refresh),

@@ -102,7 +102,7 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
   Future<DateTime?> _selectDate(BuildContext context) async {
     final DateTime? selectedDate = await showDatePicker(
       context: context,
-      initialDate: widget.data.utcDateTime.toLocal(),
+      initialDate: newData.utcDateTime.toLocal(),
       firstDate: DateTime(1970),
       lastDate: localNow.add(
         const Duration(days: 365 * 10),
@@ -321,7 +321,16 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                   DateField(
                                     input: formControl,
                                     controller: formControl.dateTimeController,
-                                    now: newData.utcDateTime.toLocal(),
+                                    showIcon: DateTime(
+                                          newData.utcDateTime.toLocal().year,
+                                          newData.utcDateTime.toLocal().month,
+                                          newData.utcDateTime.toLocal().day,
+                                        ) !=
+                                        DateTime(
+                                          widget.data.utcDateTime.toLocal().year,
+                                          widget.data.utcDateTime.toLocal().month,
+                                          widget.data.utcDateTime.toLocal().day,
+                                        ),
                                     onTapTrailing: _resetDate,
                                     onTap: () {
                                       _setDate(context);
