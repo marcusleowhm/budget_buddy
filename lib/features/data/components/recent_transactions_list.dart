@@ -78,35 +78,38 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
 
               return Column(
                 children: [
-                  Row(
-                    children: [
-                      const Text(
-                        'Recent Transactions',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                      Tooltip(
-                        key: recentTransactionTooltip,
-                        message:
-                            'Up to 10 recent transactions will appear here.',
-                        showDuration: const Duration(seconds: 3),
-                        triggerMode: TooltipTriggerMode.manual,
-                        child: IconButton(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          constraints: const BoxConstraints(),
-                          iconSize: 16,
-                          icon: const Icon(
-                            Icons.info_outline_rounded,
+                  Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Row(
+                      children: [
+                        const Text(
+                          'Recent Transactions',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
                           ),
-                          onPressed: () {
-                            recentTransactionTooltip.currentState
-                                ?.ensureTooltipVisible();
-                          },
                         ),
-                      ),
-                    ],
+                        Tooltip(
+                          key: recentTransactionTooltip,
+                          message:
+                              'Up to 10 recent transactions will appear here.',
+                          showDuration: const Duration(seconds: 3),
+                          triggerMode: TooltipTriggerMode.manual,
+                          child: IconButton(
+                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                            constraints: const BoxConstraints(),
+                            iconSize: 16,
+                            icon: const Icon(
+                              Icons.info_outline_rounded,
+                            ),
+                            onPressed: () {
+                              recentTransactionTooltip.currentState
+                                  ?.ensureTooltipVisible();
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

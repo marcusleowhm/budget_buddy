@@ -17,16 +17,19 @@ class BasicChart extends StatelessWidget {
           padding: const EdgeInsets.all(10.0),
           child: const Column(
             children: [
-              Row(
-                children: [
-                  Text(
-                    'Basic Charts',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+              Padding(
+                padding: EdgeInsets.all(5.0),
+                child: Row(
+                  children: [
+                    Text(
+                      'Basic Charts',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               Divider(thickness: 1.0),
             ],

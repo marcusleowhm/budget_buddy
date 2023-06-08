@@ -60,9 +60,16 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     UTransactionState state = context.read<UTransactionCubit>().state;
     LedgerInput firstInput = state.entries.first;
 
+    //Initialize the bottom sheet to null
+    _bottomSheetController = null;
+
     //The first entry is already added before the widget is built
-    firstInput.moveFocusToNext();
-    _selectAccount(firstInput, firstInput.amountController, 0);
+    firstInput.moveFocusToNext(
+      _selectAccount,
+      _selectCategory,
+      _selectAmount,
+    );
+
     super.initState();
   }
 
@@ -118,12 +125,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     return selectedDate;
   }
 
-  void _setDate(
-    BuildContext context,
-    int index,
-    TextEditingController amountController,
-    LedgerInput input,
-  ) {
+  void _setDate(BuildContext context, LedgerInput input) {
     _selectDate(context, input).then((selectedDate) {
       if (selectedDate != null) {
         //Set value and close the dialog
@@ -132,18 +134,21 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
         input.dateTimeController.text = dateLongFormatter.format(selectedDate);
 
         //Move focus to account after selecting date
-        input.moveFocusToNext();
-        _selectAccount(input, amountController, index);
+        input.moveFocusToNext(
+          _selectAccount,
+          _selectCategory,
+          _selectAmount,
+        );
       }
     });
   }
 
-  void _selectAccount(
-      LedgerInput input, TextEditingController amountController, int index) {
+  void _selectAccount(LedgerInput input) {
     _scrollToWidget(
       input.accountKey,
       scrollAlignment,
     );
+
     //To allow initState to call this function and open the account selection
     WidgetsBinding.instance.addPostFrameCallback(
       (_) {
@@ -158,9 +163,13 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                       .setAccountOf(input, selectedAccount);
                   input.accountKey.currentState?.validate();
 
+                  _closeBottomSheet();
                   //Move focus to category after selection
-                  input.moveFocusToNext();
-                  _selectCategory(input, amountController, index);
+                  input.moveFocusToNext(
+                    _selectAccount,
+                    _selectCategory,
+                    _selectAmount,
+                  );
                 } else {
                   _closeBottomSheet();
                 }
@@ -172,8 +181,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     );
   }
 
-  void _selectCategory(
-      LedgerInput input, TextEditingController amountController, int index) {
+  void _selectCategory(LedgerInput input) {
     _scrollToWidget(
       input.categoryKey,
       scrollAlignment,
@@ -189,10 +197,14 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                 .setCategoryOf(input, selectedCategory);
             input.categoryKey.currentState?.validate();
 
+            _closeBottomSheet();
             //Move focus to amount input,
             //Then show the keypad
-            input.moveFocusToNext();
-            _selectAmount(input, amountController, index);
+            input.moveFocusToNext(
+              _selectAccount,
+              _selectCategory,
+              _selectAmount,
+            );
           } else {
             _closeBottomSheet();
           }
@@ -201,17 +213,17 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     });
   }
 
-  void _selectAmount(
-      LedgerInput input, TextEditingController amountController, int index) {
+  void _selectAmount(LedgerInput input) {
     _scrollToWidget(
       input.amountKey,
       scrollAlignment,
     );
+
     _bottomSheetController =
         _scaffoldKey.currentState?.showBottomSheet<void>((context) {
       return AmountTyper(
         currentAmount: input.data.amount,
-        controller: amountController,
+        controller: input.amountController,
         onCancelPressed: _closeBottomSheet,
         onKeystroke: (double amount) {
           BlocProvider.of<UTransactionCubit>(context)
@@ -223,10 +235,14 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
               .setAmountOf(input, amount);
           BlocProvider.of<UTransactionCubit>(context).tallyAllCurrencies();
 
-          input.moveFocusToNext();
+          _closeBottomSheet();
+          input.moveFocusToNext(
+            _selectAccount,
+            _selectCategory,
+            _selectAmount,
+          );
           _scrollToWidget(input.noteKey, 1);
         },
-        closeBottomSheet: _closeBottomSheet,
       );
     });
   }
@@ -312,12 +328,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
               },
               onTap: () {
                 _closeBottomSheet();
-                _setDate(
-                  context,
-                  index,
-                  input.amountController,
-                  input,
-                );
+                _setDate(context, input);
               },
             ),
             AccountField(
@@ -329,21 +340,16 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                 input.accountKey.currentState?.validate();
 
                 //Focus and select after clearing
-                input.moveFocusToNext();
-                _selectAccount(
-                  input,
-                  input.amountController,
-                  index,
+                input.moveFocusToNext(
+                  _selectAccount,
+                  _selectCategory,
+                  _selectAmount,
                 );
               },
               showIcon: input.data.account.isNotEmpty,
               trailingIcon: const Icon(Icons.cancel_outlined),
               onTap: () {
-                _selectAccount(
-                  input,
-                  input.amountController,
-                  index,
-                );
+                _selectAccount(input);
               },
             ),
             CategoryField(
@@ -356,17 +362,16 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                 input.categoryKey.currentState?.validate();
 
                 //Focus and select after clearing
-                input.moveFocusToNext();
-                _selectCategory(
-                  input,
-                  input.amountController,
-                  index,
+                input.moveFocusToNext(
+                  _selectAccount,
+                  _selectCategory,
+                  _selectAmount,
                 );
               },
               showIcon: input.data.category.isNotEmpty,
               trailingIcon: const Icon(Icons.cancel_outlined),
               onTap: () {
-                _selectCategory(input, input.amountController, index);
+                _selectCategory(input);
               },
             ),
             AmountField(
@@ -385,13 +390,16 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                     .tallyAllCurrencies();
 
                 //Focus and select when clearing
-                input.moveFocusToNext();
-                _selectAmount(input, input.amountController, index);
+                input.moveFocusToNext(
+                  _selectAccount,
+                  _selectCategory,
+                  _selectAmount,
+                );
               },
               showIcon: input.amountController.text.isNotEmpty,
               trailingIcon: const Icon(Icons.cancel_outlined),
               onTap: () {
-                _selectAmount(input, input.amountController, index);
+                _selectAmount(input);
               },
             ),
             NoteField(
@@ -400,7 +408,11 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
               onTapTrailing: () {
                 BlocProvider.of<UTransactionCubit>(context).clearNoteOf(input);
                 //Focus after clearing
-                input.moveFocusToNext();
+                input.moveFocusToNext(
+                  _selectAccount,
+                  _selectCategory,
+                  _selectAmount,
+                );
               },
               showIcon: input.data.note.isNotEmpty,
               trailingIcon: const Icon(Icons.cancel_outlined),
@@ -412,7 +424,12 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                 );
               },
               onEditingComplete: () {
-                input.moveFocusToNext();
+                _closeBottomSheet();
+                input.moveFocusToNext(
+                  _selectAccount,
+                  _selectCategory,
+                  _selectAmount,
+                );
                 _scrollToWidget(
                   input.additionalNoteKey,
                   1,
@@ -427,7 +444,11 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                 BlocProvider.of<UTransactionCubit>(context)
                     .clearAdditionalNoteAt(input);
                 //Focus on it after clearing
-                input.moveFocusToNext();
+                input.moveFocusToNext(
+                  _selectAccount,
+                  _selectCategory,
+                  _selectAmount,
+                );
               },
               showIcon: input.data.additionalNote.isNotEmpty,
               trailingIcon: const Icon(Icons.cancel_outlined),

@@ -71,7 +71,11 @@ class LedgerInput {
   final FocusNode noteFocus;
   final FocusNode additionalNoteFocus;
 
-  void moveFocusToNext() {
+  void moveFocusToNext(
+    void Function(LedgerInput) selectAccount,
+    void Function(LedgerInput) selectCategory,
+    void Function(LedgerInput) selectAmount,
+  ) {
     Map<TextEditingController, FocusNode> controllerFocusMap = {
       dateTimeController: dateTimeFocus,
       accountController: accountFocus,
@@ -87,18 +91,19 @@ class LedgerInput {
       if (controller.text.isEmpty) {
         focus.requestFocus();
 
-        if (focus == dateTimeFocus) {
-          
+        if (focus == accountFocus) {
+          selectAccount(this);
         }
 
+        if (focus == categoryFocus) {
+          selectCategory(this);
+        }
+
+        if (focus == amountFocus) {
+          selectAmount(this);
+        }
         return;
       }
     }
   }
-
-  void selectNext() {
-    
-  }
-
-  
 }

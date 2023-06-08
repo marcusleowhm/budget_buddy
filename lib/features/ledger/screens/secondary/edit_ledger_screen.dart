@@ -234,8 +234,8 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
 
           _moveFocusTo(formControl.noteFocus);
           _scrollToWidget(formControl.noteKey, 1.0);
+          _closeBottomSheet();
         },
-        closeBottomSheet: _closeBottomSheet,
       );
     });
   }

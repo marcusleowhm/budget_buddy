@@ -12,7 +12,6 @@ class AmountTyper extends StatelessWidget {
     required this.onCancelPressed,
     required this.onKeystroke,
     required this.onDonePressed,
-    required this.closeBottomSheet,
   });
 
   final double currentAmount;
@@ -20,7 +19,6 @@ class AmountTyper extends StatelessWidget {
   final VoidCallback onCancelPressed;
   final void Function(double) onKeystroke;
   final void Function(double) onDonePressed;
-  final VoidCallback closeBottomSheet;
 
   void _formatAndSetAmount(dynamic keyPress) {
     //Backspace action here
@@ -132,7 +130,6 @@ class AmountTyper extends StatelessWidget {
         0.0;
     controller.text = englishDisplayCurrencyFormatter.format(enteredAmount);
     onDonePressed(enteredAmount);
-    closeBottomSheet();
     return;
   }
 
