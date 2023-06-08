@@ -130,8 +130,11 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
                   ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: min(10, state.committedEntries.length),
+                    itemCount: min(10, state.committedEntries.length) * 2,
                     itemBuilder: (context, index) {
+
+                      if (index.isOdd) return const Divider(thickness: 1,);
+                      index = index ~/ 2;
                       final GlobalKey<TooltipState> tooltipKey =
                           GlobalKey<TooltipState>();
 
