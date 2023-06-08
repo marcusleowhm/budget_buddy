@@ -231,10 +231,11 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     ));
   }
 
-  void clearCategoryAt(int index) {
-    LedgerInput input = state.entries.elementAt(index);
-    input.categoryController.clear();
-    input.data.category = input.categoryController.text;
+  void clearCategoryOf(LedgerInput input) {
+    LedgerInput firstMatchedInput =
+        state.entries.firstWhere((entry) => entry.data.id == input.data.id);
+    firstMatchedInput.categoryController.clear();
+    firstMatchedInput.data.category = input.categoryController.text;
 
     //Trigger validation
     input.categoryKey.currentState?.validate();
@@ -245,24 +246,33 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     ));
   }
 
-  void clearAmountAt(int index) {
-    state.entries.elementAt(index).data.amount = 0.0;
+  void clearAmountOf(LedgerInput input) {
+    state.entries
+        .firstWhere((entry) => entry.data.id == input.data.id)
+        .data
+        .amount = 0.0;
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
     ));
   }
 
-  void clearNoteAt(int index) {
-    state.entries.elementAt(index).noteController.clear();
+  void clearNoteOf(LedgerInput input) {
+    state.entries
+        .firstWhere((entry) => entry.data.id == input.data.id)
+        .noteController
+        .clear();
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
     ));
   }
 
-  void clearAdditionalNoteAt(int index) {
-    state.entries.elementAt(index).additionalNoteController.clear();
+  void clearAdditionalNoteAt(LedgerInput input) {
+    state.entries
+        .firstWhere((entry) => entry.data.id == input.data.id)
+        .additionalNoteController
+        .clear();
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,

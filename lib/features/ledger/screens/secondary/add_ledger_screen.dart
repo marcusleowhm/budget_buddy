@@ -364,7 +364,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
               controller: input.categoryController,
               onTapTrailing: () {
                 BlocProvider.of<UTransactionCubit>(context)
-                    .clearCategoryAt(index);
+                    .clearCategoryOf(input);
                 input.categoryKey.currentState?.validate();
 
                 //Focus and select after clearing
@@ -392,7 +392,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
               },
               onTapTrailing: () {
                 BlocProvider.of<UTransactionCubit>(context)
-                    .clearAmountAt(index);
+                    .clearAmountOf(input);
                 BlocProvider.of<UTransactionCubit>(context)
                     .tallyAllCurrencies();
 
@@ -410,7 +410,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
               input: input,
               controller: input.noteController,
               onTapTrailing: () {
-                BlocProvider.of<UTransactionCubit>(context).clearNoteAt(index);
+                BlocProvider.of<UTransactionCubit>(context).clearNoteOf(input);
                 //Focus after clearing
                 _moveFocusTo(input.noteFocus);
               },
@@ -437,7 +437,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
               controller: input.additionalNoteController,
               onTapTrailing: () {
                 BlocProvider.of<UTransactionCubit>(context)
-                    .clearAdditionalNoteAt(index);
+                    .clearAdditionalNoteAt(input);
                 //Focus on it after clearing
                 _moveFocusTo(input.additionalNoteFocus);
               },
