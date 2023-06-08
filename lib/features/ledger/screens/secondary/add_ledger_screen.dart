@@ -22,6 +22,7 @@ import 'package:budget_buddy/utilities/date_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class AddLedgerScreen extends StatefulWidget {
   const AddLedgerScreen({super.key});
@@ -241,11 +242,211 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     });
   }
 
-  Widget _buildDismissibleBackground(Alignment alignment) {
-    return Container(
-      color: Colors.red,
-      alignment: alignment,
-      child: const Icon(Icons.delete),
+  Widget _buildSlidable(int index, LedgerInput input) {
+    return Slidable(
+      key: PageStorageKey<String>(input.data.id),
+      enabled: !input.isExpanded,
+      closeOnScroll: true,
+      endActionPane: ActionPane(
+        motion: const DrawerMotion(),
+        children: [
+          SlidableAction(
+            backgroundColor: Theme.of(context).primaryColor,
+            icon: Icons.content_copy,
+            label: 'Duplicate',
+            onPressed: (_) {},
+          ),
+          SlidableAction(
+            backgroundColor: Colors.red,
+            icon: Icons.delete_outlined,
+            label: 'Delete',
+            onPressed: (_) {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              _removeRowAt(context, input, index);
+              _closeBottomSheet();
+            },
+          ),
+        ],
+      ),
+      child: ExpansionGroup(
+        isExpanded: input.isExpanded == true,
+        onExpand: (isExpanded) {
+          BlocProvider.of<UTransactionCubit>(context)
+              .setIsExpanded(index, isExpanded);
+          if (!isExpanded) {
+            _closeBottomSheet(); //Close the bottom sheet (custom keyboards)
+            FocusManager.instance.primaryFocus
+                ?.unfocus(); //Should close keyboard too
+          }
+        },
+        input: input,
+        children: [
+          TypePicker(
+            type: input.data.type,
+            setType: (TransactionType newSelection) {
+              if (_bottomSheetController != null) {
+                _bottomSheetController?.setState!(
+                  () {
+                    input.data.type = newSelection;
+                    BlocProvider.of<UTransactionCubit>(context)
+                        .tallyAllCurrencies();
+                  },
+                );
+              } else {
+                BlocProvider.of<UTransactionCubit>(context)
+                    .setTypeAt(index, newSelection);
+                BlocProvider.of<UTransactionCubit>(context)
+                    .tallyAllCurrencies();
+              }
+            },
+          ),
+          DateField(
+            input: input,
+            controller: input.dateTimeController,
+            showIcon: DateTime(
+                  input.data.utcDateTime.toLocal().year,
+                  input.data.utcDateTime.toLocal().month,
+                  input.data.utcDateTime.toLocal().day,
+                ) !=
+                DateTime(
+                  localNow.year,
+                  localNow.month,
+                  localNow.day,
+                ),
+            onTapTrailing: () {
+              BlocProvider.of<UTransactionCubit>(context)
+                  .resetDateAtToToday(index, localNow);
+              input.dateTimeController.text =
+                  dateLongFormatter.format(localNow);
+            },
+            onTap: () {
+              _closeBottomSheet();
+              _setDate(
+                context,
+                index,
+                input.dateTimeController,
+                input.amountController,
+                input,
+              );
+            },
+          ),
+          AccountField(
+            input: input,
+            controller: input.accountController,
+            onTapTrailing: () {
+              BlocProvider.of<UTransactionCubit>(context).clearAccountAt(index);
+              input.accountKey.currentState?.validate();
+
+              //Focus and select after clearing
+              _moveFocusTo(input.accountFocus);
+              _selectAccount(
+                input,
+                input.amountController,
+                index,
+              );
+            },
+            showIcon: input.data.account.isNotEmpty,
+            trailingIcon: const Icon(Icons.cancel_outlined),
+            onTap: () {
+              _selectAccount(
+                input,
+                input.amountController,
+                index,
+              );
+            },
+          ),
+          CategoryField(
+            input: input,
+            type: input.data.type,
+            controller: input.categoryController,
+            onTapTrailing: () {
+              BlocProvider.of<UTransactionCubit>(context)
+                  .clearCategoryAt(index);
+              input.categoryKey.currentState?.validate();
+
+              //Focus and select after clearing
+              _moveFocusTo(input.categoryFocus);
+              _selectCategory(
+                input,
+                input.amountController,
+                index,
+              );
+            },
+            showIcon: input.data.category.isNotEmpty,
+            trailingIcon: const Icon(Icons.cancel_outlined),
+            onTap: () {
+              _selectCategory(input, input.amountController, index);
+            },
+          ),
+          AmountField(
+            input: input,
+            controller: input.amountController,
+            onCurrencyChange: (String? selection) {
+              BlocProvider.of<UTransactionCubit>(context)
+                  .setCurrencyAt(index, selection);
+              BlocProvider.of<UTransactionCubit>(context).tallyAllCurrencies();
+            },
+            onTapTrailing: () {
+              BlocProvider.of<UTransactionCubit>(context).clearAmountAt(index);
+              BlocProvider.of<UTransactionCubit>(context).tallyAllCurrencies();
+
+              //Focus and select when clearing
+              _moveFocusTo(input.amountFocus);
+              _selectAmount(input, input.amountController, index);
+            },
+            showIcon: input.amountController.text.isNotEmpty,
+            trailingIcon: const Icon(Icons.cancel_outlined),
+            onTap: () {
+              _selectAmount(input, input.amountController, index);
+            },
+          ),
+          NoteField(
+            input: input,
+            controller: input.noteController,
+            onTapTrailing: () {
+              BlocProvider.of<UTransactionCubit>(context).clearNoteAt(index);
+              //Focus after clearing
+              _moveFocusTo(input.noteFocus);
+            },
+            showIcon: input.data.note.isNotEmpty,
+            trailingIcon: const Icon(Icons.cancel_outlined),
+            onTap: () {
+              _closeBottomSheet();
+              _scrollToWidget(
+                input.noteKey,
+                1,
+              );
+            },
+            onEditingComplete: () {
+              _moveFocusTo(input.additionalNoteFocus);
+              _scrollToWidget(
+                input.additionalNoteKey,
+                1,
+              );
+            },
+          ),
+          const Divider(),
+          AdditionalNoteField(
+            input: input,
+            controller: input.additionalNoteController,
+            onTapTrailing: () {
+              BlocProvider.of<UTransactionCubit>(context)
+                  .clearAdditionalNoteAt(index);
+              //Focus on it after clearing
+              _moveFocusTo(input.additionalNoteFocus);
+            },
+            showIcon: input.data.additionalNote.isNotEmpty,
+            trailingIcon: const Icon(Icons.cancel_outlined),
+            onTap: () {
+              _closeBottomSheet();
+              _scrollToWidget(
+                input.additionalNoteKey,
+                1,
+              );
+            },
+          ),
+        ],
+      ), //TODO change this
     );
   }
 
@@ -311,240 +512,19 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         //Build the dismissible expandable form
-                        ...state.entries.asMap().entries.map((entry) {
-                          int index = entry.key;
-                          LedgerInput input = entry.value;
-
-                          return ShakeError(
-                            key: input.formShakerKey,
-                            duration: const Duration(milliseconds: 600),
-                            shakeCount: 4,
-                            shakeOffset: 10,
-                            child: Dismissible(
-                              key: PageStorageKey<String>(input.data.id),
-                              //Show red background when swiped left to right
-                              background: _buildDismissibleBackground(
-                                  Alignment.centerLeft),
-                              //Show red background when swiped right to left
-                              secondaryBackground: _buildDismissibleBackground(
-                                  Alignment.centerRight),
-                              onDismissed: (direction) {
-                                //Remove the previous snackbar first if it's still present. Otherwise it will cause issues with inserting at index
-                                ScaffoldMessenger.of(context)
-                                    .hideCurrentSnackBar();
-                                _removeRowAt(context, input, index);
-                                _closeBottomSheet();
-                              },
-                              child: ExpansionGroup(
-                                isExpanded: input.isExpanded == true,
-                                onExpand: (isExpanded) {
-                                  BlocProvider.of<UTransactionCubit>(context)
-                                      .setIsExpanded(index, isExpanded);
-                                  if (!isExpanded) {
-                                    _closeBottomSheet(); //Close the bottom sheet (custom keyboards)
-                                    FocusManager.instance.primaryFocus
-                                        ?.unfocus(); //Should close keyboard too
-                                  }
-                                },
-                                ledger: input,
-                                children: [
-                                  TypePicker(
-                                    type: input.data.type,
-                                    setType: (TransactionType newSelection) {
-                                      if (_bottomSheetController != null) {
-                                        _bottomSheetController?.setState!(
-                                          () {
-                                            input.data.type = newSelection;
-                                            BlocProvider.of<UTransactionCubit>(
-                                                    context)
-                                                .tallyAllCurrencies();
-                                          },
-                                        );
-                                      } else {
-                                        BlocProvider.of<UTransactionCubit>(
-                                                context)
-                                            .setTypeAt(index, newSelection);
-                                        BlocProvider.of<UTransactionCubit>(
-                                                context)
-                                            .tallyAllCurrencies();
-                                      }
-                                    },
-                                  ),
-                                  DateField(
-                                    input: input,
-                                    controller: input.dateTimeController,
-                                    showIcon: DateTime(
-                                          input.data.utcDateTime.toLocal().year,
-                                          input.data.utcDateTime.toLocal().month,
-                                          input.data.utcDateTime.toLocal().day,
-                                        ) !=
-                                        DateTime(
-                                          localNow.year,
-                                          localNow.month,
-                                          localNow.day,
-                                        ),
-                                    onTapTrailing: () {
-                                      BlocProvider.of<UTransactionCubit>(
-                                              context)
-                                          .resetDateAtToToday(index, localNow);
-                                      input.dateTimeController.text =
-                                          dateLongFormatter.format(localNow);
-                                    },
-                                    onTap: () {
-                                      _closeBottomSheet();
-                                      _setDate(
-                                        context,
-                                        index,
-                                        input.dateTimeController,
-                                        input.amountController,
-                                        input,
-                                      );
-                                    },
-                                  ),
-                                  AccountField(
-                                    input: input,
-                                    controller: input.accountController,
-                                    onTapTrailing: () {
-                                      BlocProvider.of<UTransactionCubit>(
-                                              context)
-                                          .clearAccountAt(index);
-                                      input.accountKey.currentState?.validate();
-
-                                      //Focus and select after clearing
-                                      _moveFocusTo(input.accountFocus);
-                                      _selectAccount(
-                                        input,
-                                        input.amountController,
-                                        index,
-                                      );
-                                    },
-                                    showIcon: input.data.account.isNotEmpty,
-                                    trailingIcon:
-                                        const Icon(Icons.cancel_outlined),
-                                    onTap: () {
-                                      _selectAccount(
-                                        input,
-                                        input.amountController,
-                                        index,
-                                      );
-                                    },
-                                  ),
-                                  CategoryField(
-                                    input: input,
-                                    type: input.data.type,
-                                    controller: input.categoryController,
-                                    onTapTrailing: () {
-                                      BlocProvider.of<UTransactionCubit>(
-                                              context)
-                                          .clearCategoryAt(index);
-                                      input.categoryKey.currentState
-                                          ?.validate();
-
-                                      //Focus and select after clearing
-                                      _moveFocusTo(input.categoryFocus);
-                                      _selectCategory(
-                                        input,
-                                        input.amountController,
-                                        index,
-                                      );
-                                    },
-                                    showIcon: input.data.category.isNotEmpty,
-                                    trailingIcon:
-                                        const Icon(Icons.cancel_outlined),
-                                    onTap: () {
-                                      _selectCategory(
-                                          input, input.amountController, index);
-                                    },
-                                  ),
-                                  AmountField(
-                                    input: input,
-                                    controller: input.amountController,
-                                    onCurrencyChange: (String? selection) {
-                                      BlocProvider.of<UTransactionCubit>(
-                                              context)
-                                          .setCurrencyAt(index, selection);
-                                      BlocProvider.of<UTransactionCubit>(
-                                              context)
-                                          .tallyAllCurrencies();
-                                    },
-                                    onTapTrailing: () {
-                                      BlocProvider.of<UTransactionCubit>(
-                                              context)
-                                          .clearAmountAt(index);
-                                      BlocProvider.of<UTransactionCubit>(
-                                              context)
-                                          .tallyAllCurrencies();
-
-                                      //Focus and select when clearing
-                                      _moveFocusTo(input.amountFocus);
-                                      _selectAmount(
-                                          input, input.amountController, index);
-                                    },
-                                    showIcon:
-                                        input.amountController.text.isNotEmpty,
-                                    trailingIcon:
-                                        const Icon(Icons.cancel_outlined),
-                                    onTap: () {
-                                      _selectAmount(
-                                          input, input.amountController, index);
-                                    },
-                                  ),
-                                  NoteField(
-                                    input: input,
-                                    controller: input.noteController,
-                                    onTapTrailing: () {
-                                      BlocProvider.of<UTransactionCubit>(
-                                              context)
-                                          .clearNoteAt(index);
-                                      //Focus after clearing
-                                      _moveFocusTo(input.noteFocus);
-                                    },
-                                    showIcon: input.data.note.isNotEmpty,
-                                    trailingIcon:
-                                        const Icon(Icons.cancel_outlined),
-                                    onTap: () {
-                                      _closeBottomSheet();
-                                      _scrollToWidget(
-                                        input.noteKey,
-                                        1,
-                                      );
-                                    },
-                                    onEditingComplete: () {
-                                      _moveFocusTo(input.additionalNoteFocus);
-                                      _scrollToWidget(
-                                        input.additionalNoteKey,
-                                        1,
-                                      );
-                                    },
-                                  ),
-                                  const Divider(),
-                                  AdditionalNoteField(
-                                    input: input,
-                                    controller: input.additionalNoteController,
-                                    onTapTrailing: () {
-                                      BlocProvider.of<UTransactionCubit>(
-                                              context)
-                                          .clearAdditionalNoteAt(index);
-                                      //Focus on it after clearing
-                                      _moveFocusTo(input.additionalNoteFocus);
-                                    },
-                                    showIcon:
-                                        input.data.additionalNote.isNotEmpty,
-                                    trailingIcon:
-                                        const Icon(Icons.cancel_outlined),
-                                    onTap: () {
-                                      _closeBottomSheet();
-                                      _scrollToWidget(
-                                        input.additionalNoteKey,
-                                        1,
-                                      );
-                                    },
-                                  ),
-                                ],
+                        ...state.entries
+                            .asMap()
+                            .entries
+                            .map(
+                              (entry) => ShakeError(
+                                key: entry.value.formShakerKey,
+                                duration: const Duration(milliseconds: 600),
+                                shakeCount: 4,
+                                shakeOffset: 10,
+                                child: _buildSlidable(entry.key, entry.value),
                               ),
-                            ),
-                          );
-                        }).toList(),
+                            )
+                            .toList(),
                         AddRowButton(
                           onPressed: () {
                             BlocProvider.of<UTransactionCubit>(context)
