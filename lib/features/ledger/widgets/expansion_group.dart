@@ -20,94 +20,115 @@ class ExpansionGroup extends StatelessWidget {
   final bool isExpanded;
   final void Function(bool value) onExpand;
 
-  Widget? _buildLeading() {
+  Widget _buildDateColumn() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        //Whenever displaying the date time, use Local date time
-        Text(dayFormatter.format(input.data.utcDateTime.toLocal()),
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        Text(monthNameFormatter.format(input.data.utcDateTime.toLocal())),
-        Text(yearLongFormatter.format(input.data.utcDateTime.toLocal())),
-      ],
-    );
-  }
-
-  Widget? _buildTitle() {
-    return Padding(
-      padding: const EdgeInsets.all(3.0),
-      child: Text(
-        input.data.account.isEmpty ? 'No account selected' : input.data.account,
-        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        overflow: TextOverflow.ellipsis,
-      ),
-    );
-  }
-
-  Widget? _buildSubtitle() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
         Padding(
-          padding: const EdgeInsets.all(3.0),
+          padding: const EdgeInsets.all(5.0),
           child: Text(
-            input.data.category.isEmpty ? 'No category selected' : input.data.category,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 14,
-              color: input.data.type == TransactionType.income
-                  ? Colors.blue[700]!
-                  : input.data.type == TransactionType.expense
-                      ? Colors.red
-                      : Colors.grey,
+            dayFormatter.format(input.data.utcDateTime.toLocal()),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),
         Padding(
-          padding: const EdgeInsets.all(3.0),
+          padding: const EdgeInsets.all(5.0),
           child: Text(
-            input.data.note.isEmpty ? '-' : input.data.note,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontSize: 14,
+            monthNameFormatter.format(input.data.utcDateTime.toLocal()),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Text(
+            yearLongFormatter.format(
+              input.data.utcDateTime.toLocal(),
             ),
           ),
-        ), //Display the amount keyed in by the user
-        Padding(
-          padding: const EdgeInsets.all(3.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(5.0),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    border: Border.all(
-                      color: input.data.type == TransactionType.income
-                          ? Colors.blue[700]!
-                          : input.data.type == TransactionType.expense
-                              ? Colors.red
-                              : Colors.grey,
-                      width: 1,
-                    ),
-                    borderRadius: BorderRadius.circular(10.0)),
-                child: Text(
-                  //The price to be displayed when expansion tile is collapsed
-                  '${englishDisplayCurrencyFormatter.format(input.data.amount)} ${input.data.currency}',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: input.data.type == TransactionType.income
-                        ? Colors.blue[700]!
-                        : input.data.type == TransactionType.expense
-                            ? Colors.red
-                            : Colors.grey,
-                  ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInformationColumn() {
+    return Flexible(
+      child: Padding(
+        padding: const EdgeInsets.only(left: 5.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: Text(
+                input.data.account.isEmpty
+                    ? 'No account selected'
+                    : input.data.account,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: Text(
+                input.data.category.isEmpty
+                    ? 'No category selected'
+                    : input.data.category,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: input.data.type == TransactionType.income
+                      ? Colors.blue[700]!
+                      : input.data.type == TransactionType.expense
+                          ? Colors.red
+                          : Colors.grey,
                 ),
               ),
-            ],
-          ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: Text(
+                input.data.note.isEmpty ? '-' : input.data.note,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            //Display the amount keyed in by the user
+            Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(5.0),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                          color: input.data.type == TransactionType.income
+                              ? Colors.blue[700]!
+                              : input.data.type == TransactionType.expense
+                                  ? Colors.red
+                                  : Colors.grey,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(10.0)),
+                    child: Text(
+                      //The price to be displayed when expansion tile is collapsed
+                      '${englishDisplayCurrencyFormatter.format(input.data.amount)} ${input.data.currency}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: input.data.type == TransactionType.income
+                            ? Colors.blue[700]!
+                            : input.data.type == TransactionType.expense
+                                ? Colors.red
+                                : Colors.grey,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
@@ -115,7 +136,8 @@ class ExpansionGroup extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).canvasColor, //TODO move this color out of the component
+        color: Theme.of(context)
+            .canvasColor, //TODO move this color out of the component
       ),
       child: ListTileTheme(
         horizontalTitleGap: 0.0,
@@ -127,10 +149,15 @@ class ExpansionGroup extends StatelessWidget {
           key: PageStorageKey<String>(input.data.id),
           maintainState: true,
           initiallyExpanded: true,
-          leading: _buildLeading(),
-          title: ListTile(
-            title: _buildTitle(),
-            subtitle: _buildSubtitle(),
+          title: Container(
+            padding: const EdgeInsets.all(5.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                _buildDateColumn(),
+                _buildInformationColumn(),
+              ],
+            ),
           ),
           children: [
             LedgerForm(
