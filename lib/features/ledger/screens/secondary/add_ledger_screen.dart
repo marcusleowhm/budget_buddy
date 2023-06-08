@@ -133,7 +133,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
       if (selectedDate != null) {
         //Set value and close the dialog
         BlocProvider.of<UTransactionCubit>(context)
-            .setDateAt(index, selectedDate);
+            .setDateOf(input, selectedDate);
         dateController.text = dateLongFormatter.format(selectedDate);
 
         //Move focus to account after selecting date
@@ -160,7 +160,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                 if (selectedAccount != null) {
                   //Set value and validate account
                   BlocProvider.of<UTransactionCubit>(context)
-                      .setAccountAt(index, selectedAccount);
+                      .setAccountOf(input, selectedAccount);
                   input.accountKey.currentState?.validate();
 
                   //Move focus to category after selection
@@ -191,7 +191,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
           if (selectedCategory != null) {
             //Set value and validate category
             BlocProvider.of<UTransactionCubit>(context)
-                .setCategoryAt(index, selectedCategory);
+                .setCategoryOf(input, selectedCategory);
             input.categoryKey.currentState?.validate();
 
             //Move focus to amount input,
@@ -224,14 +224,14 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
             .amount,
         controller: amountController,
         onCancelPressed: _closeBottomSheet,
-        onKeystroke: (double newValue) {
+        onKeystroke: (double amount) {
           BlocProvider.of<UTransactionCubit>(context)
-              .setAmountAt(index, newValue);
+              .setAmountOf(input, amount);
           BlocProvider.of<UTransactionCubit>(context).tallyAllCurrencies();
         },
-        onDonePressed: (double newValue) {
+        onDonePressed: (double amount) {
           BlocProvider.of<UTransactionCubit>(context)
-              .setAmountAt(index, newValue);
+              .setAmountOf(input, amount);
           BlocProvider.of<UTransactionCubit>(context).tallyAllCurrencies();
 
           _moveFocusTo(input.noteFocus);
@@ -274,7 +274,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
           isExpanded: input.isExpanded == true,
           onExpand: (isExpanded) {
             BlocProvider.of<UTransactionCubit>(context)
-                .setIsExpanded(index, isExpanded);
+                .setIsExpandedOf(input, isExpanded);
             if (!isExpanded) {
               _closeBottomSheet(); //Close the bottom sheet (custom keyboards)
               FocusManager.instance.primaryFocus
@@ -296,7 +296,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                   );
                 } else {
                   BlocProvider.of<UTransactionCubit>(context)
-                      .setTypeAt(index, newSelection);
+                      .setTypeOf(input, newSelection);
                   BlocProvider.of<UTransactionCubit>(context)
                       .tallyAllCurrencies();
                 }
@@ -317,7 +317,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                   ),
               onTapTrailing: () {
                 BlocProvider.of<UTransactionCubit>(context)
-                    .resetDateAtToToday(index, localNow);
+                    .resetDateOfToToday(input, localNow);
                 input.dateTimeController.text =
                     dateLongFormatter.format(localNow);
               },
@@ -336,9 +336,10 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
               input: input,
               controller: input.accountController,
               onTapTrailing: () {
-                BlocProvider.of<UTransactionCubit>(context).clearAccountAt(index);
+                BlocProvider.of<UTransactionCubit>(context)
+                    .clearAccountOf(input);
                 input.accountKey.currentState?.validate();
-    
+
                 //Focus and select after clearing
                 _moveFocusTo(input.accountFocus);
                 _selectAccount(
@@ -365,7 +366,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                 BlocProvider.of<UTransactionCubit>(context)
                     .clearCategoryAt(index);
                 input.categoryKey.currentState?.validate();
-    
+
                 //Focus and select after clearing
                 _moveFocusTo(input.categoryFocus);
                 _selectCategory(
@@ -385,13 +386,16 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
               controller: input.amountController,
               onCurrencyChange: (String? selection) {
                 BlocProvider.of<UTransactionCubit>(context)
-                    .setCurrencyAt(index, selection);
-                BlocProvider.of<UTransactionCubit>(context).tallyAllCurrencies();
+                    .setCurrencyOf(input, selection);
+                BlocProvider.of<UTransactionCubit>(context)
+                    .tallyAllCurrencies();
               },
               onTapTrailing: () {
-                BlocProvider.of<UTransactionCubit>(context).clearAmountAt(index);
-                BlocProvider.of<UTransactionCubit>(context).tallyAllCurrencies();
-    
+                BlocProvider.of<UTransactionCubit>(context)
+                    .clearAmountAt(index);
+                BlocProvider.of<UTransactionCubit>(context)
+                    .tallyAllCurrencies();
+
                 //Focus and select when clearing
                 _moveFocusTo(input.amountFocus);
                 _selectAmount(input, input.amountController, index);

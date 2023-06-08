@@ -45,56 +45,68 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     ));
   }
 
-  void setIsExpanded(int index, bool isExpanded) {
-    state.entries.elementAt(index).isExpanded = isExpanded;
+  void setIsExpandedOf(LedgerInput input, bool isExpanded) {
+    state.entries
+        .firstWhere((entry) => entry.data.id == input.data.id)
+        .isExpanded = isExpanded;
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
     ));
   }
 
-  void setTypeAt(int index, TransactionType type) {
-    state.entries.elementAt(index).data.type = type;
+  void setTypeOf(LedgerInput input, TransactionType type) {
+    state.entries
+        .firstWhere((entry) => entry.data.id == input.data.id)
+        .data
+        .type = type;
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
     ));
   }
 
-  void setDateAt(int index, DateTime selectedDate) {
+  void setDateOf(LedgerInput input, DateTime selectedDate) {
     //Set state of the LedgerInput to the user selected date
     //Note: Whenever setting the date time state, use UTC
-    state.entries.elementAt(index).data.utcDateTime = selectedDate.toUtc();
+    state.entries
+        .firstWhere((entry) => entry.data.id == input.data.id)
+        .data
+        .utcDateTime = selectedDate.toUtc();
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
     ));
   }
 
-  void setAccountAt(int index, String account) {
-    LedgerInput input = state.entries.elementAt(index);
-    input.data.account = account;
-    input.accountController.text = account;
+  void setAccountOf(LedgerInput input, String account) {
+    LedgerInput firstMatchedInput =
+        state.entries.firstWhere((entry) => entry.data.id == input.data.id);
+    firstMatchedInput.data.account = account;
+    firstMatchedInput.accountController.text = account;
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
     ));
   }
 
-  void setCategoryAt(int index, String categoryOrAccountTo) {
-    LedgerInput input = state.entries.elementAt(index);
-    input.data.category = categoryOrAccountTo;
-    input.categoryController.text = categoryOrAccountTo;
+  void setCategoryOf(LedgerInput input, String categoryOrAccountTo) {
+    LedgerInput firstMatchedInput =
+        state.entries.firstWhere((entry) => entry.data.id == input.data.id);
+    firstMatchedInput.data.category = categoryOrAccountTo;
+    firstMatchedInput.categoryController.text = categoryOrAccountTo;
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
     ));
   }
 
-  void setCurrencyAt(int index, String? selectedCurrency) {
+  void setCurrencyOf(LedgerInput input, String? selectedCurrency) {
     if (selectedCurrency != null) {
-      LedgerInput input = state.entries.elementAt(index);
-      input.data.currency = selectedCurrency;
+      state.entries
+          .firstWhere((entry) => entry.data.id == input.data.id)
+          .data
+          .currency = selectedCurrency;
     }
     emit(UTransactionState(
       entries: state.entries,
@@ -102,8 +114,11 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     ));
   }
 
-  void setAmountAt(int index, double newValue) {
-    state.entries.elementAt(index).data.amount = newValue;
+  void setAmountOf(LedgerInput input, double amount) {
+    state.entries
+        .firstWhere((entry) => entry.data.id == input.data.id)
+        .data
+        .amount = amount;
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
@@ -111,7 +126,10 @@ class UTransactionCubit extends Cubit<UTransactionState> {
   }
 
   void setNoteOf(LedgerInput input, String note) {
-    input.data.note = note;
+    state.entries
+        .firstWhere((entry) => entry.data.id == input.data.id)
+        .data
+        .note = note;
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
@@ -119,7 +137,10 @@ class UTransactionCubit extends Cubit<UTransactionState> {
   }
 
   void setAdditionalNoteAt(LedgerInput input, String additionalNote) {
-    input.data.additionalNote = additionalNote;
+    state.entries
+        .firstWhere((entry) => entry.data.id == input.data.id)
+        .data
+        .additionalNote = additionalNote;
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
@@ -181,21 +202,25 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     ));
   }
 
-  void resetDateAtToToday(
-    int index,
+  void resetDateOfToToday(
+    LedgerInput input,
     DateTime localNow,
   ) {
-    state.entries.elementAt(index).data.utcDateTime = localNow.toUtc();
+    state.entries
+        .firstWhere((entry) => entry.data.id == input.data.id)
+        .data
+        .utcDateTime = localNow.toUtc();
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
     ));
   }
 
-  void clearAccountAt(int index) {
-    LedgerInput input = state.entries.elementAt(index);
-    input.accountController.clear();
-    input.data.account = input.accountController.text;
+  void clearAccountOf(LedgerInput input) {
+    LedgerInput firstMatchedInput =
+        state.entries.firstWhere((entry) => entry.data.id == input.data.id);
+    firstMatchedInput.accountController.clear();
+    firstMatchedInput.data.account = input.accountController.text;
 
     //Trigger the validation error
     input.accountKey.currentState?.validate();
