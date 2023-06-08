@@ -74,22 +74,39 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
             builder: (context, state) {
               //Sort data depending on criteria selected
               Iterable<TransactionData> data = getData(state);
+              GlobalKey<TooltipState> recentTransactionTooltip = GlobalKey();
+
               return Column(
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.all(5.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          '10 Recent Transactions',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
+                  Row(
+                    children: [
+                      const Text(
+                        'Recent Transactions',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
                         ),
-                      ],
-                    ),
+                      ),
+                      Tooltip(
+                        key: recentTransactionTooltip,
+                        message:
+                            'Up to 10 recent transactions will appear here.',
+                        showDuration: const Duration(seconds: 3),
+                        triggerMode: TooltipTriggerMode.manual,
+                        child: IconButton(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          constraints: const BoxConstraints(),
+                          iconSize: 16,
+                          icon: const Icon(
+                            Icons.info_outline_rounded,
+                          ),
+                          onPressed: () {
+                            recentTransactionTooltip.currentState
+                                ?.ensureTooltipVisible();
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -132,28 +149,14 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: min(10, state.committedEntries.length) * 2,
                     itemBuilder: (context, index) {
-
-                      if (index.isOdd) return const Divider(thickness: 1,);
+                      if (index.isOdd) {
+                        return const Divider(
+                          thickness: 1,
+                        );
+                      }
                       index = index ~/ 2;
                       final GlobalKey<TooltipState> tooltipKey =
                           GlobalKey<TooltipState>();
-
-                      String createdDateTimeText =
-                          'Created: ${dateFormatter.format(data.elementAt(index).createdUtcDateTime!)}\n';
-                      String modifiedDateTimeText = data
-                                  .elementAt(index)
-                                  .modifiedUtcDateTime ==
-                              null
-                          ? 'Modified: -\n\n'
-                          : 'Modified: ${dateFormatter.format(data.elementAt(index).modifiedUtcDateTime!)}\n\n';
-                      String additionalNoteText =
-                          data.elementAt(index).additionalNote.isEmpty
-                              ? '-'
-                              : data.elementAt(index).additionalNote;
-                      String toolTipMessage = createdDateTimeText +
-                          modifiedDateTimeText +
-                          additionalNoteText;
-
                       return ListTile(
                         title: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -252,12 +255,31 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
                           key: tooltipKey,
                           triggerMode: TooltipTriggerMode.manual,
                           showDuration: const Duration(seconds: 10),
-                          message: toolTipMessage,
+                          // message: toolTipMessage,
+                          richMessage: TextSpan(children: [
+                            TextSpan(
+                              text:
+                                  'Created: ${dateFormatter.format(data.elementAt(index).createdUtcDateTime!)}\n',
+                            ),
+                            TextSpan(
+                              text: data.elementAt(index).modifiedUtcDateTime ==
+                                      null
+                                  ? 'Modified: Never\n\n'
+                                  : 'Modified: ${dateFormatter.format(data.elementAt(index).modifiedUtcDateTime!)}\n\n',
+                            ),
+                            TextSpan(
+                                text:
+                                    data.elementAt(index).additionalNote.isEmpty
+                                        ? 'No additional note added'
+                                        : data.elementAt(index).additionalNote,
+                                style: const TextStyle(
+                                    fontStyle: FontStyle.italic)),
+                          ]),
                           child: IconButton(
                             icon: const Icon(Icons.info_outline_rounded),
                             onPressed: () {
                               tooltipKey.currentState?.ensureTooltipVisible();
-                            }, 
+                            },
                           ),
                         ),
                       );

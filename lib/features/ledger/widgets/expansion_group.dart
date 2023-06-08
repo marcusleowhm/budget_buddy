@@ -144,7 +144,9 @@ class ExpansionGroup extends StatelessWidget {
         child: ExpansionTile(
           onExpansionChanged: (value) {
             onExpand(value);
-            Slidable.of(context)?.close();
+            if (value) {
+              Slidable.of(context)?.close();
+            }
           },
           key: PageStorageKey<String>(input.data.id),
           maintainState: true,

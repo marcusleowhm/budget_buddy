@@ -71,4 +71,34 @@ class LedgerInput {
   final FocusNode noteFocus;
   final FocusNode additionalNoteFocus;
 
+  void moveFocusToNext() {
+    Map<TextEditingController, FocusNode> controllerFocusMap = {
+      dateTimeController: dateTimeFocus,
+      accountController: accountFocus,
+      categoryController: categoryFocus,
+      amountController: amountFocus,
+      noteController: noteFocus,
+      additionalNoteController: additionalNoteFocus
+    };
+
+    for (MapEntry entry in controllerFocusMap.entries) {
+      TextEditingController controller = entry.key;
+      FocusNode focus = entry.value;
+      if (controller.text.isEmpty) {
+        focus.requestFocus();
+
+        if (focus == dateTimeFocus) {
+          
+        }
+
+        return;
+      }
+    }
+  }
+
+  void selectNext() {
+    
+  }
+
+  
 }
