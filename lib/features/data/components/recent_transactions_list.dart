@@ -85,7 +85,7 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
                           '10 Recent Transactions',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 14,
+                            fontSize: 16,
                           ),
                         ),
                       ],
