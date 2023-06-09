@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
 import 'package:budget_buddy/features/ledger/model/transaction_data.dart';
+import 'package:budget_buddy/utilities/chart_formatter.dart';
 import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:budget_buddy/utilities/date_formatter.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -29,7 +30,8 @@ class DateTimeSeriesChart extends StatefulWidget {
 class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
   final double width = 7;
   int touchedGroupIndex = -1;
-  late double maxY;
+  double maxY = 0.0;
+  double minY = 0.0;
 
   // late double minY;
 
@@ -41,9 +43,10 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
     int currentMonth = now.month;
     int currentYear = now.year;
     double maxOfIncomeAndExpense = 0.0;
+    double minOfIncomeAndExpense = 0.0;
 
-    //Starting month will always be 1, since Monthly filter implies Year to Date in Monthly intervals
     if (widget.dateFilter == ChartDateFilterCriteria.monthly) {
+      //Starting month will always be 1, since Monthly filter implies Year to Date in Monthly intervals
       for (int i = 1; i <= currentMonth; i++) {
         double incomeSum = 0.0;
         double expenseSum = 0.0;
@@ -64,19 +67,49 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
                 //Do nothing when it's transfer
                 break;
             }
-
-            if (maxOfIncomeAndExpense < max(incomeSum, expenseSum)) {
-              maxOfIncomeAndExpense = max(incomeSum, expenseSum);
-            }
           }
         }
 
-        //Round up to the next 50 of the highest value in the time series
-        maxOfIncomeAndExpense = roundToNearest(maxOfIncomeAndExpense);
-        setState(() => maxY = maxOfIncomeAndExpense);
+        if (widget.amountFilter == ChartAmountDisplayCriteria.gross) {
+          if (maxOfIncomeAndExpense < max(incomeSum, expenseSum)) {
+            maxOfIncomeAndExpense = max(incomeSum, expenseSum);
+          }
 
-        //Add the group data to the list
-        groups.add(_makeGroupData(i, incomeSum, expenseSum));
+          //Round up to the nearest of the highest value in the time series
+          maxOfIncomeAndExpense = roundToNearestPositive(maxOfIncomeAndExpense);
+          setState(() {
+            maxY = maxOfIncomeAndExpense;
+            minY = 0.0;
+          });
+
+          //Add the group data to the list
+          groups.add(_makeDoubleBarGroupData(i, incomeSum, expenseSum));
+        }
+
+        if (widget.amountFilter == ChartAmountDisplayCriteria.nett) {
+          //If the income is higher than the expense, we can find the max Y
+          if (incomeSum > expenseSum &&
+              maxOfIncomeAndExpense < incomeSum - expenseSum) {
+            maxOfIncomeAndExpense = incomeSum - expenseSum;
+          }
+
+          //If the income is lower than the expense, we find the minimum Y
+          if (incomeSum < expenseSum &&
+              minOfIncomeAndExpense > incomeSum - expenseSum) {
+            minOfIncomeAndExpense = incomeSum - expenseSum;
+          }
+
+          //Round up to the nearest of the highest value in the time series
+          maxOfIncomeAndExpense = roundToNearestPositive(maxOfIncomeAndExpense);
+          minOfIncomeAndExpense = roundToNearestNegative(minOfIncomeAndExpense);
+          setState(() {
+            maxY = maxOfIncomeAndExpense;
+            minY = minOfIncomeAndExpense;
+          });
+
+          //Add the group data to the list
+          groups.add(_makeSingleBarGroupdata(i, incomeSum - expenseSum));
+        }
       }
     }
 
@@ -99,33 +132,63 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
                 //Do nothing when it's transfer
                 break;
             }
-
-            //Calculated only if the data's year is equals to i
-            if (maxOfIncomeAndExpense < max(incomeSum, expenseSum)) {
-              maxOfIncomeAndExpense = max(incomeSum, expenseSum);
-            }
           }
         }
 
-        //Round up to the next 50 of the highest value in the time series
-        maxOfIncomeAndExpense = roundToNearest(maxOfIncomeAndExpense);
-        setState(() => maxY = maxOfIncomeAndExpense);
+        //Calculated only if the data's year is equals to i
+        if (widget.amountFilter == ChartAmountDisplayCriteria.gross) {
+          if (maxOfIncomeAndExpense < max(incomeSum, expenseSum)) {
+            maxOfIncomeAndExpense = max(incomeSum, expenseSum);
+          }
 
-        //Add the group data to the list
-        groups.add(_makeGroupData(i, incomeSum, expenseSum));
+          //Round up to the next 50 of the highest value in the time series
+          maxOfIncomeAndExpense = roundToNearestPositive(maxOfIncomeAndExpense);
+          setState(() {
+            maxY = maxOfIncomeAndExpense;
+            minY = 0.0;
+          });
+
+          //Add the group data to the list
+          groups.add(_makeDoubleBarGroupData(i, incomeSum, expenseSum));
+        }
+
+        if (widget.amountFilter == ChartAmountDisplayCriteria.nett) {
+          //If the income is higher than the expense, we can find the max Y
+          if (incomeSum > expenseSum &&
+              maxOfIncomeAndExpense < incomeSum - expenseSum) {
+            maxOfIncomeAndExpense = incomeSum - expenseSum;
+          }
+
+          //If the income is lower than the expense, we find the minimum Y
+          if (incomeSum < expenseSum &&
+              minOfIncomeAndExpense > incomeSum - expenseSum) {
+            minOfIncomeAndExpense = incomeSum - expenseSum;
+          }
+
+          //Round up to the nearest of the highest value in the time series
+          maxOfIncomeAndExpense = roundToNearestPositive(maxOfIncomeAndExpense);
+          //Round down to the nearest of the lowest value in time series
+          minOfIncomeAndExpense = roundToNearestNegative(minOfIncomeAndExpense);
+          setState(() {
+            maxY = maxOfIncomeAndExpense;
+            minY = minOfIncomeAndExpense;
+          });
+          //Add the group data to the list
+          groups.add(_makeSingleBarGroupdata(i, incomeSum - expenseSum));
+        }
       }
     }
 
     return groups;
   }
 
-  BarChartGroupData _makeGroupData(
+  BarChartGroupData _makeDoubleBarGroupData(
     int x,
     double incomeValue,
     double expenseValue,
   ) {
     return BarChartGroupData(
-        barsSpace: 4,
+        barsSpace: 6,
         x: x,
         barRods: [
           BarChartRodData(
@@ -142,10 +205,24 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
         showingTooltipIndicators: touchedGroupIndex == x ? [2] : []);
   }
 
+  BarChartGroupData _makeSingleBarGroupdata(
+    int x,
+    double nettValue,
+  ) {
+    return BarChartGroupData(x: x, barRods: [
+      BarChartRodData(
+        toY: nettValue,
+        color:
+            nettValue < 0 ? widget.netNegativeColor : widget.netPositiveColor,
+        width: width,
+      ),
+    ]);
+  }
+
   Widget _buildBottomTitles(double value, TitleMeta meta) {
     DateTime localNow = DateTime.now().toLocal();
 
-    final Widget text;
+    Widget text = const Text('');
     if (widget.dateFilter == ChartDateFilterCriteria.monthly) {
       text = Text(
         monthNameFormatter.format(
@@ -167,7 +244,7 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
     }
 
     //If the date filter is yearly
-    else {
+    if (widget.dateFilter == ChartDateFilterCriteria.yearly) {
       text = Text(
         yearLongFormatter.format(
           DateTime(
@@ -179,6 +256,7 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
             : null,
       );
     }
+
     return SideTitleWidget(
       axisSide: meta.axisSide,
       space: 16, //margin top
@@ -203,7 +281,8 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
               padding: const EdgeInsets.only(right: 20),
               child: BarChart(
                 BarChartData(
-                  maxY: maxY == 0 ? 50 : maxY,
+                  maxY: maxY == 0.0 ? 50.0 : maxY,
+                  minY: minY == 0.0 ? 0.0 : minY,
                   barTouchData: BarTouchData(
                     touchTooltipData: BarTouchTooltipData(
                       tooltipBgColor: Colors.grey[200],
@@ -263,6 +342,10 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
                         getTitlesWidget: _buildBottomTitles,
                         reservedSize: 42,
                       ),
+                    ),
+                    leftTitles: AxisTitles(
+                      sideTitles:
+                          SideTitles(showTitles: true, reservedSize: 42),
                     ),
                   ),
                   borderData: FlBorderData(
