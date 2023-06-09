@@ -66,7 +66,8 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
       setState(() => newData.note = formControl.noteController.text);
     });
     formControl.additionalNoteController.addListener(() {
-      setState(() => newData.additionalNote = formControl.additionalNoteController.text);
+      setState(() =>
+          newData.additionalNote = formControl.additionalNoteController.text);
     });
     super.initState();
   }
@@ -75,10 +76,6 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
   void dispose() {
     FormControlUtility.dispose(formControl);
     super.dispose();
-  }
-
-  void _moveFocusTo(FocusNode focus) {
-    focus.requestFocus();
   }
 
   Future<void> _scrollToWidget(GlobalKey widgetKey, double alignment) async {
@@ -123,8 +120,12 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
           },
         );
         //Move focus to account after selecting date
-        _moveFocusTo(formControl.accountFocus);
-        _selectAccount();
+        _closeBottomSheet();
+        formControl.moveFocusToNext(
+          (_) => _selectAccount,
+          (_) => _selectCategory,
+          (_) => _selectAmount,
+        );
       }
     });
   }
@@ -152,9 +153,13 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                     newData.account = selectedAccount;
                     formControl.accountController.text = newData.account;
                   });
-                  _moveFocusTo(formControl.categoryFocus);
-                  _selectCategory();
-                  _scrollToWidget(formControl.categoryKey, scrollAlignment);
+
+                  _closeBottomSheet();
+                  formControl.moveFocusToNext(
+                    (_) => _selectAccount,
+                    (_) => _selectCategory,
+                    (_) => _selectAmount,
+                  );
                 } else {
                   _closeBottomSheet();
                 }
@@ -174,6 +179,8 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
   }
 
   void _selectCategory() {
+    _scrollToWidget(formControl.categoryKey, scrollAlignment);
+
     _bottomSheetController =
         _scaffoldKey.currentState?.showBottomSheet<void>((context) {
       return CategoryPicker(
@@ -185,11 +192,15 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
               newData.category = selectedCategory;
               formControl.categoryController.text = newData.category;
             });
+
+            _closeBottomSheet();
             //Move focus to amount input,
             //Then show the keypad
-            _moveFocusTo(formControl.amountFocus);
-            _selectAmount();
-            _scrollToWidget(formControl.amountKey, scrollAlignment);
+            formControl.moveFocusToNext(
+              (_) => _selectAccount,
+              (_) => _selectCategory,
+              (_) => _selectAmount,
+            );
           } else {
             _closeBottomSheet();
           }
@@ -203,6 +214,11 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
       newData.category = widget.data.category;
       formControl.categoryController.text = newData.category;
     });
+    formControl.moveFocusToNext(
+      (_) => _selectAccount(),
+      (_) => _selectCategory(),
+      (_) => _selectAmount(),
+    );
   }
 
   void _setCurrency(String? selection) {
@@ -220,6 +236,8 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
   }
 
   void _selectAmount() {
+    _scrollToWidget(formControl.amountKey, scrollAlignment);
+
     _bottomSheetController =
         _scaffoldKey.currentState?.showBottomSheet<void>((context) {
       return AmountTyper(
@@ -231,8 +249,11 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
         },
         onDonePressed: (double newValue) {
           setState(() => newData.amount = newValue);
-
-          _moveFocusTo(formControl.noteFocus);
+          formControl.moveFocusToNext(
+            (_) => _selectAccount,
+            (_) => _selectCategory,
+            (_) => _selectAmount,
+          );
           _scrollToWidget(formControl.noteKey, 1.0);
           _closeBottomSheet();
         },
@@ -327,8 +348,12 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                           newData.utcDateTime.toLocal().day,
                                         ) !=
                                         DateTime(
-                                          widget.data.utcDateTime.toLocal().year,
-                                          widget.data.utcDateTime.toLocal().month,
+                                          widget.data.utcDateTime
+                                              .toLocal()
+                                              .year,
+                                          widget.data.utcDateTime
+                                              .toLocal()
+                                              .month,
                                           widget.data.utcDateTime.toLocal().day,
                                         ),
                                     onTapTrailing: _resetDate,
@@ -377,10 +402,19 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                     trailingIcon: const Icon(Icons.refresh),
                                     onTap: _closeBottomSheet,
                                     onEditingComplete: () {
-                                      _moveFocusTo(
-                                          formControl.additionalNoteFocus);
-                                      _scrollToWidget(
+                                      formControl.moveFocusToNext(
+                                        (_) => _selectAccount,
+                                        (_) => _selectCategory,
+                                        (_) => _selectAmount,
+                                      );
+
+                                      if (formControl.additionalNoteController.text.isNotEmpty) {
+                                        FocusManager.instance.primaryFocus?.unfocus();
+                                      }
+                                      else {
+                                        _scrollToWidget(
                                           formControl.additionalNoteKey, 1.0);
+                                      }
                                     },
                                   ),
                                   const Divider(),
