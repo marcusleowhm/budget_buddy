@@ -1,8 +1,17 @@
+import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/features/data/components/charts/datetime_series_chart.dart';
 import 'package:flutter/material.dart';
 
-class HistoricalTrend extends StatelessWidget {
+class HistoricalTrend extends StatefulWidget {
   const HistoricalTrend({super.key});
+
+  @override
+  State<HistoricalTrend> createState() => _HistoricalTrendState();
+}
+
+class _HistoricalTrendState extends State<HistoricalTrend> {
+  ChartDateFilterCriteria dateFilter = ChartDateFilterCriteria.monthly;
+  ChartAmountDisplayCriteria amountFilter = ChartAmountDisplayCriteria.gross;
 
   @override
   Widget build(BuildContext context) {
@@ -18,22 +27,52 @@ class HistoricalTrend extends StatelessWidget {
           padding: const EdgeInsets.all(10.0),
           child: Column(
             children: [
-              const Padding(
-                padding: EdgeInsets.all(5.0),
+              Padding(
+                padding: const EdgeInsets.all(5.0),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
+                    const Text(
                       'Historical Trend',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    Row(
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            dateFilter == ChartDateFilterCriteria.monthly
+                                ? setState(() =>
+                                    dateFilter = ChartDateFilterCriteria.yearly)
+                                : setState(() => dateFilter =
+                                    ChartDateFilterCriteria.monthly);
+                          },
+                          child: Text(
+                              'View ${dateFilter == ChartDateFilterCriteria.monthly ? 'Yearly' : 'Monthly'}'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            amountFilter == ChartAmountDisplayCriteria.gross
+                                ? setState(() => amountFilter =
+                                    ChartAmountDisplayCriteria.nett)
+                                : setState(() => amountFilter =
+                                    ChartAmountDisplayCriteria.gross);
+                          },
+                          child: Text(
+                              'View ${amountFilter == ChartAmountDisplayCriteria.gross ? 'Net' : 'Gross'}'),
+                        )
+                      ],
+                    )
                   ],
                 ),
               ),
               const Divider(thickness: 1.0),
-              DateTimeSeriesChart()
+              DateTimeSeriesChart(
+                dateFilter: dateFilter,
+                amountFilter: amountFilter,
+              )
             ],
           ),
         ),
