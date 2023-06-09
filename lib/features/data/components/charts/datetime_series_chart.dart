@@ -28,7 +28,7 @@ class DateTimeSeriesChart extends StatefulWidget {
 }
 
 class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
-  final double width = 7;
+  final double width = 12;
   int touchedGroupIndex = -1;
   double maxY = 0.0;
   double minY = 0.0;
@@ -283,6 +283,21 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
                 BarChartData(
                   maxY: maxY == 0.0 ? 50.0 : maxY,
                   minY: minY == 0.0 ? 0.0 : minY,
+                  extraLinesData:
+                      widget.amountFilter == ChartAmountDisplayCriteria.nett
+                          ? ExtraLinesData(
+                              horizontalLines: [
+                                HorizontalLine(
+                                  y: 0,
+                                  strokeWidth: 0.5,
+                                  color: Colors.grey,
+                                  dashArray: [
+                                    20, 5,
+                                  ]
+                                ),
+                              ],
+                            )
+                          : null,
                   barTouchData: BarTouchData(
                     touchTooltipData: BarTouchTooltipData(
                       tooltipBgColor: Colors.grey[200],
@@ -342,10 +357,6 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
                         getTitlesWidget: _buildBottomTitles,
                         reservedSize: 42,
                       ),
-                    ),
-                    leftTitles: AxisTitles(
-                      sideTitles:
-                          SideTitles(showTitles: true, reservedSize: 42),
                     ),
                   ),
                   borderData: FlBorderData(
