@@ -3,10 +3,12 @@ import 'dart:math';
 import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
 import 'package:budget_buddy/features/ledger/model/transaction_data.dart';
+import 'package:budget_buddy/nav/routes.dart';
 import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:budget_buddy/utilities/date_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class RecentTransactionsList extends StatefulWidget {
   const RecentTransactionsList({super.key});
@@ -96,7 +98,8 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
                           showDuration: const Duration(seconds: 3),
                           triggerMode: TooltipTriggerMode.manual,
                           child: IconButton(
-                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
                             constraints: const BoxConstraints(),
                             iconSize: 16,
                             icon: const Icon(
@@ -161,6 +164,12 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
                       final GlobalKey<TooltipState> tooltipKey =
                           GlobalKey<TooltipState>();
                       return ListTile(
+                        onTap: () {
+                          context.go(
+                            '/${routes[MainRoutes.ledger]}/${routes[SubRoutes.editLedger]}',
+                            extra: data.elementAt(index),
+                          );
+                        },
                         title: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
