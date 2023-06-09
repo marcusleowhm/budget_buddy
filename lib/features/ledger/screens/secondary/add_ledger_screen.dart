@@ -77,7 +77,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     BlocProvider.of<UTransactionCubit>(context).removeRowAt(index);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text('Record removed'),
+        duration: const Duration(seconds: 5),
+        content: const Text('Transaction removed'),
         action: SnackBarAction(
           label: 'UNDO',
           onPressed: () {
@@ -89,6 +90,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
       ),
     );
     BlocProvider.of<UTransactionCubit>(context).tallyAllCurrencies();
+    setState(() => isValid = input.isFormValid());
   }
 
   //This function will be called
@@ -139,6 +141,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
           _selectCategory,
           _selectAmount,
         );
+        setState(() => isValid = input.isFormValid());
       }
     });
   }
@@ -164,6 +167,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                   input.accountKey.currentState?.validate();
 
                   _closeBottomSheet();
+                  setState(() => isValid = input.isFormValid());
                   //Move focus to category after selection
                   input.moveFocusToNext(
                     _selectAccount,
@@ -198,6 +202,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
             input.categoryKey.currentState?.validate();
 
             _closeBottomSheet();
+            setState(() => isValid = input.isFormValid());
             //Move focus to amount input,
             //Then show the keypad
             input.moveFocusToNext(
@@ -228,11 +233,13 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
         onKeystroke: (double amount) {
           BlocProvider.of<UTransactionCubit>(context)
               .setAmountOf(input, amount);
+          setState(() => isValid = input.isFormValid());
           BlocProvider.of<UTransactionCubit>(context).tallyAllCurrencies();
         },
         onDonePressed: (double amount) {
           BlocProvider.of<UTransactionCubit>(context)
               .setAmountOf(input, amount);
+          setState(() => isValid = input.isFormValid());
           BlocProvider.of<UTransactionCubit>(context).tallyAllCurrencies();
 
           _closeBottomSheet();
@@ -276,7 +283,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
           ],
         ),
         child: ExpansionGroup(
-          isExpanded: input.isExpanded == true,
+          isExpanded: input.isExpanded,
           onExpand: (isExpanded) {
             BlocProvider.of<UTransactionCubit>(context)
                 .setIsExpandedOf(input, isExpanded);
@@ -328,6 +335,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
               },
               onTap: () {
                 _closeBottomSheet();
+                setState(() => isValid = input.isFormValid());
                 _setDate(context, input);
               },
             ),
@@ -339,6 +347,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                     .clearAccountOf(input);
                 input.accountKey.currentState?.validate();
 
+                setState(() => isValid = input.isFormValid());
                 //Focus and select after clearing
                 input.moveFocusToNext(
                   _selectAccount,
@@ -361,6 +370,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                     .clearCategoryOf(input);
                 input.categoryKey.currentState?.validate();
 
+                setState(() => isValid = input.isFormValid());
                 //Focus and select after clearing
                 input.moveFocusToNext(
                   _selectAccount,
@@ -382,12 +392,14 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                     .setCurrencyOf(input, selection);
                 BlocProvider.of<UTransactionCubit>(context)
                     .tallyAllCurrencies();
+                setState(() => isValid = input.isFormValid());
               },
               onTapTrailing: () {
                 BlocProvider.of<UTransactionCubit>(context)
                     .clearAmountOf(input);
                 BlocProvider.of<UTransactionCubit>(context)
                     .tallyAllCurrencies();
+                setState(() => isValid = input.isFormValid());
 
                 //Focus and select when clearing
                 input.moveFocusToNext(
@@ -407,6 +419,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
               controller: input.noteController,
               onTapTrailing: () {
                 BlocProvider.of<UTransactionCubit>(context).clearNoteOf(input);
+                setState(() => isValid = input.isFormValid());
                 //Focus after clearing
                 input.moveFocusToNext(
                   _selectAccount,
@@ -417,6 +430,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
               showIcon: input.data.note.isNotEmpty,
               trailingIcon: const Icon(Icons.cancel_outlined),
               onTap: () {
+                setState(() => isValid = input.isFormValid());
                 _closeBottomSheet();
                 _scrollToWidget(
                   input.noteKey,
@@ -424,6 +438,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                 );
               },
               onEditingComplete: () {
+                setState(() => isValid = input.isFormValid());
                 _closeBottomSheet();
                 input.moveFocusToNext(
                   _selectAccount,
@@ -443,6 +458,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
               onTapTrailing: () {
                 BlocProvider.of<UTransactionCubit>(context)
                     .clearAdditionalNoteAt(input);
+                setState(() => isValid = input.isFormValid());
                 //Focus on it after clearing
                 input.moveFocusToNext(
                   _selectAccount,
@@ -453,6 +469,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
               showIcon: input.data.additionalNote.isNotEmpty,
               trailingIcon: const Icon(Icons.cancel_outlined),
               onTap: () {
+                setState(() => isValid = input.isFormValid());
                 _closeBottomSheet();
                 _scrollToWidget(
                   input.additionalNoteKey,

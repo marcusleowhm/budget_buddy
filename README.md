@@ -17,9 +17,4 @@ Project Struture:
     - main.dart (program entry point)
     
 Current Known Issues:
-- Moving focus through the inputs require a lot of passing parameters around. Will need to refactor the move focus function
-- Refactor UTransactionCubit to use LedgerInput to match id instead of index whenever changing state
-- Move form validation logic from cubit into the formcontrol utility
 - Need to create additional properties on the transaction data for different TransactionType. e.g. Income Category, Expense Category, Account To
-- Pixel overflow on datetime when running on Desktop
-- Error message still show when form is valid

@@ -106,4 +106,12 @@ class LedgerInput {
       }
     }
   }
+
+  bool isFormValid() {
+    if (accountController.text.isEmpty || categoryController.text.isEmpty) {
+      return false;
+    }
+    return true;
+  }
+
 }

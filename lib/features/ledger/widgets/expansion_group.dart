@@ -21,33 +21,36 @@ class ExpansionGroup extends StatelessWidget {
   final void Function(bool value) onExpand;
 
   Widget _buildDateColumn() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(5.0),
-          child: Text(
-            dayFormatter.format(input.data.utcDateTime.toLocal()),
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
+    return Container(
+      margin: const EdgeInsets.only(right: 5),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Text(
+              dayFormatter.format(input.data.utcDateTime.toLocal()),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(5.0),
-          child: Text(
-            monthNameFormatter.format(input.data.utcDateTime.toLocal()),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(5.0),
-          child: Text(
-            yearLongFormatter.format(
-              input.data.utcDateTime.toLocal(),
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Text(
+              monthNameFormatter.format(input.data.utcDateTime.toLocal()),
             ),
           ),
-        ),
-      ],
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Text(
+              yearLongFormatter.format(
+                input.data.utcDateTime.toLocal(),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
