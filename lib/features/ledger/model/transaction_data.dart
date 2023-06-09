@@ -25,6 +25,7 @@ class TransactionData {
     );
   }
 
+  //For setting date when editing existing data
   void setDateTime(DateTime dateTime) {
     utcDateTime = dateTime;
   }
@@ -46,6 +47,6 @@ class TransactionData {
 
   @override
   String toString() {
-    return '\nTransactionData{\nid = $id,\ntype = $type,\ndateTime = $utcDateTime,\naccount = $account,\ncategory = $category,\ncurrency=$currency,\namount=$amount,\nnote=$note,\nadditionalNote=$additionalNote}';
+    return '\nTransactionData{\nid = $id,\ntype = $type,\nutcDateTime = $utcDateTime,\naccount = $account,\ncategory = $category,\ncurrency=$currency,\namount=$amount,\nnote=$note,\nadditionalNote=$additionalNote}';
   }
 }

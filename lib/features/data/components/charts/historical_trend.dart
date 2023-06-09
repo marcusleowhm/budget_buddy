@@ -1,7 +1,8 @@
+import 'package:budget_buddy/features/data/components/charts/datetime_series_chart.dart';
 import 'package:flutter/material.dart';
 
-class BasicChart extends StatelessWidget {
-  const BasicChart({super.key});
+class HistoricalTrend extends StatelessWidget {
+  const HistoricalTrend({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,14 +16,14 @@ class BasicChart extends StatelessWidget {
         ),
         child: Container(
           padding: const EdgeInsets.all(10.0),
-          child: const Column(
+          child: Column(
             children: [
-              Padding(
+              const Padding(
                 padding: EdgeInsets.all(5.0),
                 child: Row(
                   children: [
                     Text(
-                      'Basic Charts',
+                      'Historical Trend',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -31,7 +32,8 @@ class BasicChart extends StatelessWidget {
                   ],
                 ),
               ),
-              Divider(thickness: 1.0),
+              const Divider(thickness: 1.0),
+              DateTimeSeriesChart()
             ],
           ),
         ),

@@ -61,6 +61,8 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
   @override
   void initState() {
     newData = TransactionData().cloneFrom(previousData: widget.data);
+    newData.setDateTime(widget.data.utcDateTime);
+    
     formControl = FormControlUtility.create(data: newData);
     formControl.noteController.addListener(() {
       setState(() => newData.note = formControl.noteController.text);

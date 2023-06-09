@@ -43,6 +43,7 @@ dependencies:
   bloc: ^8.1.2
   font_awesome_flutter: ^10.4.0
   flutter_slidable: ^3.0.0
+  fl_chart: ^0.62.0
 
 dev_dependencies:
   flutter_test:
