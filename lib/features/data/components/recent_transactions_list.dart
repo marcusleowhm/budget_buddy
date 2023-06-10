@@ -150,6 +150,27 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
                     ],
                   ),
                   const Divider(thickness: 1),
+
+                  //If the transaction is empty
+                  if (state.committedEntries.isEmpty)
+                    const ListTile(
+                      title: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.all(20.0),
+                              child: Text('<Some image>'),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(20.0),
+                              child: Text(
+                                'No transactions added yet',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            )
+                          ]),
+                    ),
+
                   ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -163,6 +184,7 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
                       index = index ~/ 2;
                       final GlobalKey<TooltipState> tooltipKey =
                           GlobalKey<TooltipState>();
+
                       return ListTile(
                         onTap: () {
                           context.go(

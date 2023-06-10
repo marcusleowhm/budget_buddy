@@ -47,8 +47,7 @@ class CTransactionList extends StatelessWidget {
         switch (data.type) {
           case TransactionType.income:
             double cumulativeIncome = map[localDateTime]?.sum['income'] ?? 0.0;
-            map[localDateTime]?.sum['income'] =
-                cumulativeIncome + data.amount;
+            map[localDateTime]?.sum['income'] = cumulativeIncome + data.amount;
             break;
           case TransactionType.expense:
             double cumulativeExpense =
@@ -127,9 +126,21 @@ class CTransactionList extends StatelessWidget {
             child: BlocBuilder<CTransactionCubit, CTransactionState>(
               builder: (context, state) {
                 return getData(state).keys.isEmpty
-                    ? const Card(
-                      child: Text('empty'), //TODO add some cool graphics here for no transaction
-                    )
+                    ? const Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                            Padding(
+                              padding: EdgeInsets.all(20.0),
+                              child: Text('<Some image>'),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(20.0),
+                              child: Text(
+                                'No transactions added yet',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            )
+                          ]) //TODO add some cool graphics here for no transaction
                     : Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
