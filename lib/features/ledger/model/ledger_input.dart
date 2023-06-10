@@ -71,6 +71,15 @@ class LedgerInput {
   final FocusNode noteFocus;
   final FocusNode additionalNoteFocus;
 
+  void cloneControllerTextFrom({required LedgerInput previousInput}) {
+    dateTimeController.text = previousInput.dateTimeController.text;
+    accountController.text = previousInput.accountController.text;
+    categoryController.text = previousInput.categoryController.text;
+    amountController.text = previousInput.amountController.text;
+    noteController.text = previousInput.noteController.text;
+    additionalNoteController.text = previousInput.additionalNoteController.text;
+  } 
+
   void moveFocusToNext(
     void Function(LedgerInput) selectAccount,
     void Function(LedgerInput) selectCategory,

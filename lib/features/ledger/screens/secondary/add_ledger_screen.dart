@@ -268,7 +268,13 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
               backgroundColor: Theme.of(context).primaryColor,
               icon: Icons.content_copy,
               label: 'Duplicate',
-              onPressed: (_) {},
+              onPressed: (_) {
+                //Add new row
+                BlocProvider.of<UTransactionCubit>(context).addInputRow();
+
+                //Copy input data into the last item in entries
+                BlocProvider.of<UTransactionCubit>(context).cloneFrom(input);
+              },
             ),
             SlidableAction(
               backgroundColor: Colors.red,

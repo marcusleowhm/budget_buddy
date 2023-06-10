@@ -12,7 +12,7 @@ class TransactionData {
     this.additionalNote = '',
   });
 
-  //Constructor for cloning
+  //Constructor for cloning (only used with editing)
   TransactionData cloneFrom({required TransactionData previousData}) {
     return TransactionData(
       type: previousData.type,
