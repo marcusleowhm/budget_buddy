@@ -26,7 +26,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class AddLedgerScreen extends StatefulWidget {
-  const AddLedgerScreen({super.key});
+  const AddLedgerScreen({super.key, this.inputToClone});
+
+  final LedgerInput? inputToClone;
 
   @override
   State<AddLedgerScreen> createState() => _AddLedgerScreenState();
@@ -60,6 +62,15 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
   void initState() {
     UTransactionState state = context.read<UTransactionCubit>().state;
     LedgerInput firstInput = state.entries.first;
+
+    //If dataToClone is passed in, we are cloning existing transaction, but set date to today
+    if (widget.inputToClone != null) {
+      BlocProvider.of<UTransactionCubit>(context)
+          .cloneFromInput(widget.inputToClone!);
+      BlocProvider.of<UTransactionCubit>(context)
+          .setDateOf(firstInput, localNow);
+      firstInput.dateTimeController.text = dateLongFormatter.format(localNow);
+    }
 
     //Initialize the bottom sheet to null
     _bottomSheetController = null;
@@ -274,7 +285,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                 BlocProvider.of<UTransactionCubit>(context).addInputRow();
 
                 //Copy input data into the last item in entries
-                BlocProvider.of<UTransactionCubit>(context).cloneFrom(input);
+                BlocProvider.of<UTransactionCubit>(context)
+                    .cloneFromInput(input);
               },
             ),
             SlidableAction(
@@ -491,7 +503,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                 BlocProvider.of<UTransactionCubit>(context).addInputRow();
 
                 //Copy input data into the last item in entries
-                BlocProvider.of<UTransactionCubit>(context).cloneFrom(input);
+                BlocProvider.of<UTransactionCubit>(context)
+                    .cloneFromInput(input);
               },
               onDeletePressed: () {
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();

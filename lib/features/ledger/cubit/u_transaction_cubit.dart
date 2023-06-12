@@ -30,7 +30,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
   }
 
   /// addInputRow() needs to be called first to take advantage of the emit function of the cubit before we can access the new entry
-  void cloneFrom(LedgerInput previousInput) {
+  void cloneFromInput(LedgerInput previousInput) {
     //Newly added input
     LedgerInput newInput = state.entries.last;
 
@@ -45,7 +45,6 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     setAdditionalNoteAt(newInput, previousInput.data.additionalNote);
 
     newInput.cloneControllerTextFrom(previousInput: previousInput);
-    
 
     emit(UTransactionState(
       entries: [...state.entries],

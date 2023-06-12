@@ -24,6 +24,13 @@ class CTransactionCubit extends Cubit<CTransactionState> {
     );
   }
 
+  void deleteTransactionOf(TransactionData data) {
+    state.committedEntries.removeWhere((entry) => entry.id == data.id);
+    emit(
+      CTransactionState(committedEntries: state.committedEntries),
+    );
+  }
+
   void getTransactions() {
     //TODO implement API and local storage
   }

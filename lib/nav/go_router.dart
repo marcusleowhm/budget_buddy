@@ -6,6 +6,7 @@ import 'package:budget_buddy/features/data/screens/primary/balance_screen.dart';
 import 'package:budget_buddy/features/data/screens/primary/dashboard_screen.dart';
 import 'package:budget_buddy/features/data/screens/primary/statistics_screen.dart';
 import 'package:budget_buddy/features/ledger/cubit/u_transaction_cubit.dart';
+import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
 import 'package:budget_buddy/features/ledger/model/transaction_data.dart';
 import 'package:budget_buddy/features/ledger/screens/primary/ledger_screen.dart';
 import 'package:budget_buddy/features/ledger/screens/secondary/add_ledger_screen.dart';
@@ -63,13 +64,19 @@ final goRouter = GoRouter(
               },
             ),
             GoRoute(
-              parentNavigatorKey: _rootNavigatorKey,
-              path: '${routes[SubRoutes.addledger]}',
-              builder: (context, state) => BlocProvider(
-                create: (_) => UTransactionCubit()..addInputRow(),
-                child: const AddLedgerScreen(),
-              ),
-            ),
+                parentNavigatorKey: _rootNavigatorKey,
+                path: '${routes[SubRoutes.addledger]}',
+                builder: (context, state) {
+                  var inputToClone = state.extra;
+                  return BlocProvider(
+                    create: (_) => UTransactionCubit()..addInputRow(),
+                    child: AddLedgerScreen(
+                      inputToClone: inputToClone != null
+                          ? inputToClone as LedgerInput
+                          : null,
+                    ),
+                  );
+                }),
           ],
         ),
         GoRoute(

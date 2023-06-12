@@ -17,19 +17,19 @@ class _LedgerScreenState extends State<LedgerScreen> {
 
   @override
   void initState() {
-    setState(
-        () => currentLocalDate = DateTime(utcNow.year, utcNow.month, utcNow.day).toLocal());
+    setState(() => currentLocalDate =
+        DateTime(utcNow.year, utcNow.month, utcNow.day).toLocal());
     super.initState();
   }
 
   void incrementMonth() {
-    setState(() => currentLocalDate =
-        DateTime(currentLocalDate.year, currentLocalDate.month + 1, currentLocalDate.day));
+    setState(() => currentLocalDate = DateTime(currentLocalDate.year,
+        currentLocalDate.month + 1, currentLocalDate.day));
   }
 
   void decrementMonth() {
-    setState(() => currentLocalDate =
-        DateTime(currentLocalDate.year, currentLocalDate.month - 1, currentLocalDate.day));
+    setState(() => currentLocalDate = DateTime(currentLocalDate.year,
+        currentLocalDate.month - 1, currentLocalDate.day));
   }
 
   void resetDate() {
@@ -43,7 +43,9 @@ class _LedgerScreenState extends State<LedgerScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           context.go(
-              '/${routes[MainRoutes.ledger]}/${routes[SubRoutes.addledger]}');
+            '/${routes[MainRoutes.ledger]}/${routes[SubRoutes.addledger]}',
+            extra: null,
+          );
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
         },
         child: const Icon(Icons.add),

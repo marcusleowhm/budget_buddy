@@ -3,6 +3,7 @@ import 'package:budget_buddy/features/ledger/components/form/account/account_fie
 import 'package:budget_buddy/features/ledger/components/form/account/account_picker.dart';
 import 'package:budget_buddy/features/ledger/components/form/amount/amount_field.dart';
 import 'package:budget_buddy/features/ledger/components/form/amount/amount_typer.dart';
+import 'package:budget_buddy/features/ledger/components/form/buttons/secondary_action_buttons.dart';
 import 'package:budget_buddy/features/ledger/components/form/buttons/submit_button.dart';
 import 'package:budget_buddy/features/ledger/components/form/category/category_picker.dart';
 import 'package:budget_buddy/features/ledger/components/form/datetime/date_field.dart';
@@ -18,8 +19,10 @@ import 'package:budget_buddy/nav/routes.dart';
 import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:budget_buddy/utilities/date_formatter.dart';
 import 'package:budget_buddy/utilities/form_control_utility.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class EditLedgerScreen extends StatefulWidget {
   const EditLedgerScreen({
@@ -62,7 +65,7 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
   void initState() {
     newData = TransactionData().cloneFrom(previousData: widget.data);
     newData.setDateTime(widget.data.utcDateTime);
-    
+
     formControl = FormControlUtility.create(data: newData);
     formControl.noteController.addListener(() {
       setState(() => newData.note = formControl.noteController.text);
@@ -410,12 +413,13 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                         (_) => _selectAmount,
                                       );
 
-                                      if (formControl.additionalNoteController.text.isNotEmpty) {
-                                        FocusManager.instance.primaryFocus?.unfocus();
-                                      }
-                                      else {
+                                      if (formControl.additionalNoteController
+                                          .text.isNotEmpty) {
+                                        FocusManager.instance.primaryFocus
+                                            ?.unfocus();
+                                      } else {
                                         _scrollToWidget(
-                                          formControl.additionalNoteKey, 1.0);
+                                            formControl.additionalNoteKey, 1.0);
                                       }
                                     },
                                   ),
@@ -430,6 +434,54 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                     trailingIcon:
                                         const Icon(Icons.refresh_outlined),
                                     onTap: _closeBottomSheet,
+                                  ),
+                                  const Divider(),
+                                  SecondaryActionButton(
+                                    onDuplicatePressed: () {
+                                      Navigator.pop(context);
+                                      context.go(
+                                        '/${routes[MainRoutes.ledger]}/${routes[SubRoutes.addledger]}',
+                                        extra: formControl,
+                                       );
+                                      ScaffoldMessenger.of(context)
+                                          .hideCurrentSnackBar();
+                                    },
+                                    onDeletePressed: () {
+                                      //Provide confirmation dialog first
+                                      showCupertinoDialog<bool>(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          title: const Text('Confirm Delete'),
+                                          content: Text(
+                                              'You\'re about to delete the following transaction: \n\n'
+                                              'Date: ${dateFormatter.format(widget.data.utcDateTime.toLocal())}\n'
+                                              'Account: ${widget.data.account}\n'
+                                              'Category: ${widget.data.category}\n'
+                                              'Amount: ${widget.data.currency} ${englishDisplayCurrencyFormatter.format(widget.data.amount)}\n\n'
+                                              'Are you sure?'),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context, false);
+                                              },
+                                              child: const Text('No'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                BlocProvider.of<
+                                                            CTransactionCubit>(
+                                                        context)
+                                                    .deleteTransactionOf(
+                                                        widget.data);
+                                                Navigator.pop(context, true);
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text('Yes'),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
                                   ),
                                   SubmitButton(
                                     action: () {
