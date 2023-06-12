@@ -126,8 +126,8 @@ class MonthlySummary extends StatelessWidget {
                                             MainAxisAlignment.center,
                                         children: [
                                           Text(
-                                            (data['income']! > 1000 ||
-                                                    data['income']! < -1000)
+                                            (data['income']! >= 1000 ||
+                                                    data['income']! <= -1000)
                                                 ? compactCurrencyFormatter
                                                     .format(data['income'])
                                                 : englishDisplayCurrencyFormatter
@@ -140,8 +140,8 @@ class MonthlySummary extends StatelessWidget {
                                                 color: Theme.of(context)
                                                     .canvasColor),
                                           ),
-                                          if (data['income']! > 1000 ||
-                                              data['income']! < -1000)
+                                          if (data['income']! >= 1000 ||
+                                              data['income']! <= -1000)
                                             Tooltip(
                                               key: incomeToolTipKey,
                                               message:
@@ -199,8 +199,8 @@ class MonthlySummary extends StatelessWidget {
                                           MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          (data['expense']! > 1000 ||
-                                                  data['expense']! < -1000)
+                                          (data['expense']! >= 1000 ||
+                                                  data['expense']! <= -1000)
                                               ? compactCurrencyFormatter
                                                   .format(data['expense'])
                                               : englishDisplayCurrencyFormatter
@@ -214,8 +214,8 @@ class MonthlySummary extends StatelessWidget {
                                                 Theme.of(context).canvasColor,
                                           ),
                                         ),
-                                        if (data['expense']! > 1000 ||
-                                            data['expense']! < -1000)
+                                        if (data['expense']! >= 1000 ||
+                                            data['expense']! <= -1000)
                                           Tooltip(
                                             key: expenseToolTipKey,
                                             message:
@@ -275,8 +275,8 @@ class MonthlySummary extends StatelessWidget {
                                           MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          (data['transfer']! > 1000 ||
-                                                  data['transfer']! < -1000)
+                                          (data['transfer']! >= 1000 ||
+                                                  data['transfer']! <= -1000)
                                               ? compactCurrencyFormatter
                                                   .format(data['transfer'])
                                               : englishDisplayCurrencyFormatter
@@ -289,8 +289,8 @@ class MonthlySummary extends StatelessWidget {
                                               color: Theme.of(context)
                                                   .canvasColor),
                                         ),
-                                        if (data['transfer']! > 1000 ||
-                                            data['transfer']! < -1000)
+                                        if (data['transfer']! >= 1000 ||
+                                            data['transfer']! <= -1000)
                                           Tooltip(
                                             key: transferToolTipKey,
                                             message:

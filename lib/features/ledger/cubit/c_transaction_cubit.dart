@@ -9,17 +9,6 @@ part 'c_transaction_state.dart';
 class CTransactionCubit extends Cubit<CTransactionState> {
   CTransactionCubit() : super(const CTransactionState(committedEntries: []));
 
-  /// WARNING: Use for development only
-  void addDummyData() {
-
-    List<TransactionData> mockData = <TransactionData>[
-      
-    ];
-
-    emit(CTransactionState(committedEntries: mockData));
-
-  }
-
   //Add into committed transaction from uncommitted ones
   void addTransactions(List<TransactionData> incomingTransactions) {
     List<TransactionData> transactions = List.from(state.committedEntries);
