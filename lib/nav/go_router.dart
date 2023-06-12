@@ -2,9 +2,9 @@ import 'package:budget_buddy/features/configuration/screens/primary/more_screen.
 import 'package:budget_buddy/features/configuration/screens/secondary/report_bug_screen.dart';
 import 'package:budget_buddy/features/configuration/screens/secondary/user_edit_screen.dart';
 import 'package:budget_buddy/features/constants/enum.dart';
-import 'package:budget_buddy/features/data/screens/balance_screen.dart';
-import 'package:budget_buddy/features/data/screens/dashboard_screen.dart';
-import 'package:budget_buddy/features/data/screens/statistics_screen.dart';
+import 'package:budget_buddy/features/data/screens/primary/balance_screen.dart';
+import 'package:budget_buddy/features/data/screens/primary/dashboard_screen.dart';
+import 'package:budget_buddy/features/data/screens/primary/statistics_screen.dart';
 import 'package:budget_buddy/features/ledger/cubit/u_transaction_cubit.dart';
 import 'package:budget_buddy/features/ledger/model/transaction_data.dart';
 import 'package:budget_buddy/features/ledger/screens/primary/ledger_screen.dart';

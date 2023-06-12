@@ -72,7 +72,7 @@ class _HistoricalTrendState extends State<HistoricalTrend> {
               DateTimeSeriesChart(
                 dateFilter: dateFilter,
                 amountFilter: amountFilter,
-              )
+              ),
             ],
           ),
         ),

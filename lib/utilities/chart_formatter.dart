@@ -1,6 +1,8 @@
 double roundToNearestPositive(double value) {
   const double million = 1000000;
   const double hundredThousand = 100000;
+  const double tenThousand = 10000;
+  const double fiveThousand = 5000;
   const double thousand = 1000;
   const double hundred = 100;
   const double fifty = 50;
@@ -13,6 +15,10 @@ double roundToNearestPositive(double value) {
 
   if (value > hundredThousand) {
     return ((value / hundredThousand).ceil() * hundredThousand);
+  }
+
+  if (value > tenThousand) {
+    return ((value / fiveThousand).ceil() * fiveThousand);
   }
 
   if (value > thousand) {
@@ -37,6 +43,8 @@ double roundToNearestPositive(double value) {
 double roundToNearestNegative(double value) {
   const double million = 1000000;
   const double hundredThousand = 100000;
+  const double tenThousand = 10000;
+  const double fiveThousand = 5000;
   const double thousand = 1000;
   const double hundred = 100;
   const double fifty = 50;
@@ -52,6 +60,10 @@ double roundToNearestNegative(double value) {
 
   if (value > hundredThousand) {
     return ((value / hundredThousand).ceil() * hundredThousand) * -1;
+  }
+
+    if (value > tenThousand) {
+    return ((value / fiveThousand).ceil() * fiveThousand) * -1;
   }
 
   if (value > thousand) {

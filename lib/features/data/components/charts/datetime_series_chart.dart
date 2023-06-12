@@ -281,7 +281,7 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
               padding: const EdgeInsets.only(right: 20),
               child: BarChart(
                 BarChartData(
-                  maxY: maxY == 0.0 ? 50.0 : maxY,
+                  maxY: maxY == 0.0 ? 0.0 : maxY,
                   minY: minY == 0.0 ? 0.0 : minY,
                   extraLinesData:
                       widget.amountFilter == ChartAmountDisplayCriteria.nett
