@@ -246,6 +246,7 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
                       ),
                       barTouchData: BarTouchData(
                         touchTooltipData: BarTouchTooltipData(
+                          fitInsideVertically: true,
                           tooltipBgColor: Colors.grey[200],
                           getTooltipItem: (
                             BarChartGroupData group,
@@ -256,15 +257,16 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
                             return BarTooltipItem(
                               englishDisplayCurrencyFormatter.format(rod.toY),
                               TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: rod.color,
-                                  fontSize: 16,
-                                  shadows: const [
-                                    Shadow(
-                                      color: Colors.black26,
-                                      blurRadius: 12,
-                                    )
-                                  ]),
+                                fontWeight: FontWeight.bold,
+                                color: rod.color,
+                                fontSize: 16,
+                                shadows: const [
+                                  Shadow(
+                                    color: Colors.black26,
+                                    blurRadius: 12,
+                                  )
+                                ],
+                              ),
                             );
                           },
                         ),

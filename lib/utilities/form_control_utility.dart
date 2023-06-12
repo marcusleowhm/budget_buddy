@@ -102,18 +102,7 @@ class FormControlUtility {
         }
       },
     );
-    amountFocus.addListener(
-      () {
-        if (!amountFocus.hasFocus) {
-          double enteredAmount = double.tryParse(input.amountController.text
-                  .replaceAll('\$', '')
-                  .replaceAll(',', '')) ??
-              0.0;
-          input.amountController.text =
-              englishDisplayCurrencyFormatter.format(enteredAmount);
-        }
-      },
-    );
+    //Removed amount focus because clicking on the keypad is evaluted as amountController is losing focus
     return input;
   }
 
@@ -132,5 +121,4 @@ class FormControlUtility {
     input.noteFocus.dispose();
     input.additionalNoteFocus.dispose();
   }
-
 }

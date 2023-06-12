@@ -10,7 +10,6 @@ class Trend extends StatefulWidget {
 }
 
 class _TrendState extends State<Trend> {
-  ChartDateFilterCriteria dateFilter = ChartDateFilterCriteria.monthly;
   ChartAmountDisplayCriteria amountFilter = ChartAmountDisplayCriteria.gross;
 
   @override
@@ -43,17 +42,6 @@ class _TrendState extends State<Trend> {
                       children: [
                         TextButton(
                           onPressed: () {
-                            dateFilter == ChartDateFilterCriteria.monthly
-                                ? setState(() =>
-                                    dateFilter = ChartDateFilterCriteria.yearly)
-                                : setState(() => dateFilter =
-                                    ChartDateFilterCriteria.monthly);
-                          },
-                          child: Text(
-                              'View ${dateFilter == ChartDateFilterCriteria.monthly ? 'Yearly' : 'Monthly'}'),
-                        ),
-                        TextButton(
-                          onPressed: () {
                             amountFilter == ChartAmountDisplayCriteria.gross
                                 ? setState(() => amountFilter =
                                     ChartAmountDisplayCriteria.nett)
@@ -69,9 +57,47 @@ class _TrendState extends State<Trend> {
                 ),
               ),
               const Divider(thickness: 1.0),
-              DateTimeSeriesChart(
-                dateFilter: dateFilter,
-                amountFilter: amountFilter,
+              DefaultTabController(
+                length: 2,
+                child: Column(
+                  children: [
+                    const TabBar(
+                      tabs: [
+                        Tab(
+                          child: Text(
+                            'YTD',
+                            style: TextStyle(
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        Tab(
+                          child: Text(
+                            '5Y',
+                            style: TextStyle(
+                              color: Colors.black,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: 400,
+                      child: TabBarView(
+                        children: [
+                          DateTimeSeriesChart(
+                            dateFilter: ChartDateFilterCriteria.monthly,
+                            amountFilter: amountFilter,
+                          ),
+                          DateTimeSeriesChart(
+                            dateFilter: ChartDateFilterCriteria.yearly,
+                            amountFilter: amountFilter,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

@@ -274,6 +274,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
         enabled: !input.isExpanded,
         closeOnScroll: true,
         endActionPane: ActionPane(
+          extentRatio: 0.5,
           motion: const DrawerMotion(),
           children: [
             SlidableAction(

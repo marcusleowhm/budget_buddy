@@ -100,7 +100,7 @@ class MonthlySummary extends StatelessWidget {
                           children: [
                             Flexible(
                               child: Container(
-                                margin: const EdgeInsets.only(right: 5.0),
+                                margin: const EdgeInsets.only(right: 10.0),
                                 padding: const EdgeInsets.all(10.0),
                                 decoration: BoxDecoration(
                                   color: Colors.blue[700],
@@ -249,7 +249,7 @@ class MonthlySummary extends StatelessWidget {
                             ),
                             Flexible(
                               child: Container(
-                                margin: const EdgeInsets.only(left: 5.0),
+                                margin: const EdgeInsets.only(left: 10.0),
                                 padding: const EdgeInsets.all(10.0),
                                 decoration: BoxDecoration(
                                   color: Colors.grey,
