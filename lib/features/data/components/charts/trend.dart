@@ -82,7 +82,7 @@ class _TrendState extends State<Trend> {
                       ],
                     ),
                     SizedBox(
-                      height: 400,
+                      height: 500,
                       child: TabBarView(
                         children: [
                           DateTimeSeriesChart(

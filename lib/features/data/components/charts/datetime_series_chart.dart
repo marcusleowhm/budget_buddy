@@ -231,7 +231,7 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
                   padding: const EdgeInsets.only(right: 20),
                   child: BarChart(
                     BarChartData(
-                      maxY: state.committedEntries.isEmpty ? 50.0 : null,
+                      maxY: state.committedEntries.isEmpty ? 100.0 : null,
                       extraLinesData: ExtraLinesData(
                         horizontalLines: [
                           HorizontalLine(
