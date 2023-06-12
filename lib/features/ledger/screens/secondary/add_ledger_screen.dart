@@ -1,6 +1,7 @@
 import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/features/ledger/components/form/account/account_picker.dart';
 import 'package:budget_buddy/features/ledger/components/form/amount/amount_typer.dart';
+import 'package:budget_buddy/features/ledger/components/form/buttons/secondary_action_buttons.dart';
 import 'package:budget_buddy/features/ledger/components/form/category/category_picker.dart';
 import 'package:budget_buddy/features/ledger/components/form/account/account_field.dart';
 import 'package:budget_buddy/features/ledger/components/form/buttons/add_row_button.dart';
@@ -483,6 +484,21 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                 );
               },
             ),
+            const Divider(),
+            SecondaryActionButton(
+              onDuplicatePressed: () {
+                //Add new row
+                BlocProvider.of<UTransactionCubit>(context).addInputRow();
+
+                //Copy input data into the last item in entries
+                BlocProvider.of<UTransactionCubit>(context).cloneFrom(input);
+              },
+              onDeletePressed: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                _removeRowAt(context, input, index);
+                _closeBottomSheet();
+              },
+            )
           ],
         ),
       ),
@@ -548,6 +564,7 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                 child: BlocBuilder<UTransactionCubit, UTransactionState>(
                   builder: (context, state) {
                     return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         //Build the dismissible expandable form
