@@ -28,9 +28,8 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
   final double width = 12;
   int touchedGroupIndex = -1;
 
-  List<BarChartGroupData> prepareBarGroups(BuildContext context) {
-    List<TransactionData> data =
-        context.read<CTransactionCubit>().state.committedEntries;
+  List<BarChartGroupData> prepareBarGroups(CTransactionState state) {
+    List<TransactionData> data = state.committedEntries;
 
     List<BarChartGroupData> groups = [];
     DateTime now = DateTime.now().toLocal();
@@ -46,7 +45,8 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
         // Calculate the sum of income and expense in a particular month
         for (TransactionData entry in data) {
           DateTime entryLocalDateTime = entry.utcDateTime.toLocal();
-          if (entryLocalDateTime.month == i && entryLocalDateTime.year == currentLocalYear) {
+          if (entryLocalDateTime.month == i &&
+              entryLocalDateTime.year == currentLocalYear) {
             switch (entry.type) {
               case TransactionType.income:
                 incomeSum += entry.amount;
@@ -216,114 +216,117 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
 
   @override
   Widget build(BuildContext context) {
-    List<BarChartGroupData> barGroups = prepareBarGroups(context);
-
-    return AspectRatio(
-      aspectRatio: 1,
-      child: Column(
-        children: [
-          // const Row(
-          //   children: [Text('Left for future feature update')],
-          // ),
-          const SizedBox(height: 24),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 20),
-              child: BarChart(
-                BarChartData(
-                  extraLinesData: ExtraLinesData(
-                    horizontalLines: [
-                      HorizontalLine(
-                          y: 0,
-                          strokeWidth: 0.5,
-                          color: Colors.grey,
-                          dashArray: [
-                            20,
-                            5,
-                          ]),
-                    ],
-                  ),
-                  barTouchData: BarTouchData(
-                    touchTooltipData: BarTouchTooltipData(
-                      tooltipBgColor: Colors.grey[200],
-                      getTooltipItem: (
-                        BarChartGroupData group,
-                        int groupIndex,
-                        BarChartRodData rod,
-                        int rodIndex,
-                      ) {
-                        return BarTooltipItem(
-                          englishDisplayCurrencyFormatter.format(rod.toY),
-                          TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: rod.color,
-                              fontSize: 16,
-                              shadows: const [
-                                Shadow(
-                                  color: Colors.black26,
-                                  blurRadius: 12,
-                                )
+    return BlocBuilder<CTransactionCubit, CTransactionState>(
+      builder: (context, state) {
+        return AspectRatio(
+          aspectRatio: 1,
+          child: Column(
+            children: [
+              // const Row(
+              //   children: [Text('Left for future feature update')],
+              // ),
+              const SizedBox(height: 24),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 20),
+                  child: BarChart(
+                    BarChartData(
+                      maxY: state.committedEntries.isEmpty ? 50.0 : null,
+                      extraLinesData: ExtraLinesData(
+                        horizontalLines: [
+                          HorizontalLine(
+                              y: 0,
+                              strokeWidth: 0.5,
+                              color: Colors.grey,
+                              dashArray: [
+                                20,
+                                5,
                               ]),
-                        );
-                      },
-                    ),
-                    touchCallback: (FlTouchEvent event, response) {
-                      if (response == null || response.spot == null) {
-                        setState(() {
-                          //Handle when user does not touch on any bar
-                          touchedGroupIndex = -1;
-                        });
-                        return;
-                      }
+                        ],
+                      ),
+                      barTouchData: BarTouchData(
+                        touchTooltipData: BarTouchTooltipData(
+                          tooltipBgColor: Colors.grey[200],
+                          getTooltipItem: (
+                            BarChartGroupData group,
+                            int groupIndex,
+                            BarChartRodData rod,
+                            int rodIndex,
+                          ) {
+                            return BarTooltipItem(
+                              englishDisplayCurrencyFormatter.format(rod.toY),
+                              TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: rod.color,
+                                  fontSize: 16,
+                                  shadows: const [
+                                    Shadow(
+                                      color: Colors.black26,
+                                      blurRadius: 12,
+                                    )
+                                  ]),
+                            );
+                          },
+                        ),
+                        touchCallback: (FlTouchEvent event, response) {
+                          if (response == null || response.spot == null) {
+                            setState(() {
+                              //Handle when user does not touch on any bar
+                              touchedGroupIndex = -1;
+                            });
+                            return;
+                          }
 
-                      //Else handle when user touch the bar
-                      if (event.isInterestedForInteractions &&
-                          response.spot != null) {
-                        setState(() => touchedGroupIndex =
-                            response.spot!.touchedBarGroupIndex);
-                      }
-                    },
-                  ),
-                  titlesData: FlTitlesData(
-                    show: true,
-                    rightTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: false,
+                          //Else handle when user touch the bar
+                          if (event.isInterestedForInteractions &&
+                              response.spot != null) {
+                            setState(() => touchedGroupIndex =
+                                response.spot!.touchedBarGroupIndex);
+                          }
+                        },
+                      ),
+                      titlesData: FlTitlesData(
+                        show: true,
+                        rightTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: false,
+                          ),
+                        ),
+                        topTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: false,
+                          ),
+                        ),
+                        bottomTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            getTitlesWidget: _buildBottomTitles,
+                            reservedSize: 42,
+                          ),
+                        ),
+                        leftTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            getTitlesWidget: _buildLeftTitles,
+                            reservedSize: 56,
+                          ),
+                        ),
+                      ),
+                      borderData: FlBorderData(
+                        show: false,
+                      ),
+                      barGroups: prepareBarGroups(state),
+                      gridData: FlGridData(
+                        show: false,
                       ),
                     ),
-                    topTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: false,
-                      ),
-                    ),
-                    bottomTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        getTitlesWidget: _buildBottomTitles,
-                        reservedSize: 42,
-                      ),
-                    ),
-                    leftTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        getTitlesWidget: _buildLeftTitles,
-                        reservedSize: 56,
-                      ),
-                    ),
-                  ),
-                  borderData: FlBorderData(
-                    show: false,
-                  ),
-                  barGroups: barGroups,
-                  gridData: FlGridData(
-                    show: false,
                   ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

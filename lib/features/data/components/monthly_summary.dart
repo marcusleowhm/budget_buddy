@@ -116,8 +116,8 @@ class MonthlySummary extends StatelessWidget {
                                         style: TextStyle(
                                             fontWeight: FontWeight.w600,
                                             fontSize: 16,
-                                            color: Theme.of(context)
-                                                .canvasColor),
+                                            color:
+                                                Theme.of(context).canvasColor),
                                       ),
                                     ),
                                     const Divider(),
@@ -126,7 +126,8 @@ class MonthlySummary extends StatelessWidget {
                                             MainAxisAlignment.center,
                                         children: [
                                           Text(
-                                            (data['income']! > 1000 || data['income']! < -1000)
+                                            (data['income']! > 1000 ||
+                                                    data['income']! < -1000)
                                                 ? compactCurrencyFormatter
                                                     .format(data['income'])
                                                 : englishDisplayCurrencyFormatter
@@ -139,7 +140,8 @@ class MonthlySummary extends StatelessWidget {
                                                 color: Theme.of(context)
                                                     .canvasColor),
                                           ),
-                                          if (data['income']! > 1000 || data['income']! < -1000)
+                                          if (data['income']! > 1000 ||
+                                              data['income']! < -1000)
                                             Tooltip(
                                               key: incomeToolTipKey,
                                               message:
@@ -150,19 +152,17 @@ class MonthlySummary extends StatelessWidget {
                                               showDuration:
                                                   const Duration(seconds: 10),
                                               child: IconButton(
-                                                padding:
-                                                    const EdgeInsets.only(
-                                                        left: 5),
+                                                padding: const EdgeInsets.only(
+                                                    left: 5),
                                                 constraints:
                                                     const BoxConstraints(),
                                                 iconSize: 18,
                                                 color: Theme.of(context)
                                                     .canvasColor,
-                                                icon: const Icon(Icons
-                                                    .info_outline_rounded),
+                                                icon: const Icon(
+                                                    Icons.info_outline_rounded),
                                                 onPressed: () {
-                                                  incomeToolTipKey
-                                                      .currentState
+                                                  incomeToolTipKey.currentState
                                                       ?.ensureTooltipVisible();
                                                 },
                                               ),
@@ -189,8 +189,8 @@ class MonthlySummary extends StatelessWidget {
                                         style: TextStyle(
                                             fontWeight: FontWeight.w600,
                                             fontSize: 16,
-                                            color: Theme.of(context)
-                                                .canvasColor),
+                                            color:
+                                                Theme.of(context).canvasColor),
                                       ),
                                     ),
                                     const Divider(),
@@ -199,7 +199,8 @@ class MonthlySummary extends StatelessWidget {
                                           MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          (data['expense']! > 1000 || data['expense']! < -1000)
+                                          (data['expense']! > 1000 ||
+                                                  data['expense']! < -1000)
                                               ? compactCurrencyFormatter
                                                   .format(data['expense'])
                                               : englishDisplayCurrencyFormatter
@@ -213,7 +214,8 @@ class MonthlySummary extends StatelessWidget {
                                                 Theme.of(context).canvasColor,
                                           ),
                                         ),
-                                        if (data['expense']! > 1000 || data['expense']! < -1000)
+                                        if (data['expense']! > 1000 ||
+                                            data['expense']! < -1000)
                                           Tooltip(
                                             key: expenseToolTipKey,
                                             message:
@@ -229,8 +231,8 @@ class MonthlySummary extends StatelessWidget {
                                               constraints:
                                                   const BoxConstraints(),
                                               iconSize: 18,
-                                              color: Theme.of(context)
-                                                  .canvasColor,
+                                              color:
+                                                  Theme.of(context).canvasColor,
                                               icon: const Icon(
                                                   Icons.info_outline_rounded),
                                               onPressed: () {
@@ -263,8 +265,8 @@ class MonthlySummary extends StatelessWidget {
                                         style: TextStyle(
                                             fontWeight: FontWeight.w600,
                                             fontSize: 16,
-                                            color: Theme.of(context)
-                                                .canvasColor),
+                                            color:
+                                                Theme.of(context).canvasColor),
                                       ),
                                     ),
                                     const Divider(),
@@ -273,7 +275,8 @@ class MonthlySummary extends StatelessWidget {
                                           MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          (data['transfer']! > 1000 || data['transfer']! < -1000)
+                                          (data['transfer']! > 1000 ||
+                                                  data['transfer']! < -1000)
                                               ? compactCurrencyFormatter
                                                   .format(data['transfer'])
                                               : englishDisplayCurrencyFormatter
@@ -286,7 +289,8 @@ class MonthlySummary extends StatelessWidget {
                                               color: Theme.of(context)
                                                   .canvasColor),
                                         ),
-                                        if (data['transfer']! > 1000 || data['transfer']! < -1000)
+                                        if (data['transfer']! > 1000 ||
+                                            data['transfer']! < -1000)
                                           Tooltip(
                                             key: transferToolTipKey,
                                             message:
@@ -302,13 +306,12 @@ class MonthlySummary extends StatelessWidget {
                                               constraints:
                                                   const BoxConstraints(),
                                               iconSize: 18,
-                                              color: Theme.of(context)
-                                                  .canvasColor,
+                                              color:
+                                                  Theme.of(context).canvasColor,
                                               icon: const Icon(
                                                   Icons.info_outline_rounded),
                                               onPressed: () {
-                                                transferToolTipKey
-                                                    .currentState
+                                                transferToolTipKey.currentState
                                                     ?.ensureTooltipVisible();
                                               },
                                             ),
@@ -321,41 +324,51 @@ class MonthlySummary extends StatelessWidget {
                             ),
                           ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              const Text(
-                                'Net Change: ',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16.0,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Flexible(
+                              child: Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    const Text(
+                                      'Net Change: ',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16.0,
+                                      ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          englishDisplayCurrencyFormatter
+                                              .format(data['income']! -
+                                                  data['expense']!),
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 16.0,
+                                          ),
+                                        ),
+                                        data['income']! - data['expense']! < 0
+                                            ? const Icon(
+                                                Icons.arrow_drop_down_rounded,
+                                                color: Colors.red)
+                                            : data['income']! -
+                                                        data['expense']! !=
+                                                    0
+                                                ? const Icon(
+                                                    Icons.arrow_drop_up_rounded,
+                                                    color: Colors.green)
+                                                : const Icon(Icons.remove)
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ),
-                              Row(
-                                children: [
-                                  Text(
-                                    englishDisplayCurrencyFormatter.format(
-                                        data['income']! - data['expense']!),
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16.0,
-                                    ),
-                                  ),
-                                  data['income']! - data['expense']! < 0
-                                      ? const Icon(
-                                          Icons.arrow_drop_down_rounded,
-                                          color: Colors.red)
-                                      : data['income']! - data['expense']! != 0
-                                          ? const Icon(
-                                              Icons.arrow_drop_up_rounded,
-                                              color: Colors.green)
-                                          : const Icon(Icons.remove)
-                                ],
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         )
                       ],
                     );
