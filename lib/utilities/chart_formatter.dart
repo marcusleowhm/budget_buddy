@@ -1,4 +1,6 @@
 double roundToNearestPositive(double value) {
+  const double tenMillion = 10000000;
+  const double fiveMillion = 5000000;
   const double million = 1000000;
   const double hundredThousand = 100000;
   const double tenThousand = 10000;
@@ -9,12 +11,20 @@ double roundToNearestPositive(double value) {
   const double ten = 10;
   const double five = 5;
 
-  if (value > million) {
+  if (value > tenMillion) {
+    return ((value / fiveMillion).ceil() * fiveMillion);
+  }
+
+  if (value > fiveMillion) {
     return ((value / million).ceil() * million);
   }
 
-  if (value > hundredThousand) {
+  if (value > million) {
     return ((value / hundredThousand).ceil() * hundredThousand);
+  }
+
+  if (value > hundredThousand) {
+    return ((value / tenThousand).ceil() * tenThousand);
   }
 
   if (value > tenThousand) {
@@ -22,25 +32,27 @@ double roundToNearestPositive(double value) {
   }
 
   if (value > thousand) {
-    return ((value / thousand).ceil() * thousand);
-  }
-
-  if (value > hundred) {
     return ((value / hundred).ceil() * hundred);
   }
 
-  if (value > fifty) {
+  if (value > hundred) {
     return ((value / fifty).ceil() * fifty);
   }
 
-  if (value > ten) {
+  if (value > fifty) {
     return ((value / ten).ceil() * ten);
   }
 
-  return ((value / five).ceil() * five);
+  if (value > ten) {
+    return ((value / five).ceil() * five);
+  }
+
+  return ((value / 1).ceil() * 1);
 }
 
 double roundToNearestNegative(double value) {
+  const double tenMillion = 10000000;
+  const double fiveMillion = 5000000;
   const double million = 1000000;
   const double hundredThousand = 100000;
   const double tenThousand = 10000;
@@ -54,33 +66,41 @@ double roundToNearestNegative(double value) {
   //Convert to positive first
   value = value * -1;
 
-  if (value > million) {
+  if (value > tenMillion) {
+    return ((value / fiveMillion).ceil() * fiveMillion) * -1;
+  }
+
+  if (value > fiveMillion) {
     return ((value / million).ceil() * million) * -1;
   }
 
-  if (value > hundredThousand) {
+  if (value > million) {
     return ((value / hundredThousand).ceil() * hundredThousand) * -1;
   }
 
-    if (value > tenThousand) {
+  if (value > hundredThousand) {
+    return ((value / tenThousand).ceil() * tenThousand) * -1;
+  }
+
+  if (value > tenThousand) {
     return ((value / fiveThousand).ceil() * fiveThousand) * -1;
   }
 
   if (value > thousand) {
-    return ((value / thousand).ceil() * thousand) * -1;
-  }
-
-  if (value > hundred) {
     return ((value / hundred).ceil() * hundred) * -1;
   }
 
-  if (value > fifty) {
+  if (value > hundred) {
     return ((value / fifty).ceil() * fifty) * -1;
   }
 
-  if (value > ten) {
+  if (value > fifty) {
     return ((value / ten).ceil() * ten) * -1;
   }
 
-  return ((value / five).ceil() * five) * -1;
+  if (value > ten) {
+    return ((value / five).ceil() * five) * -1;
+  }
+
+  return ((value / 1).ceil() * 1) * -1;
 }

@@ -2,14 +2,14 @@ import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/features/data/components/charts/datetime_series_chart.dart';
 import 'package:flutter/material.dart';
 
-class HistoricalTrend extends StatefulWidget {
-  const HistoricalTrend({super.key});
+class Trend extends StatefulWidget {
+  const Trend({super.key});
 
   @override
-  State<HistoricalTrend> createState() => _HistoricalTrendState();
+  State<Trend> createState() => _TrendState();
 }
 
-class _HistoricalTrendState extends State<HistoricalTrend> {
+class _TrendState extends State<Trend> {
   ChartDateFilterCriteria dateFilter = ChartDateFilterCriteria.monthly;
   ChartAmountDisplayCriteria amountFilter = ChartAmountDisplayCriteria.gross;
 
@@ -33,7 +33,7 @@ class _HistoricalTrendState extends State<HistoricalTrend> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
-                      'Historical Trend',
+                      'Trend',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

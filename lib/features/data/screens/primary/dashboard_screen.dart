@@ -1,5 +1,5 @@
 import 'package:budget_buddy/features/constants/enum.dart';
-import 'package:budget_buddy/features/data/components/charts/historical_trend.dart';
+import 'package:budget_buddy/features/data/components/charts/trend.dart';
 import 'package:budget_buddy/features/data/components/monthly_summary.dart';
 import 'package:budget_buddy/features/data/components/recent_transactions_list.dart';
 import 'package:budget_buddy/nav/routes.dart';
@@ -19,7 +19,7 @@ class DashboardScreen extends StatelessWidget {
             child: const Column(
               children: [
                 MonthlySummary(),
-                HistoricalTrend(),
+                Trend(),
                 RecentTransactionsList(),
               ],
             ),

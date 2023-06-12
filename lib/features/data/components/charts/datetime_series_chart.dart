@@ -281,20 +281,20 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
               padding: const EdgeInsets.only(right: 20),
               child: BarChart(
                 BarChartData(
-                  maxY: maxY == 0.0 ? 0.0 : maxY,
+                  maxY: (minY == 0 && maxY == 0.0) ? 50.0 : maxY,
                   minY: minY == 0.0 ? 0.0 : minY,
                   extraLinesData:
                       widget.amountFilter == ChartAmountDisplayCriteria.nett
                           ? ExtraLinesData(
                               horizontalLines: [
                                 HorizontalLine(
-                                  y: 0,
-                                  strokeWidth: 0.5,
-                                  color: Colors.grey,
-                                  dashArray: [
-                                    20, 5,
-                                  ]
-                                ),
+                                    y: 0,
+                                    strokeWidth: 0.5,
+                                    color: Colors.grey,
+                                    dashArray: [
+                                      20,
+                                      5,
+                                    ]),
                               ],
                             )
                           : null,
@@ -356,6 +356,12 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
                         showTitles: true,
                         getTitlesWidget: _buildBottomTitles,
                         reservedSize: 42,
+                      ),
+                    ),
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 50,
                       ),
                     ),
                   ),
