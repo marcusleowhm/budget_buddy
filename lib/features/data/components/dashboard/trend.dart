@@ -1,5 +1,5 @@
 import 'package:budget_buddy/features/constants/enum.dart';
-import 'package:budget_buddy/features/data/components/charts/datetime_series_chart.dart';
+import 'package:budget_buddy/features/data/components/dashboard/datetime_series_chart.dart';
 import 'package:flutter/material.dart';
 
 class Trend extends StatefulWidget {
