@@ -1,5 +1,5 @@
 import 'package:budget_buddy/features/configuration/widgets/menu_group.dart';
-import 'package:budget_buddy/features/configuration/widgets/menu_item.dart';
+import 'package:budget_buddy/features/configuration/widgets/list_item.dart';
 import 'package:flutter/material.dart';
 
 class StyleGroup extends StatefulWidget {
@@ -20,7 +20,7 @@ class _StyleGroupState extends State<StyleGroup> {
   List<MenuItem> _buildData() {
     return <MenuItem>[
       MenuItem(
-        entry: ListEntry(
+        entry: ListItem(
           leading: const Icon(Icons.dark_mode_outlined),
           trailing: Switch(
             value: isDarkMode,
@@ -31,11 +31,11 @@ class _StyleGroupState extends State<StyleGroup> {
         ),
       ),
       const MenuItem(
-        entry: ListEntry(
+        entry: ListItem(
           leading: Icon(Icons.brush_outlined),
           title: Text('Color'),
           children: [
-            ListEntry(
+            ListItem(
               title: Text('Test'),
             ),
           ],

@@ -1,5 +1,5 @@
 import 'package:budget_buddy/features/configuration/widgets/menu_group.dart';
-import 'package:budget_buddy/features/configuration/widgets/menu_item.dart';
+import 'package:budget_buddy/features/configuration/widgets/list_item.dart';
 import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/nav/routes.dart';
 import 'package:flutter/material.dart';
@@ -11,20 +11,20 @@ class SupportGroup extends StatelessWidget {
   List<MenuItem> _buildData(BuildContext context) {
     return <MenuItem>[
       MenuItem(
-        entry: ListEntry(
+        entry: ListItem(
           leading: const Icon(Icons.bug_report_outlined),
           title: const Text('Report Bug'),
           onTap: () => context.go('/${routes[MainRoutes.more]}/${routes[SubRoutes.reportbug]}'),
         ),
       ),
       const MenuItem(
-        entry: ListEntry(
+        entry: ListItem(
           leading: Icon(Icons.feedback_outlined),
           title: Text('Feedback/Suggestion'),
         ),
       ),
       const MenuItem(
-        entry: ListEntry(
+        entry: ListItem(
           leading: Icon(Icons.help_outline),
           title: Text('Help'),
         ),

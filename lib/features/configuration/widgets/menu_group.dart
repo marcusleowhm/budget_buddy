@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:budget_buddy/features/configuration/widgets/menu_item.dart';
+import 'package:budget_buddy/features/configuration/widgets/list_item.dart';
 
 //Menu Group will include a title, and a group of ListTile widgets
 //ListTile children comprises of icon, their own title and some contain trailing icon button
@@ -10,17 +10,18 @@ class MenuGroup extends StatelessWidget {
   final List<MenuItem> children;
 
   List<Widget> _buildGroup(BuildContext context) {
-    
     List<Widget> finalChildren = [];
     //If the title is not null, create a tile to represent the title
     if (title != null) {
-      finalChildren.add(ListTile(
-        enabled: false,
-        title: Text(
-          title!,
-          style: TextStyle(color: Theme.of(context).primaryColor),
+      finalChildren.add(
+        ListTile(
+          enabled: false,
+          title: Text(
+            title!,
+            style: TextStyle(color: Theme.of(context).primaryColor),
+          ),
         ),
-      ));
+      );
     }
     finalChildren.add(
       Container(
