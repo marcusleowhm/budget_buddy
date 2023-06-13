@@ -38,7 +38,9 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     setTypeOf(newInput, previousInput.data.type);
     setDateOf(newInput, previousInput.data.utcDateTime);
     setAccountOf(newInput, previousInput.data.account);
-    setCategoryOf(newInput, previousInput.data.category);
+    setIncomeCategoryOf(newInput, previousInput.data.incomeCategory);
+    setExpenseCategoryOf(newInput, previousInput.data.expenseCategory);
+    setTransferCategoryOf(newInput, previousInput.data.transferCategory);
     setCurrencyOf(newInput, previousInput.data.currency);
     setAmountOf(newInput, previousInput.data.amount);
     setNoteOf(newInput, previousInput.data.note);
@@ -113,11 +115,33 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     ));
   }
 
-  void setCategoryOf(LedgerInput input, String categoryOrAccountTo) {
+  void setIncomeCategoryOf(LedgerInput input, String incomeCategory) {
     LedgerInput firstMatchedInput =
         state.entries.firstWhere((entry) => entry.data.id == input.data.id);
-    firstMatchedInput.data.category = categoryOrAccountTo;
-    firstMatchedInput.categoryController.text = categoryOrAccountTo;
+    firstMatchedInput.data.incomeCategory = incomeCategory;
+    firstMatchedInput.incomeCategoryController.text = incomeCategory;
+    emit(UTransactionState(
+      entries: state.entries,
+      currenciesTotal: state.currenciesTotal,
+    ));
+  }
+
+  void setExpenseCategoryOf(LedgerInput input, String category) {
+    LedgerInput firstMatchedInput =
+        state.entries.firstWhere((entry) => entry.data.id == input.data.id);
+    firstMatchedInput.data.expenseCategory = category;
+    firstMatchedInput.expenseCategoryController.text = category;
+    emit(UTransactionState(
+      entries: state.entries,
+      currenciesTotal: state.currenciesTotal,
+    ));
+  }
+
+  void setTransferCategoryOf(LedgerInput input, String transfer) {
+    LedgerInput firstMatchedInput =
+        state.entries.firstWhere((entry) => entry.data.id == input.data.id);
+    firstMatchedInput.data.transferCategory = transfer;
+    firstMatchedInput.transferCategoryController.text = transfer;
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
@@ -254,14 +278,46 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     ));
   }
 
-  void clearCategoryOf(LedgerInput input) {
+  void clearIncomeCategoryOf(LedgerInput input) {
     LedgerInput firstMatchedInput =
         state.entries.firstWhere((entry) => entry.data.id == input.data.id);
-    firstMatchedInput.categoryController.clear();
-    firstMatchedInput.data.category = input.categoryController.text;
+    firstMatchedInput.incomeCategoryController.clear();
+    firstMatchedInput.data.incomeCategory = input.incomeCategoryController.text;
 
     //Trigger validation
-    input.categoryKey.currentState?.validate();
+    input.incomeCategoryKey.currentState?.validate();
+
+    emit(UTransactionState(
+      entries: state.entries,
+      currenciesTotal: state.currenciesTotal,
+    ));
+  }
+
+  void clearExpenseCategoryOf(LedgerInput input) {
+    LedgerInput firstMatchedInput =
+        state.entries.firstWhere((entry) => entry.data.id == input.data.id);
+    firstMatchedInput.expenseCategoryController.clear();
+    firstMatchedInput.data.expenseCategory =
+        input.expenseCategoryController.text;
+
+    //Trigger validation
+    input.expenseCategoryKey.currentState?.validate();
+
+    emit(UTransactionState(
+      entries: state.entries,
+      currenciesTotal: state.currenciesTotal,
+    ));
+  }
+
+  void clearTransferCategoryOf(LedgerInput input) {
+    LedgerInput firstMatchedInput =
+        state.entries.firstWhere((entry) => entry.data.id == input.data.id);
+    firstMatchedInput.transferCategoryController.clear();
+    firstMatchedInput.data.transferCategory =
+        input.transferCategoryController.text;
+
+    //Trigger validation
+    input.transferCategoryKey.currentState?.validate();
 
     emit(UTransactionState(
       entries: state.entries,
@@ -309,8 +365,22 @@ class UTransactionCubit extends Cubit<UTransactionState> {
         if (!input.accountKey.currentState!.validate()) {
           fieldStatesToShake.add(input.accountShakerKey.currentState);
         }
-        if (!input.categoryKey.currentState!.validate()) {
-          fieldStatesToShake.add(input.categoryShakerKey.currentState);
+        switch (input.data.type) {
+          case TransactionType.income:
+            if (!input.incomeCategoryKey.currentState!.validate()) {
+              fieldStatesToShake.add(input.categoryShakerKey.currentState);
+            }
+            break;
+          case TransactionType.expense:
+            if (!input.expenseCategoryKey.currentState!.validate()) {
+              fieldStatesToShake.add(input.categoryShakerKey.currentState);
+            }
+            break;
+          case TransactionType.transfer:
+            if (!input.transferCategoryKey.currentState!.validate()) {
+              fieldStatesToShake.add(input.categoryShakerKey.currentState);
+            }
+            break;
         }
       } else {
         //If expanded and the whole form has error, collect the whole form state

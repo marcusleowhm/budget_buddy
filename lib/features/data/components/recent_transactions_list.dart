@@ -228,7 +228,15 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
                               padding:
                                   const EdgeInsets.symmetric(vertical: 5.0),
                               child: Text(
-                                data.elementAt(index).category,
+                                data.elementAt(index).type ==
+                                        TransactionType.income
+                                    ? data.elementAt(index).incomeCategory
+                                    : data.elementAt(index).type ==
+                                            TransactionType.expense
+                                        ? data.elementAt(index).expenseCategory
+                                        : data
+                                            .elementAt(index)
+                                            .transferCategory,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,

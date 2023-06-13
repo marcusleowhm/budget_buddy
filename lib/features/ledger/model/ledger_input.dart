@@ -1,3 +1,4 @@
+import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/features/ledger/model/transaction_data.dart';
 import 'package:budget_buddy/features/ledger/widgets/widget_shaker.dart';
 import 'package:flutter/material.dart';
@@ -9,13 +10,17 @@ class LedgerInput {
     required this.formKey,
     required this.dateTimeController,
     required this.accountController,
-    required this.categoryController,
+    required this.incomeCategoryController,
+    required this.expenseCategoryController,
+    required this.transferCategoryController,
     required this.amountController,
     required this.noteController,
     required this.additionalNoteController,
     required this.dateTimeKey,
     required this.accountKey,
-    required this.categoryKey,
+    required this.incomeCategoryKey,
+    required this.expenseCategoryKey,
+    required this.transferCategoryKey,
     required this.amountKey,
     required this.noteKey,
     required this.additionalNoteKey,
@@ -43,7 +48,9 @@ class LedgerInput {
   //Will be instantiated in the add_ledger_screen
   final TextEditingController dateTimeController;
   final TextEditingController accountController;
-  final TextEditingController categoryController;
+  final TextEditingController incomeCategoryController;
+  final TextEditingController expenseCategoryController;
+  final TextEditingController transferCategoryController;
   final TextEditingController amountController;
   final TextEditingController noteController;
   final TextEditingController additionalNoteController;
@@ -52,7 +59,9 @@ class LedgerInput {
   //GlobalKey for moving the focus
   final GlobalKey<FormFieldState> dateTimeKey;
   final GlobalKey<FormFieldState> accountKey;
-  final GlobalKey<FormFieldState> categoryKey;
+  final GlobalKey<FormFieldState> incomeCategoryKey;
+  final GlobalKey<FormFieldState> expenseCategoryKey;
+  final GlobalKey<FormFieldState> transferCategoryKey;
   final GlobalKey<FormFieldState> amountKey;
   final GlobalKey<FormFieldState> noteKey;
   final GlobalKey<FormFieldState> additionalNoteKey;
@@ -74,11 +83,15 @@ class LedgerInput {
   void cloneControllerTextFrom({required LedgerInput previousInput}) {
     dateTimeController.text = previousInput.dateTimeController.text;
     accountController.text = previousInput.accountController.text;
-    categoryController.text = previousInput.categoryController.text;
+    incomeCategoryController.text = previousInput.incomeCategoryController.text;
+    expenseCategoryController.text =
+        previousInput.expenseCategoryController.text;
+    transferCategoryController.text =
+        previousInput.transferCategoryController.text;
     amountController.text = previousInput.amountController.text;
     noteController.text = previousInput.noteController.text;
     additionalNoteController.text = previousInput.additionalNoteController.text;
-  } 
+  }
 
   void moveFocusToNext(
     void Function(LedgerInput) selectAccount,
@@ -88,14 +101,16 @@ class LedgerInput {
     Map<TextEditingController, FocusNode> controllerFocusMap = {
       dateTimeController: dateTimeFocus,
       accountController: accountFocus,
-      categoryController: categoryFocus,
+      if (data.type == TransactionType.income) incomeCategoryController: categoryFocus,
+      if (data.type == TransactionType.expense) expenseCategoryController: categoryFocus,
+      if (data.type == TransactionType.transfer) transferCategoryController: categoryFocus,
       amountController: amountFocus,
       noteController: noteFocus,
       additionalNoteController: additionalNoteFocus
     };
 
     for (MapEntry entry in controllerFocusMap.entries) {
-      TextEditingController controller = entry.key;
+      TextEditingController controller = entry.key;      
       FocusNode focus = entry.value;
       if (controller.text.isEmpty) {
         focus.requestFocus();
@@ -117,10 +132,27 @@ class LedgerInput {
   }
 
   bool isFormValid() {
-    if (accountController.text.isEmpty || categoryController.text.isEmpty) {
-      return false;
+    switch (data.type) {
+      case TransactionType.income:
+        if (accountController.text.isEmpty ||
+            incomeCategoryController.text.isEmpty) {
+          return false;
+        }
+        break;
+      case TransactionType.expense:
+        if (accountController.text.isEmpty ||
+            expenseCategoryController.text.isEmpty) {
+          return false;
+        }
+        break;
+      case TransactionType.transfer:
+        if (accountController.text.isEmpty ||
+            transferCategoryController.text.isEmpty) {
+          return false;
+        }
+        break;
     }
+
     return true;
   }
-
 }

@@ -74,9 +74,17 @@ class ExpansionGroup extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(3.0),
               child: Text(
-                input.data.category.isEmpty
-                    ? 'No category selected'
-                    : input.data.category,
+                input.data.type == TransactionType.income
+                    ? input.data.incomeCategory.isEmpty
+                        ? 'No category selected'
+                        : input.data.incomeCategory
+                    : input.data.type == TransactionType.expense
+                        ? input.data.expenseCategory.isEmpty
+                            ? 'No category selected'
+                            : input.data.expenseCategory
+                        : input.data.transferCategory.isEmpty
+                            ? 'No account selected'
+                            : input.data.transferCategory,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   color: input.data.type == TransactionType.income

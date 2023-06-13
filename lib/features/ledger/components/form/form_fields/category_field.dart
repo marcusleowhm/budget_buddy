@@ -31,7 +31,11 @@ class CategoryField extends StatelessWidget {
       shakeCount: 4,
       shakeOffset: 10,
       child: TextFormField(
-        key: input.categoryKey,
+        key: input.data.type == TransactionType.income
+            ? input.incomeCategoryKey
+            : input.data.type == TransactionType.expense
+                ? input.expenseCategoryKey
+                : input.transferCategoryKey,
         controller: controller,
         focusNode: input.categoryFocus,
         validator: (value) {
@@ -42,9 +46,8 @@ class CategoryField extends StatelessWidget {
         },
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
-          labelText: type == TransactionType.transfer
-              ? 'Account To'
-              : 'Category',
+          labelText:
+              type == TransactionType.transfer ? 'Account To' : 'Category',
           suffixIcon: showIcon
               ? IconButton(
                   onPressed: () {

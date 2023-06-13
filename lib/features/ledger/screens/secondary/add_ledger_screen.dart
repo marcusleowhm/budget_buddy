@@ -199,7 +199,11 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
 
   void _selectCategory(LedgerInput input) {
     _scrollToWidget(
-      input.categoryKey,
+      input.data.type == TransactionType.income
+          ? input.incomeCategoryKey
+          : input.data.type == TransactionType.expense
+              ? input.expenseCategoryKey
+              : input.transferCategoryKey,
       scrollAlignment,
     );
     _bottomSheetController =
@@ -208,10 +212,24 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
         type: input.data.type,
         onPressed: (selectedCategory) {
           if (selectedCategory != null) {
-            //Set value and validate category
-            BlocProvider.of<UTransactionCubit>(context)
-                .setCategoryOf(input, selectedCategory);
-            input.categoryKey.currentState?.validate();
+            //Set value depending on type and validate category
+            switch (input.data.type) {
+              case TransactionType.income:
+                BlocProvider.of<UTransactionCubit>(context)
+                    .setIncomeCategoryOf(input, selectedCategory);
+                input.incomeCategoryKey.currentState?.validate();
+                break;
+              case TransactionType.expense:
+                BlocProvider.of<UTransactionCubit>(context)
+                    .setExpenseCategoryOf(input, selectedCategory);
+                input.expenseCategoryKey.currentState?.validate();
+                break;
+              case TransactionType.transfer:
+                BlocProvider.of<UTransactionCubit>(context)
+                    .setTransferCategoryOf(input, selectedCategory);
+                input.transferCategoryKey.currentState?.validate();
+                break;
+            }
 
             _closeBottomSheet();
             setState(() => isValid = input.isFormValid());
@@ -384,11 +402,29 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
             CategoryField(
               input: input,
               type: input.data.type,
-              controller: input.categoryController,
+              controller: input.data.type == TransactionType.income
+                  ? input.incomeCategoryController
+                  : input.data.type == TransactionType.expense
+                      ? input.expenseCategoryController
+                      : input.transferCategoryController,
               onTapTrailing: () {
-                BlocProvider.of<UTransactionCubit>(context)
-                    .clearCategoryOf(input);
-                input.categoryKey.currentState?.validate();
+                switch (input.data.type) {
+                  case TransactionType.income:
+                    BlocProvider.of<UTransactionCubit>(context)
+                        .clearIncomeCategoryOf(input);
+                    input.incomeCategoryKey.currentState?.validate();
+                    break;
+                  case TransactionType.expense:
+                    BlocProvider.of<UTransactionCubit>(context)
+                        .clearExpenseCategoryOf(input);
+                    input.expenseCategoryKey.currentState?.validate();
+                    break;
+                  case TransactionType.transfer:
+                    BlocProvider.of<UTransactionCubit>(context)
+                        .clearTransferCategoryOf(input);
+                    input.transferCategoryKey.currentState?.validate();
+                    break;
+                }
 
                 setState(() => isValid = input.isFormValid());
                 //Focus and select after clearing
@@ -398,7 +434,11 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                   _selectAmount,
                 );
               },
-              showIcon: input.data.category.isNotEmpty,
+              showIcon: input.data.type == TransactionType.income
+                  ? input.data.incomeCategory.isNotEmpty
+                  : input.data.type == TransactionType.expense
+                      ? input.data.expenseCategory.isNotEmpty
+                      : input.data.transferCategory.isNotEmpty,
               trailingIcon: const Icon(Icons.cancel_outlined),
               onTap: () {
                 _selectCategory(input);

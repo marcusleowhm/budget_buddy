@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/features/ledger/model/transaction_data.dart';
 
 import '../model/ledger_input.dart';
@@ -17,6 +18,21 @@ class CTransactionCubit extends Cubit<CTransactionState> {
     DateTime utcNow = DateTime.now().toUtc();
     for (TransactionData data in incomingTransactions) {
       data.createdUtcDateTime = utcNow;
+      //check the type and clear the other type of data first
+      switch (data.type) {
+        case TransactionType.income:
+          data.expenseCategory = '';
+          data.transferCategory = '';
+          break;
+        case TransactionType.expense:
+          data.incomeCategory = '';
+          data.transferCategory = '';
+          break;
+        case TransactionType.transfer:
+          data.incomeCategory = '';
+          data.expenseCategory = '';
+          break;
+      }
     }
     transactions.addAll(incomingTransactions);
     emit(
@@ -40,8 +56,23 @@ class CTransactionCubit extends Cubit<CTransactionState> {
     if (!input.accountKey.currentState!.validate()) {
       fieldStatesToShake.add(input.accountShakerKey.currentState);
     }
-    if (!input.categoryKey.currentState!.validate()) {
-      fieldStatesToShake.add(input.categoryShakerKey.currentState);
+
+    switch (input.data.type) {
+      case TransactionType.income:
+        if (!input.incomeCategoryKey.currentState!.validate()) {
+          fieldStatesToShake.add(input.categoryShakerKey.currentState);
+        }
+        break;
+      case TransactionType.expense:
+        if (!input.expenseCategoryKey.currentState!.validate()) {
+          fieldStatesToShake.add(input.categoryShakerKey.currentState);
+        }
+        break;
+      case TransactionType.transfer:
+        if (!input.transferCategoryKey.currentState!.validate()) {
+          fieldStatesToShake.add(input.categoryShakerKey.currentState);
+        }
+        break;
     }
     //if no error detected
     if (fieldStatesToShake.isEmpty) {
@@ -63,11 +94,31 @@ class CTransactionCubit extends Cubit<CTransactionState> {
 
   //Updates all field of the data with submitted information, changing the modified datetime
   void handleFormSubmit(String id, TransactionData data) {
-    state.committedEntries.firstWhere((entry) => entry.id == id)
+    TransactionData foundData =
+        state.committedEntries.firstWhere((entry) => entry.id == id);
+    //Clear the other category according to the type
+    switch (data.type) {
+      case TransactionType.income:
+        data.expenseCategory = '';
+        data.transferCategory = '';
+        break;
+      case TransactionType.expense:
+        data.incomeCategory = '';
+        data.transferCategory = '';
+        break;
+      case TransactionType.transfer:
+        data.incomeCategory = '';
+        data.expenseCategory = '';
+        break;
+    }
+
+    foundData
       ..type = data.type
       ..utcDateTime = data.utcDateTime
       ..account = data.account
-      ..category = data.category
+      ..incomeCategory = data.incomeCategory
+      ..expenseCategory = data.expenseCategory
+      ..transferCategory = data.transferCategory
       ..currency = data.currency
       ..amount = data.amount
       ..note = data.note

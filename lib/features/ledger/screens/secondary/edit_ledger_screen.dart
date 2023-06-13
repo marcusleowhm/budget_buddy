@@ -63,7 +63,6 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
 
   @override
   void initState() {
-
     //Create the data object from existing data (does not have form control)
     newData = TransactionData().cloneFrom(previousData: widget.data);
     newData.setDateTime(widget.data.utcDateTime);
@@ -186,7 +185,14 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
   }
 
   void _selectCategory() {
-    _scrollToWidget(formControl.categoryKey, scrollAlignment);
+    _scrollToWidget(
+      formControl.data.type == TransactionType.income
+          ? formControl.incomeCategoryKey
+          : formControl.data.type == TransactionType.expense
+              ? formControl.expenseCategoryKey
+              : formControl.transferCategoryKey,
+      scrollAlignment,
+    );
 
     _bottomSheetController =
         _scaffoldKey.currentState?.showBottomSheet<void>((context) {
@@ -195,10 +201,30 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
         onPressed: (selectedCategory) {
           if (selectedCategory != null) {
             //Set value and close the dialog
-            setState(() {
-              newData.category = selectedCategory;
-              formControl.categoryController.text = newData.category;
-            });
+
+            switch (newData.type) {
+              case TransactionType.income:
+                setState(() {
+                  newData.incomeCategory = selectedCategory;
+                  formControl.incomeCategoryController.text =
+                      newData.incomeCategory;
+                });
+                break;
+              case TransactionType.expense:
+                setState(() {
+                  newData.expenseCategory = selectedCategory;
+                  formControl.expenseCategoryController.text =
+                      newData.expenseCategory;
+                });
+                break;
+              case TransactionType.transfer:
+                setState(() {
+                  newData.transferCategory = selectedCategory;
+                  formControl.transferCategoryController.text =
+                      newData.transferCategory;
+                });
+                break;
+            }
 
             _closeBottomSheet();
             //Move focus to amount input,
@@ -217,10 +243,28 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
   }
 
   void _resetCategory() {
-    setState(() {
-      newData.category = widget.data.category;
-      formControl.categoryController.text = newData.category;
-    });
+    switch (newData.type) {
+      case TransactionType.income:
+        setState(() {
+          newData.incomeCategory = widget.data.incomeCategory;
+          formControl.incomeCategoryController.text = newData.incomeCategory;
+        });
+        break;
+      case TransactionType.expense:
+        setState(() {
+          newData.expenseCategory = widget.data.expenseCategory;
+          formControl.expenseCategoryController.text = newData.expenseCategory;
+        });
+        break;
+      case TransactionType.transfer:
+        setState(() {
+          newData.transferCategory = widget.data.transferCategory;
+          formControl.transferCategoryController.text =
+              newData.transferCategory;
+        });
+        break;
+    }
+
     formControl.moveFocusToNext(
       (_) => _selectAccount(),
       (_) => _selectCategory(),
@@ -380,10 +424,26 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                   CategoryField(
                                     input: formControl,
                                     type: newData.type,
-                                    controller: formControl.categoryController,
+                                    controller: newData.type ==
+                                            TransactionType.income
+                                        ? formControl.incomeCategoryController
+                                        : newData.type ==
+                                                TransactionType.expense
+                                            ? formControl
+                                                .expenseCategoryController
+                                            : formControl
+                                                .transferCategoryController,
                                     onTapTrailing: _resetCategory,
-                                    showIcon: newData.category !=
-                                        widget.data.category,
+                                    showIcon: newData.type ==
+                                            TransactionType.income
+                                        ? newData.incomeCategory !=
+                                            widget.data.incomeCategory
+                                        : newData.type ==
+                                                TransactionType.expense
+                                            ? newData.expenseCategory !=
+                                                widget.data.expenseCategory
+                                            : newData.transferCategory !=
+                                                widget.data.transferCategory,
                                     trailingIcon: const Icon(Icons.refresh),
                                     onTap: _selectCategory,
                                   ),
@@ -444,7 +504,7 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                       context.go(
                                         '/${routes[MainRoutes.ledger]}/${routes[SubRoutes.addledger]}',
                                         extra: formControl,
-                                       );
+                                      );
                                       ScaffoldMessenger.of(context)
                                           .hideCurrentSnackBar();
                                     },
@@ -458,7 +518,7 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                               'You\'re about to delete the following transaction: \n\n'
                                               'Date: ${dateFormatter.format(widget.data.utcDateTime.toLocal())}\n'
                                               'Account: ${widget.data.account}\n'
-                                              'Category: ${widget.data.category}\n'
+                                              'Category: ${widget.data.expenseCategory}\n'
                                               'Amount: ${widget.data.currency} ${englishDisplayCurrencyFormatter.format(widget.data.amount)}\n\n'
                                               'Are you sure?'),
                                           actions: [

@@ -99,6 +99,7 @@ class TransactionBlock extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              //Account
                               Padding(
                                 padding: const EdgeInsets.all(5.0),
                                 child: Text(
@@ -109,10 +110,15 @@ class TransactionBlock extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
+                              //Category 
                               Padding(
                                 padding: const EdgeInsets.all(5.0),
                                 child: Text(
-                                  data.category,
+                                  data.type == TransactionType.income
+                                      ? data.incomeCategory
+                                      : data.type == TransactionType.expense
+                                          ? data.expenseCategory
+                                          : data.transferCategory,
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: data.type == TransactionType.income

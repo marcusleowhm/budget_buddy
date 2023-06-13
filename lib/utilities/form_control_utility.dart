@@ -1,3 +1,4 @@
+import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
 import 'package:budget_buddy/features/ledger/model/transaction_data.dart';
 import 'package:budget_buddy/features/ledger/widgets/widget_shaker.dart';
@@ -20,7 +21,9 @@ class FormControlUtility {
     // Controllers first
     TextEditingController dateTimeController = TextEditingController();
     TextEditingController accountController = TextEditingController();
-    TextEditingController categoryController = TextEditingController();
+    TextEditingController incomeCategoryController = TextEditingController();
+    TextEditingController expenseCategoryController = TextEditingController();
+    TextEditingController transferCategoryController = TextEditingController();
     TextEditingController amountController = TextEditingController();
     TextEditingController noteController = TextEditingController();
     TextEditingController additionalNoteController = TextEditingController();
@@ -28,7 +31,9 @@ class FormControlUtility {
     //Add GlobalKey for each LedgerInput's input widget
     GlobalKey<FormFieldState> dateTimeKey = GlobalKey<FormFieldState>();
     GlobalKey<FormFieldState> accountKey = GlobalKey<FormFieldState>();
-    GlobalKey<FormFieldState> categoryKey = GlobalKey<FormFieldState>();
+    GlobalKey<FormFieldState> incomeCategoryKey = GlobalKey<FormFieldState>();
+    GlobalKey<FormFieldState> expenseCategoryKey = GlobalKey<FormFieldState>();
+    GlobalKey<FormFieldState> transferCategoryKey = GlobalKey<FormFieldState>();
     GlobalKey<FormFieldState> amountKey = GlobalKey<FormFieldState>();
     GlobalKey<FormFieldState> noteKey = GlobalKey<FormFieldState>();
     GlobalKey<FormFieldState> additionalNoteKey = GlobalKey<FormFieldState>();
@@ -50,13 +55,17 @@ class FormControlUtility {
       formKey: formKey,
       dateTimeController: dateTimeController,
       accountController: accountController,
-      categoryController: categoryController,
+      incomeCategoryController: incomeCategoryController,
+      expenseCategoryController: expenseCategoryController,
+      transferCategoryController: transferCategoryController,
       amountController: amountController,
       noteController: noteController,
       additionalNoteController: additionalNoteController,
       dateTimeKey: dateTimeKey,
       accountKey: accountKey,
-      categoryKey: categoryKey,
+      incomeCategoryKey: incomeCategoryKey,
+      expenseCategoryKey: expenseCategoryKey,
+      transferCategoryKey: transferCategoryKey,
       amountKey: amountKey,
       noteKey: noteKey,
       additionalNoteKey: additionalNoteKey,
@@ -80,7 +89,11 @@ class FormControlUtility {
       dateTimeController.text =
           dateLongFormatter.format(data.utcDateTime.toLocal());
       accountController.text = data.account;
-      categoryController.text = data.category;
+
+      incomeCategoryController.text = data.incomeCategory;
+      expenseCategoryController.text = data.expenseCategory;
+      transferCategoryController.text = data.transferCategory;
+
       amountController.text =
           englishDisplayCurrencyFormatter.format(data.amount);
       noteController.text = data.note;
@@ -98,7 +111,19 @@ class FormControlUtility {
     categoryFocus.addListener(
       () {
         if (!categoryFocus.hasFocus) {
-          categoryKey.currentState?.validate();
+          switch (data?.type) {
+            case TransactionType.income:
+              incomeCategoryKey.currentState?.validate();
+              break;
+            case TransactionType.expense:
+              expenseCategoryKey.currentState?.validate();
+              break;
+            case TransactionType.transfer:
+              transferCategoryKey.currentState?.validate();
+              break;
+            case null:
+              break;
+          }
         }
       },
     );
@@ -109,7 +134,9 @@ class FormControlUtility {
   static void dispose(LedgerInput input) {
     input.dateTimeController.dispose();
     input.accountController.dispose();
-    input.categoryController.dispose();
+    input.incomeCategoryController.dispose();
+    input.expenseCategoryController.dispose();
+    input.transferCategoryController.dispose();
     input.amountController.dispose();
     input.noteController.dispose();
     input.additionalNoteController.dispose();

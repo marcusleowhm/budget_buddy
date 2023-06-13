@@ -5,7 +5,9 @@ class TransactionData {
   TransactionData({
     this.type = TransactionType.expense,
     this.account = '',
-    this.category = '',
+    this.incomeCategory = '',
+    this.expenseCategory = '',
+    this.transferCategory = '',
     this.currency = 'USD', //TODO paramterize it in the settings
     this.amount = 0.0,
     this.note = '',
@@ -17,7 +19,9 @@ class TransactionData {
     return TransactionData(
       type: previousData.type,
       account: previousData.account,
-      category: previousData.category,
+      incomeCategory: previousData.incomeCategory,
+      expenseCategory: previousData.expenseCategory,
+      transferCategory: previousData.transferCategory,
       currency: previousData.currency,
       amount: previousData.amount,
       note: previousData.note,
@@ -35,7 +39,9 @@ class TransactionData {
   TransactionType type = TransactionType.expense;
   DateTime utcDateTime = DateTime.now().toUtc();
   String account;
-  String category;
+  String incomeCategory;
+  String expenseCategory;
+  String transferCategory;
   String currency;
   double amount;
   String note;
@@ -47,6 +53,6 @@ class TransactionData {
 
   @override
   String toString() {
-    return '\nTransactionData{\nid = $id,\ntype = $type,\nutcDateTime = $utcDateTime,\naccount = $account,\ncategory = $category,\ncurrency=$currency,\namount=$amount,\nnote=$note,\nadditionalNote=$additionalNote}';
+    return '\nTransactionData{\nid = $id,\ntype = $type,\nutcDateTime = $utcDateTime,\naccount = $account,\nincomeCategory=$incomeCategory,\nexpenseCategory = $expenseCategory,\ntransferCategory=$transferCategory,\ncurrency=$currency,\namount=$amount,\nnote=$note,\nadditionalNote=$additionalNote}';
   }
 }
