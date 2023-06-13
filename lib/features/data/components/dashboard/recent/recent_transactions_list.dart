@@ -18,14 +18,14 @@ class RecentTransactionsList extends StatefulWidget {
 }
 
 class _RecentTransactionsListState extends State<RecentTransactionsList> {
-  RecentTransactionFilterCriteria filterCriteria =
-      RecentTransactionFilterCriteria.transactionDate;
-
-  Map<RecentTransactionFilterCriteria, String> labels = {
+  static const Map<RecentTransactionFilterCriteria, String> labels = {
     RecentTransactionFilterCriteria.transactionDate: 'Transaction Date',
     RecentTransactionFilterCriteria.createdDate: 'Created Date',
     RecentTransactionFilterCriteria.modifiedDate: 'Modified Date'
   };
+
+  RecentTransactionFilterCriteria filterCriteria =
+      RecentTransactionFilterCriteria.transactionDate;
 
   Iterable<TransactionData> getData(CTransactionState state) {
     List<TransactionData> copyOfState = List.from(state.committedEntries);
@@ -149,7 +149,10 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
                       Text(labels[filterCriteria]!),
                     ],
                   ),
-                  const Divider(thickness: 1),
+                  const Divider(
+                    thickness: 1,
+                    height: 5.0,
+                  ),
 
                   //If the transaction is empty
                   if (state.committedEntries.isEmpty)

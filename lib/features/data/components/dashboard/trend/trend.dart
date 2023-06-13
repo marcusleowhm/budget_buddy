@@ -12,6 +12,11 @@ class Trend extends StatefulWidget {
 class _TrendState extends State<Trend> {
   ChartAmountDisplayCriteria amountFilter = ChartAmountDisplayCriteria.gross;
 
+  static const Map<ChartAmountDisplayCriteria, String> labels = {
+    ChartAmountDisplayCriteria.gross: 'Gross Amount',
+    ChartAmountDisplayCriteria.nett: 'Nett Amount'
+  };
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -40,23 +45,37 @@ class _TrendState extends State<Trend> {
                     ),
                     Row(
                       children: [
-                        TextButton(
-                          onPressed: () {
-                            amountFilter == ChartAmountDisplayCriteria.gross
-                                ? setState(() => amountFilter =
-                                    ChartAmountDisplayCriteria.nett)
-                                : setState(() => amountFilter =
-                                    ChartAmountDisplayCriteria.gross);
-                          },
-                          child: Text(
-                              'View ${amountFilter == ChartAmountDisplayCriteria.gross ? 'Net' : 'Gross'} Amount'),
-                        )
+                        PopupMenuButton<ChartAmountDisplayCriteria>(
+                          initialValue: amountFilter,
+                          onSelected: (ChartAmountDisplayCriteria value) =>
+                              setState(() => amountFilter = value),
+                          itemBuilder: (context) => [
+                            PopupMenuItem(
+                              value: ChartAmountDisplayCriteria.gross,
+                              child: Text(
+                                  labels[ChartAmountDisplayCriteria.gross]!),
+                            ),
+                            PopupMenuItem(
+                              value: ChartAmountDisplayCriteria.nett,
+                              child: Text(
+                                  labels[ChartAmountDisplayCriteria.nett]!),
+                            ),
+                          ],
+                          child: TextButton.icon(
+                            icon: Text(labels[amountFilter]!),
+                            label: const Icon(Icons.arrow_drop_down_rounded),
+                            onPressed: null,
+                          ),
+                        ),
                       ],
                     )
                   ],
                 ),
               ),
-              const Divider(thickness: 1.0),
+              const Divider(
+                thickness: 1.0,
+                height: 5.0,
+              ),
               DefaultTabController(
                 length: 2,
                 child: Column(
@@ -66,23 +85,19 @@ class _TrendState extends State<Trend> {
                         Tab(
                           child: Text(
                             'YTD',
-                            style: TextStyle(
-                              color: Colors.black,
-                            ),
+                            style: TextStyle(color: Colors.black),
                           ),
                         ),
                         Tab(
                           child: Text(
                             '5Y',
-                            style: TextStyle(
-                              color: Colors.black,
-                            ),
+                            style: TextStyle(color: Colors.black),
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: 500,
+                    AspectRatio(
+                      aspectRatio: 1,
                       child: TabBarView(
                         children: [
                           DateTimeSeriesChart(

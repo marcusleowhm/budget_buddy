@@ -1,3 +1,4 @@
+import 'package:budget_buddy/features/data/components/statistics/breakdown/category_breakdown.dart';
 import 'package:budget_buddy/features/data/widgets/month_picker.dart';
 import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
 import 'package:flutter/material.dart';
@@ -39,12 +40,12 @@ class CommittedTransactionStatistics extends StatelessWidget {
             physics: const BouncingScrollPhysics(),
             child: BlocBuilder<CTransactionCubit, CTransactionState>(
               builder: (context, state) {
-                return Column(
+                return const Column(
                   children: [
-                    Container(child: Card(child: Text('1'))),
-                    Container(child: Card(child: Text('2'))),
-                    Container(child: Card(child: Text('3'))),
-                    Container(child: Card(child: Text('4'))),
+                    CategoryBreakdown(),
+                    Card(
+                      child: Row(children: [Text('2')]),
+                    ),
                   ],
                 );
               },

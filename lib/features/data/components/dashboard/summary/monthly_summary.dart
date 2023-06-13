@@ -81,6 +81,7 @@ class MonthlySummary extends StatelessWidget {
                 ),
                 const Divider(
                   thickness: 1.0,
+                  height: 5.0
                 ),
                 Padding(
                   padding: const EdgeInsets.all(5.0),

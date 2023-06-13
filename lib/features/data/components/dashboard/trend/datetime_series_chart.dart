@@ -218,114 +218,116 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
   Widget build(BuildContext context) {
     return BlocBuilder<CTransactionCubit, CTransactionState>(
       builder: (context, state) {
-        return AspectRatio(
-          aspectRatio: 1,
-          child: Column(
-            children: [
-              // const Row(
-              //   children: [Text('Left for future feature update')],
-              // ),
-              const SizedBox(height: 24),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 20),
-                  child: BarChart(
-                    BarChartData(
-                      maxY: state.committedEntries.isEmpty ? 100.0 : null,
-                      extraLinesData: ExtraLinesData(
-                        horizontalLines: [
-                          HorizontalLine(
-                              y: 0,
-                              strokeWidth: 0.5,
-                              color: Colors.grey,
-                              dashArray: [
-                                20,
-                                5,
-                              ]),
-                        ],
-                      ),
-                      barTouchData: BarTouchData(
-                        touchTooltipData: BarTouchTooltipData(
-                          fitInsideVertically: true,
-                          tooltipBgColor: Colors.grey[200],
-                          getTooltipItem: (
-                            BarChartGroupData group,
-                            int groupIndex,
-                            BarChartRodData rod,
-                            int rodIndex,
-                          ) {
-                            return BarTooltipItem(
-                              englishDisplayCurrencyFormatter.format(rod.toY),
-                              TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: rod.color,
-                                fontSize: 16,
-                                shadows: const [
-                                  Shadow(
-                                    color: Colors.black26,
-                                    blurRadius: 12,
-                                  )
-                                ],
-                              ),
-                            );
+        return Center(
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: Column(
+              children: [
+                // const Row(
+                //   children: [Text('Left for future feature update')],
+                // ),
+                const SizedBox(height: 24),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 20),
+                    child: BarChart(
+                      BarChartData(
+                        maxY: state.committedEntries.isEmpty ? 100.0 : null,
+                        extraLinesData: ExtraLinesData(
+                          horizontalLines: [
+                            HorizontalLine(
+                                y: 0,
+                                strokeWidth: 0.5,
+                                color: Colors.grey,
+                                dashArray: [
+                                  20,
+                                  5,
+                                ]),
+                          ],
+                        ),
+                        barTouchData: BarTouchData(
+                          touchTooltipData: BarTouchTooltipData(
+                            fitInsideVertically: true,
+                            tooltipBgColor: Colors.grey[200],
+                            getTooltipItem: (
+                              BarChartGroupData group,
+                              int groupIndex,
+                              BarChartRodData rod,
+                              int rodIndex,
+                            ) {
+                              return BarTooltipItem(
+                                englishDisplayCurrencyFormatter.format(rod.toY),
+                                TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: rod.color,
+                                  fontSize: 16,
+                                  shadows: const [
+                                    Shadow(
+                                      color: Colors.black26,
+                                      blurRadius: 12,
+                                    )
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                          touchCallback: (FlTouchEvent event, response) {
+                            if (response == null || response.spot == null) {
+                              setState(() {
+                                //Handle when user does not touch on any bar
+                                touchedGroupIndex = -1;
+                              });
+                              return;
+                            }
+        
+                            //Else handle when user touch the bar
+                            if (event.isInterestedForInteractions &&
+                                response.spot != null) {
+                              setState(() => touchedGroupIndex =
+                                  response.spot!.touchedBarGroupIndex);
+                            }
                           },
                         ),
-                        touchCallback: (FlTouchEvent event, response) {
-                          if (response == null || response.spot == null) {
-                            setState(() {
-                              //Handle when user does not touch on any bar
-                              touchedGroupIndex = -1;
-                            });
-                            return;
-                          }
-
-                          //Else handle when user touch the bar
-                          if (event.isInterestedForInteractions &&
-                              response.spot != null) {
-                            setState(() => touchedGroupIndex =
-                                response.spot!.touchedBarGroupIndex);
-                          }
-                        },
-                      ),
-                      titlesData: FlTitlesData(
-                        show: true,
-                        rightTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: false,
+                        titlesData: FlTitlesData(
+                          show: true,
+                          rightTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: false,
+                            ),
+                          ),
+                          topTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: false,
+                            ),
+                          ),
+                          bottomTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              getTitlesWidget: _buildBottomTitles,
+                              reservedSize: 42,
+                            ),
+                          ),
+                          leftTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              getTitlesWidget: _buildLeftTitles,
+                              reservedSize: 56,
+                            ),
                           ),
                         ),
-                        topTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: false,
-                          ),
+                        borderData: FlBorderData(
+                          show: false,
                         ),
-                        bottomTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            getTitlesWidget: _buildBottomTitles,
-                            reservedSize: 42,
-                          ),
+                        barGroups: prepareBarGroups(state),
+                        gridData: FlGridData(
+                          show: false,
                         ),
-                        leftTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            getTitlesWidget: _buildLeftTitles,
-                            reservedSize: 56,
-                          ),
-                        ),
-                      ),
-                      borderData: FlBorderData(
-                        show: false,
-                      ),
-                      barGroups: prepareBarGroups(state),
-                      gridData: FlGridData(
-                        show: false,
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },

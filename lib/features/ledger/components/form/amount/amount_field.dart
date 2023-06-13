@@ -33,11 +33,13 @@ class AmountField extends StatelessWidget {
           width: 100,
           child: InputDecorator(
             decoration: InputDecoration(
-                contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 20.0, vertical: 15.0),
-                labelText: 'Currency',
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5.0))),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+              labelText: 'Currency',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+            ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton(
                 value: input.data.currency,
