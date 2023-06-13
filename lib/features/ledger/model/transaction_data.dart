@@ -27,7 +27,7 @@ class TransactionData {
 
   //For setting date when editing existing data
   void setDateTime(DateTime utcDateTime) {
-    utcDateTime = utcDateTime;
+    this.utcDateTime = utcDateTime;
   }
 
   //Data

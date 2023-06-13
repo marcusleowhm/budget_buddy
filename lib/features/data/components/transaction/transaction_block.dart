@@ -80,9 +80,11 @@ class TransactionBlock extends StatelessWidget {
     return transactions
         .map((data) => InkWell(
               onTap: () {
+                //open the edit page and populate the form with existing data
                 context.go(
-                    '/${routes[MainRoutes.ledger]}/${routes[SubRoutes.editLedger]}',
-                    extra: data);
+                  '/${routes[MainRoutes.ledger]}/${routes[SubRoutes.editLedger]}',
+                  extra: data,
+                );
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
               },
               child: Container(

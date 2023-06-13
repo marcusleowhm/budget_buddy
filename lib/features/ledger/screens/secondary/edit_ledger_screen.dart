@@ -63,6 +63,8 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
 
   @override
   void initState() {
+
+    //Create the data object from existing data (does not have form control)
     newData = TransactionData().cloneFrom(previousData: widget.data);
     newData.setDateTime(widget.data.utcDateTime);
 
