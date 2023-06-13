@@ -1,11 +1,11 @@
 import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/features/data/components/transaction/transaction_block.dart';
+import 'package:budget_buddy/features/data/widgets/month_picker.dart';
 import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
 import 'package:budget_buddy/features/ledger/model/daily_ledger_input.dart';
 import 'package:budget_buddy/features/ledger/model/monthly_ledger_input.dart';
 import 'package:budget_buddy/features/ledger/model/transaction_data.dart';
 import 'package:budget_buddy/utilities/currency_formatter.dart';
-import 'package:budget_buddy/utilities/date_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -116,45 +116,12 @@ class CTransactionList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         //Month picker
-        Container(
-          color: Theme.of(context).cardColor,
-          child: Row(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.chevron_left),
-                onPressed: decrementMonth,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 10.0, vertical: 15.0),
-                constraints: const BoxConstraints(),
-              ),
-              SizedBox(
-                width: 80,
-                child: Text(dateMonthYearFormatter.format(currentLocalDate),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 16)),
-              ),
-              IconButton(
-                icon: const Icon(Icons.chevron_right),
-                onPressed: incrementMonth,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 10.0, vertical: 15.0),
-                constraints: const BoxConstraints(),
-              ),
-              if (
-                  //Same month but different year
-                  (currentLocalDate.month == nowDate.month &&
-                          currentLocalDate.year != nowDate.year) ||
-                      //Different month, year is irrelevant
-                      (currentLocalDate.month != nowDate.month))
-                IconButton(
-                  icon: const Icon(Icons.refresh),
-                  onPressed: resetDate,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0, vertical: 15.0),
-                  constraints: const BoxConstraints(),
-                )
-            ],
-          ),
+        MonthPicker(
+          currentLocalDate: currentLocalDate,
+          nowDate: nowDate,
+          incrementMonth: incrementMonth,
+          decrementMonth: decrementMonth,
+          resetDate: resetDate,
         ),
 
         //Total sum for the selected month
