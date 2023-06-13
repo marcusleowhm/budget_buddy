@@ -25,6 +25,7 @@ class TransactionBlock extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          //Day
           Padding(
             padding: const EdgeInsets.only(right: 5.0),
             child: Text(
@@ -32,6 +33,7 @@ class TransactionBlock extends StatelessWidget {
               style: const TextStyle(fontSize: 20),
             ),
           ),
+          //Day of the week
           Container(
             decoration: BoxDecoration(
               border: Border.all(
@@ -44,42 +46,31 @@ class TransactionBlock extends StatelessWidget {
               dateShortDayOfWeekFormatter.format(dateTime),
             ),
           ),
+          //Monthly tally
           Flexible(
             flex: 1,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Column(
-                  children: [
-                    Text(
-                      englishDisplayCurrencyFormatter.format(sum['income']),
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                  ],
+                Text(
+                  englishDisplayCurrencyFormatter.format(sum['income']),
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                  ),
                 ),
-                Column(
-                  children: [
-                    Text(
-                      englishDisplayCurrencyFormatter.format(sum['expense']),
-                      style: const TextStyle(
-                        color: Colors.red,
-                      ),
-                    ),
-                  ],
+                Text(
+                  englishDisplayCurrencyFormatter.format(sum['expense']),
+                  style: const TextStyle(
+                    color: Colors.red,
+                  ),
                 ),
-                Column(
-                  children: [
-                    Text(
-                      englishDisplayCurrencyFormatter.format(sum['transfer']),
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                  ],
+                Text(
+                  englishDisplayCurrencyFormatter.format(sum['transfer']),
+                  style: const TextStyle(color: Colors.grey),
                 ),
               ],
             ),
-          ),   
+          ),
         ],
       ),
     );
@@ -90,9 +81,8 @@ class TransactionBlock extends StatelessWidget {
         .map((data) => InkWell(
               onTap: () {
                 context.go(
-                  '/${routes[MainRoutes.ledger]}/${routes[SubRoutes.editLedger]}',
-                  extra: data
-                );
+                    '/${routes[MainRoutes.ledger]}/${routes[SubRoutes.editLedger]}',
+                    extra: data);
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
               },
               child: Container(

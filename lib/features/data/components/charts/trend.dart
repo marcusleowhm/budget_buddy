@@ -49,7 +49,7 @@ class _TrendState extends State<Trend> {
                                     ChartAmountDisplayCriteria.gross);
                           },
                           child: Text(
-                              'View ${amountFilter == ChartAmountDisplayCriteria.gross ? 'Net' : 'Gross'}'),
+                              'View ${amountFilter == ChartAmountDisplayCriteria.gross ? 'Net' : 'Gross'} Amount'),
                         )
                       ],
                     )
@@ -78,7 +78,7 @@ class _TrendState extends State<Trend> {
                               color: Colors.black,
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                     SizedBox(

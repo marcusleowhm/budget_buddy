@@ -1,8 +1,10 @@
 import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/features/data/components/transaction/transaction_block.dart';
 import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
-import 'package:budget_buddy/features/ledger/model/ledger_display.dart';
+import 'package:budget_buddy/features/ledger/model/daily_ledger_input.dart';
+import 'package:budget_buddy/features/ledger/model/monthly_ledger_input.dart';
 import 'package:budget_buddy/features/ledger/model/transaction_data.dart';
+import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:budget_buddy/utilities/date_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,9 +28,46 @@ class CTransactionList extends StatelessWidget {
   final VoidCallback decrementMonth;
   final VoidCallback resetDate;
 
-  Map<DateTime, LedgerDisplay> getData(CTransactionState state) {
+  MonthlyLedgerInput getMonthlyTransactionData(CTransactionState state) {
+    MonthlyLedgerInput monthlyLedgerInput = MonthlyLedgerInput();
+    for (TransactionData data in state.committedEntries) {
+      DateTime localDateTime = DateTime(
+        data.utcDateTime.toLocal().year,
+        data.utcDateTime.toLocal().month,
+        data.utcDateTime.toLocal().day,
+      );
+      if (currentLocalDate.month == localDateTime.month &&
+          currentLocalDate.year == localDateTime.year) {
+        switch (data.type) {
+          case TransactionType.income:
+            double cumulativeMonthlyIncome =
+                monthlyLedgerInput.sum['income'] ?? 0.0;
+            monthlyLedgerInput.sum['income'] =
+                cumulativeMonthlyIncome + data.amount;
+            break;
+          case TransactionType.expense:
+            double cumulativeMonthlyExpense =
+                monthlyLedgerInput.sum['expense'] ?? 0.0;
+            monthlyLedgerInput.sum['expense'] =
+                cumulativeMonthlyExpense + data.amount;
+            break;
+          case TransactionType.transfer:
+            double cumulativeTransferExpense =
+                monthlyLedgerInput.sum['transfer'] ?? 0.0;
+            monthlyLedgerInput.sum['transfer'] =
+                cumulativeTransferExpense + data.amount;
+            break;
+        }
+      }
+    }
+    return monthlyLedgerInput;
+  }
+
+  Map<DateTime, DailyLedgerInput> getDailyTransactionData(
+      CTransactionState state) {
     //Do some mapping by date and return the card
-    Map<DateTime, LedgerDisplay> map = {};
+    Map<DateTime, DailyLedgerInput> map = {};
+
     for (TransactionData data in state.committedEntries) {
       DateTime localDateTime = DateTime(
         data.utcDateTime.toLocal().year,
@@ -38,7 +77,7 @@ class CTransactionList extends StatelessWidget {
 
       if (currentLocalDate.month == localDateTime.month &&
           currentLocalDate.year == localDateTime.year) {
-        map.putIfAbsent(localDateTime, () => LedgerDisplay());
+        map.putIfAbsent(localDateTime, () => DailyLedgerInput());
 
         //Add the elements back into the map
         map[localDateTime]!.inputs.add(data);
@@ -66,7 +105,7 @@ class CTransactionList extends StatelessWidget {
     }
 
     //Sort the map by date
-    Map<DateTime, LedgerDisplay> sortedData = Map.fromEntries(
+    Map<DateTime, DailyLedgerInput> sortedData = Map.fromEntries(
         map.entries.toList()..sort((e1, e2) => e1.key.compareTo(e2.key)));
     return sortedData;
   }
@@ -118,6 +157,87 @@ class CTransactionList extends StatelessWidget {
           ),
         ),
 
+        //Total sum for the selected month
+        BlocBuilder<CTransactionCubit, CTransactionState>(
+          builder: (context, state) {
+            MonthlyLedgerInput monthlyLedgerInput =
+                getMonthlyTransactionData(state);
+            return Card(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5.0),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 3.0),
+                          child: Text('Income',
+                              style: TextStyle(color: Colors.blue[700])),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 3.0),
+                          child: Text(
+                            englishDisplayCurrencyFormatter
+                                .format(monthlyLedgerInput.sum['income']),
+                            style: TextStyle(color: Colors.blue[700]),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5.0),
+                    child: Column(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 3.0),
+                          child: Text(
+                            'Expense',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 3.0),
+                          child: Text(
+                            englishDisplayCurrencyFormatter
+                                .format(monthlyLedgerInput.sum['expense']),
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5.0),
+                    child: Column(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 3.0),
+                          child: Text(
+                            'Transfer',
+                            style: TextStyle(
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 3.0),
+                          child: Text(
+                            englishDisplayCurrencyFormatter
+                                .format(monthlyLedgerInput.sum['transfer']),
+                            style: const TextStyle(color: Colors.grey),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+
         //Transaction list
         Expanded(
           child: SingleChildScrollView(
@@ -125,7 +245,7 @@ class CTransactionList extends StatelessWidget {
             physics: const BouncingScrollPhysics(),
             child: BlocBuilder<CTransactionCubit, CTransactionState>(
               builder: (context, state) {
-                return getData(state).keys.isEmpty
+                return getDailyTransactionData(state).keys.isEmpty
                     ? const Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -147,15 +267,21 @@ class CTransactionList extends StatelessWidget {
                           ListView.builder(
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
-                            itemCount: getData(state).keys.length,
+                            itemCount:
+                                getDailyTransactionData(state).keys.length,
                             itemBuilder: (context, index) {
                               return TransactionBlock(
-                                dateTime: getData(state).keys.elementAt(index),
-                                transactions: getData(state)
+                                dateTime: getDailyTransactionData(state)
+                                    .keys
+                                    .elementAt(index),
+                                transactions: getDailyTransactionData(state)
                                     .values
                                     .elementAt(index)
                                     .inputs,
-                                sum: getData(state).values.elementAt(index).sum,
+                                sum: getDailyTransactionData(state)
+                                    .values
+                                    .elementAt(index)
+                                    .sum,
                               );
                             },
                           ),
