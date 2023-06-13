@@ -1,5 +1,5 @@
 import 'package:budget_buddy/features/constants/enum.dart';
-import 'package:budget_buddy/features/data/components/transaction/c_transaction_list.dart';
+import 'package:budget_buddy/features/data/components/transaction/committed_transaction_list.dart';
 import 'package:budget_buddy/nav/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -51,7 +51,7 @@ class _LedgerScreenState extends State<LedgerScreen> {
         child: const Icon(Icons.add),
       ),
       backgroundColor: Colors.grey[200],
-      body: CTransactionList(
+      body: CommittedTransactionList(
         currentLocalDate: currentLocalDate,
         nowDate: utcNow,
         incrementMonth: incrementMonth,

@@ -4,11 +4,11 @@ import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../nav/routes.dart';
-import '../../../../utilities/date_formatter.dart';
+import '../../../../../nav/routes.dart';
+import '../../../../../utilities/date_formatter.dart';
 
-class TransactionBlock extends StatelessWidget {
-  const TransactionBlock({
+class DailyTransactionBlock extends StatelessWidget {
+  const DailyTransactionBlock({
     super.key,
     required this.dateTime,
     required this.transactions,

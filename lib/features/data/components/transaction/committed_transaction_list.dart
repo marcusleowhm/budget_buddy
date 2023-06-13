@@ -1,5 +1,5 @@
 import 'package:budget_buddy/features/constants/enum.dart';
-import 'package:budget_buddy/features/data/components/transaction/transaction_block.dart';
+import 'package:budget_buddy/features/data/components/transaction/daily/daily_transaction_block.dart';
 import 'package:budget_buddy/features/data/widgets/month_picker.dart';
 import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
 import 'package:budget_buddy/features/ledger/model/daily_ledger_input.dart';
@@ -9,8 +9,8 @@ import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CTransactionList extends StatelessWidget {
-  CTransactionList({
+class CommittedTransactionList extends StatelessWidget {
+  CommittedTransactionList({
     super.key,
     required this.currentLocalDate,
     required this.nowDate,
@@ -237,7 +237,7 @@ class CTransactionList extends StatelessWidget {
                             itemCount:
                                 getDailyTransactionData(state).keys.length,
                             itemBuilder: (context, index) {
-                              return TransactionBlock(
+                              return DailyTransactionBlock(
                                 dateTime: getDailyTransactionData(state)
                                     .keys
                                     .elementAt(index),
