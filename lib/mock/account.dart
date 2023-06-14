@@ -8,12 +8,14 @@ final Map<String, List<String>> accountGroups = {
     'Standard Chartered Unlimited Cashbackkkkkkkkkkkkkkkkkkkkkkkkkkk',
   ],
   'Investment': ['CityIndex', 'TD Ameritrade'],
-  'Savings': ['POSB Kids', 'Investment Capital']
+  'Savings': ['POSB Kids', 'Investment Capital'],
+  'Others': []
 };
 
 final Map<String, List<String>> inflowCategoryGroups = {
   'Income': ['Salary', 'Interest'],
-  'Investment': ['Thinkorswim', 'CityIndex', 'Dividend']
+  'Investment': ['Thinkorswim', 'CityIndex', 'Dividend'],
+  'Others': []
 };
 
 final Map<String, List<String>> outflowCategoryGroups = {
@@ -21,7 +23,8 @@ final Map<String, List<String>> outflowCategoryGroups = {
   'Leisure': ['Videogames', 'Holiday', 'Arcade'],
   'Transport': ['Bus', 'MRT', 'Car', 'Taxi'],
   'Housing': ['Renovation', 'Maintenance', 'Furniture'],
-  'Shopping': ['e-Commerce', 'Clothes']
+  'Shopping': ['e-Commerce', 'Clothes'],
+  'Others': []
 };
 
 final List<String> currencies = ['USD', 'SGD', 'MYR', 'IDR', 'VND'];

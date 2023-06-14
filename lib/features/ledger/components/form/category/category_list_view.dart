@@ -46,7 +46,7 @@ class CategoryListView extends StatelessWidget {
                               ? ListTile(
                                   onTap: () => onSelectCategory(
                                     categoryGroups.keys.elementAt(index),
-                                    categoryGroups.keys.elementAt(index),
+                                    null,
                                   ),
                                   title: Text(
                                       categoryGroups.keys.elementAt(index)),
@@ -56,7 +56,10 @@ class CategoryListView extends StatelessWidget {
                               : ListTile(
                                   onTap: selectedGroupIndex == index
                                       ? () => onSelectCategory(
-                                          categoryGroups.keys.elementAt(index), null)
+                                            categoryGroups.keys
+                                                .elementAt(index),
+                                            null,
+                                          )
                                       : () => selectGroupIndex(index),
                                   title: Text(
                                     categoryGroups.keys.elementAt(index),
@@ -95,10 +98,12 @@ class CategoryListView extends StatelessWidget {
                           child: ListTile(
                             onTap: () {
                               onSelectCategory(
-                                //Value stored in the data structure
-                                categoryGroups.keys.elementAt(selectedGroupIndex),
-                                categoryGroups.values.elementAt(selectedGroupIndex).elementAt(index)
-                              );
+                                  //Value stored in the data structure
+                                  categoryGroups.keys
+                                      .elementAt(selectedGroupIndex),
+                                  categoryGroups.values
+                                      .elementAt(selectedGroupIndex)
+                                      .elementAt(index));
                             },
                             title: Text(
                               categoryGroups.values

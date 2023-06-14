@@ -128,6 +128,7 @@ class CTransactionCubit extends Cubit<CTransactionState> {
       ..type = data.type
       ..utcDateTime = data.utcDateTime
       ..account = data.account
+      ..subAccount = data.subAccount
       ..incomeCategory = data.incomeCategory
       ..incomeSubCategory = data.incomeSubCategory
       ..expenseCategory = data.expenseCategory

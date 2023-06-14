@@ -3,19 +3,19 @@ import 'package:uuid/uuid.dart';
 
 class TransactionData {
   TransactionData({
-    this.type = TransactionType.expense,
-    this.account = '',
-    this.subAccount = '',
-    this.incomeCategory = '',
+    this.type=TransactionType.expense,
+    this.account='',
+    this.subAccount='',
+    this.incomeCategory='',
     this.incomeSubCategory,
-    this.expenseCategory = '',
+    this.expenseCategory='',
     this.expenseSubCategory,
-    this.transferCategory = '',
+    this.transferCategory='',
     this.transferSubCategory,
-    this.currency = 'USD', //TODO paramterize it in the settings
-    this.amount = 0.0,
-    this.note = '',
-    this.additionalNote = '',
+    this.currency='USD', //TODO paramterize it in the settings
+    this.amount=0.0,
+    this.note='',
+    this.additionalNote='',
   });
 
   //Constructor for cloning (only used with editing)
@@ -39,7 +39,7 @@ class TransactionData {
 
   //For setting date when editing existing data
   void setDateTime(DateTime utcDateTime) {
-    this.utcDateTime = utcDateTime;
+    this.utcDateTime=utcDateTime;
   }
 
   //Data
@@ -66,13 +66,17 @@ class TransactionData {
   @override
   String toString() {
     return '\nTransactionData{\n'
-        'id = $id,\n'
-        'type = $type,\n'
-        'utcDateTime = $utcDateTime,\n'
-        'account = $account,\n'
-        'incomeCategory = $incomeCategory,\n'
-        'expenseCategory = $expenseCategory,\n'
+        'id=$id,\n'
+        'type=$type,\n'
+        'utcDateTime=$utcDateTime,\n'
+        'account=$account,\n'
+        'subAccount=$subAccount,\n'
+        'incomeCategory=$incomeCategory,\n'
+        'incomeSubCategory=$incomeSubCategory,\n'
+        'expenseCategory=$expenseCategory,\n'
+        'expenseSubCategory=$expenseSubCategory,\n'
         'transferCategory=$transferCategory,\n'
+        'transferSubCategory=$transferSubCategory,\n'
         'currency=$currency,\n'
         'amount=$amount,\n'
         'note=$note,\n'
