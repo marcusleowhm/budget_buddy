@@ -103,22 +103,26 @@ class DailyTransactionBlock extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.all(5.0),
                                 child: Text(
-                                  data.account,
+                                  data.subAccount,
                                   style: const TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
-                              //Category 
+                              //Category
                               Padding(
                                 padding: const EdgeInsets.all(5.0),
                                 child: Text(
                                   data.type == TransactionType.income
-                                      ? data.incomeCategory
+                                      ? data.incomeSubCategory != null
+                                          ? '${data.incomeCategory} (${data.incomeSubCategory})'
+                                          : data.incomeCategory
                                       : data.type == TransactionType.expense
-                                          ? data.expenseCategory
-                                          : data.transferCategory,
+                                          ? data.expenseSubCategory != null
+                                              ? '${data.expenseCategory} (${data.expenseSubCategory})'
+                                              : data.expenseCategory
+                                          : data.transferSubCategory!,
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: data.type == TransactionType.income

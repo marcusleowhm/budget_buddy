@@ -88,11 +88,24 @@ class FormControlUtility {
     if (data != null) {
       dateTimeController.text =
           dateLongFormatter.format(data.utcDateTime.toLocal());
-      accountController.text = data.account;
+      accountController.text = data.subAccount;
+      
+      if (data.incomeSubCategory != null) {
+        incomeCategoryController.text = '${data.incomeCategory} (${data.incomeSubCategory})';
+      } else {
+        incomeCategoryController.text = data.incomeCategory;
+      }
 
-      incomeCategoryController.text = data.incomeCategory;
-      expenseCategoryController.text = data.expenseCategory;
-      transferCategoryController.text = data.transferCategory;
+      if (data.expenseSubCategory != null) {
+        expenseCategoryController.text = '${data.expenseCategory} (${data.expenseSubCategory})';
+      } 
+      else {
+        expenseCategoryController.text = data.expenseCategory;
+      }
+
+      if (data.transferSubCategory != null) {
+        transferCategoryController.text = data.transferSubCategory!;
+      }
 
       amountController.text =
           englishDisplayCurrencyFormatter.format(data.amount);

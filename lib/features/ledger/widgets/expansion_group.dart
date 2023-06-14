@@ -78,8 +78,9 @@ class ExpansionGroup extends StatelessWidget {
         }
         break;
       case TransactionType.transfer:
-        if (input.data.transferCategory.isNotEmpty) {
-          categoryToDisplay = input.data.transferCategory;
+        if (input.data.transferSubCategory != null &&
+            input.data.transferSubCategory!.isNotEmpty) {
+          categoryToDisplay = input.data.transferSubCategory!;
         } else {
           categoryToDisplay = 'No account selected';
         }

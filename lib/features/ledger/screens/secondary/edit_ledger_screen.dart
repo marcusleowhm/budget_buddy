@@ -157,7 +157,9 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                   //Set value and close the dialog
                   setState(() {
                     newData.account = selectedAccount;
-                    formControl.accountController.text = newData.account;
+                    newData.subAccount = selectedSubAccount!;
+
+                    formControl.accountController.text = newData.subAccount;
                   });
 
                   _closeBottomSheet();
@@ -180,7 +182,9 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
   void _resetAccount() {
     setState(() {
       newData.account = widget.data.account;
-      formControl.accountController.text = newData.account;
+      newData.subAccount = widget.data.subAccount;
+
+      formControl.accountController.text = newData.subAccount;
     });
   }
 
@@ -206,22 +210,40 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
               case TransactionType.income:
                 setState(() {
                   newData.incomeCategory = selectedCategory;
-                  formControl.incomeCategoryController.text =
-                      newData.incomeCategory;
+                  newData.incomeSubCategory = selectedSubCategory;
+
+                  if (newData.incomeSubCategory != null) {
+                    formControl.incomeCategoryController.text =
+                        '${newData.incomeCategory} (${newData.incomeSubCategory})';
+                  } else {
+                    formControl.incomeCategoryController.text =
+                        newData.incomeCategory;
+                  }
                 });
                 break;
               case TransactionType.expense:
                 setState(() {
                   newData.expenseCategory = selectedCategory;
-                  formControl.expenseCategoryController.text =
-                      newData.expenseCategory;
+                  newData.expenseSubCategory = selectedSubCategory;
+
+                  if (newData.expenseSubCategory != null) {
+                    formControl.expenseCategoryController.text =
+                        '${newData.expenseCategory} (${newData.expenseSubCategory})';
+                  } else {
+                    formControl.expenseCategoryController.text =
+                        newData.expenseCategory;
+                  }
                 });
                 break;
               case TransactionType.transfer:
                 setState(() {
                   newData.transferCategory = selectedCategory;
-                  formControl.transferCategoryController.text =
-                      newData.transferCategory;
+                  newData.transferSubCategory = selectedSubCategory;
+
+                  if (newData.transferSubCategory != null) {
+                    formControl.transferCategoryController.text =
+                        newData.transferSubCategory!;
+                  }
                 });
                 break;
             }
@@ -245,23 +267,47 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
   void _resetCategory() {
     switch (newData.type) {
       case TransactionType.income:
-        setState(() {
-          newData.incomeCategory = widget.data.incomeCategory;
-          formControl.incomeCategoryController.text = newData.incomeCategory;
-        });
+        setState(
+          () {
+            newData.incomeCategory = widget.data.incomeCategory;
+            newData.incomeSubCategory = widget.data.incomeSubCategory;
+
+            if (widget.data.incomeSubCategory != null) {
+              formControl.incomeCategoryController.text =
+                  '${widget.data.incomeCategory} (${widget.data.incomeSubCategory})';
+            } else {
+              formControl.incomeCategoryController.text =
+                  widget.data.incomeCategory;
+            }
+          },
+        );
         break;
       case TransactionType.expense:
-        setState(() {
-          newData.expenseCategory = widget.data.expenseCategory;
-          formControl.expenseCategoryController.text = newData.expenseCategory;
-        });
+        setState(
+          () {
+            newData.expenseCategory = widget.data.expenseCategory;
+            newData.expenseSubCategory = widget.data.expenseSubCategory;
+
+            if (widget.data.expenseSubCategory != null) {
+              formControl.expenseCategoryController.text =
+                  '${widget.data.expenseCategory} (${widget.data.expenseSubCategory})';
+            } else {
+              formControl.expenseCategoryController.text =
+                  widget.data.expenseCategory;
+            }
+          },
+        );
         break;
       case TransactionType.transfer:
-        setState(() {
-          newData.transferCategory = widget.data.transferCategory;
-          formControl.transferCategoryController.text =
-              newData.transferCategory;
-        });
+        setState(
+          () {
+            newData.transferCategory = widget.data.transferCategory;
+            newData.transferSubCategory = widget.data.transferSubCategory;
+            
+            formControl.transferCategoryController.text =
+                  widget.data.transferSubCategory!;
+          },
+        );
         break;
     }
 
@@ -436,14 +482,24 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                     onTapTrailing: _resetCategory,
                                     showIcon: newData.type ==
                                             TransactionType.income
-                                        ? newData.incomeCategory !=
-                                            widget.data.incomeCategory
+                                        ? (newData.incomeCategory !=
+                                                widget.data.incomeCategory ||
+                                            newData.incomeSubCategory !=
+                                                widget.data.incomeSubCategory)
                                         : newData.type ==
                                                 TransactionType.expense
-                                            ? newData.expenseCategory !=
-                                                widget.data.expenseCategory
-                                            : newData.transferCategory !=
-                                                widget.data.transferCategory,
+                                            ? (newData.expenseCategory !=
+                                                    widget
+                                                        .data.expenseCategory ||
+                                                newData.expenseSubCategory !=
+                                                    widget.data
+                                                        .expenseSubCategory)
+                                            : (newData.transferCategory !=
+                                                    widget.data
+                                                        .transferCategory ||
+                                                newData.transferSubCategory !=
+                                                    widget.data
+                                                        .transferSubCategory),
                                     trailingIcon: const Icon(Icons.refresh),
                                     onTap: _selectCategory,
                                   ),
