@@ -7,7 +7,7 @@ import 'account_list_view.dart';
 class AccountPicker extends StatefulWidget {
   const AccountPicker({super.key, required this.onPressed});
 
-  final void Function(String? selectedAccount) onPressed;
+  final void Function(String? selectedAccount, String? selectedSubAccount) onPressed;
 
   @override
   State<AccountPicker> createState() => _AccountPickerState();
@@ -49,7 +49,7 @@ class _AccountPickerState extends State<AccountPicker> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     IconButton(
-                      onPressed: () => widget.onPressed(null),
+                      onPressed: () => widget.onPressed(null, null),
                       icon: const Icon(Icons.cancel_rounded),
                       color: Theme.of(context).canvasColor,
                     ),
@@ -70,7 +70,7 @@ class _AccountPickerState extends State<AccountPicker> {
               ),
               isGridView
                   ? AccountGridView(
-                      accounts: accounts,
+                      accountGroups: accountGroups,
                       onItemPressed: widget.onPressed,
                     )
                   : AccountListView(

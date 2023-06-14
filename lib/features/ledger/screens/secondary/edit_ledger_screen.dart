@@ -152,7 +152,7 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
             _scaffoldKey.currentState?.showBottomSheet<void>(
           (context) {
             return AccountPicker(
-              onPressed: (selectedAccount) {
+              onPressed: (selectedAccount, selectedSubAccount) {
                 if (selectedAccount != null) {
                   //Set value and close the dialog
                   setState(() {
@@ -198,7 +198,7 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
         _scaffoldKey.currentState?.showBottomSheet<void>((context) {
       return CategoryPicker(
         type: newData.type,
-        onPressed: (selectedCategory) {
+        onPressed: (selectedCategory, selectedSubCategory) {
           if (selectedCategory != null) {
             //Set value and close the dialog
 

@@ -12,7 +12,7 @@ class AccountListView extends StatelessWidget {
   final int selectedGroupIndex;
   final Map<String, List<String>> accountGroups;
   final void Function(int) selectGroupIndex;
-  final void Function(String) onSelectAccount;
+  final void Function(String, String?) onSelectAccount;
 
   @override
   Widget build(BuildContext context) {
@@ -42,19 +42,21 @@ class AccountListView extends StatelessWidget {
                           ),
                         ),
                         child: accountGroups.values.elementAt(index).isEmpty
-                            //Without chevron, without sub groups
+                            //Without chevron, without sub groups. SubAccount will equal Account
                             ? ListTile(
                                 onTap: () => onSelectAccount(
-                                    accountGroups.keys.elementAt(index)),
+                                      accountGroups.keys.elementAt(index),
+                                      accountGroups.keys.elementAt(index),
+                                    ),
                                 title:
                                     Text(accountGroups.keys.elementAt(index)),
                                 trailing: null)
                             //With chevron
                             : ListTile(
                                 onTap: selectedGroupIndex == index
-                                    //If the group is already selected, return the group value, else open the group
-                                    ? () => onSelectAccount(
-                                        accountGroups.keys.elementAt(index))
+                                    //If the group is already selected, just select the index and disallow returning the group
+                                    ? () => () => selectGroupIndex(index)
+                                    //If group is not already selected, select it
                                     : () => selectGroupIndex(index),
                                 title: Text(
                                   accountGroups.keys.elementAt(index),
@@ -94,12 +96,16 @@ class AccountListView extends StatelessWidget {
                           onTap: () {
                             onSelectAccount(
                               //Value stored in the data structure
+                              //Account
+                              accountGroups.keys.elementAt(selectedGroupIndex),
+                              //Sub account
                               accountGroups.values
                                   .elementAt(selectedGroupIndex)
                                   .elementAt(index),
                             );
                           },
                           title: Text(
+                            //Sub account
                             accountGroups.values
                                 .elementAt(selectedGroupIndex)
                                 .elementAt(index),

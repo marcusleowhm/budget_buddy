@@ -14,7 +14,7 @@ class CategoryPicker extends StatefulWidget {
   });
 
   final TransactionType type;
-  final void Function(String? selectedCategory) onPressed;
+  final void Function(String? selectedCategory, String? selectedSubCategory) onPressed;
 
   @override
   State<CategoryPicker> createState() => _CategoryPickerState();
@@ -63,7 +63,7 @@ class _CategoryPickerState extends State<CategoryPicker> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     IconButton(
-                      onPressed: () => widget.onPressed(null),
+                      onPressed: () => widget.onPressed(null, null),
                       icon: const Icon(Icons.cancel_rounded),
                       color: Theme.of(context).canvasColor,
                     ),
@@ -87,7 +87,7 @@ class _CategoryPickerState extends State<CategoryPicker> {
               widget.type == TransactionType.transfer
                   ? isGridView
                       ? AccountGridView(
-                          accounts: accounts,
+                          accountGroups: accountGroups,
                           onItemPressed: widget.onPressed,
                         )
                       : AccountListView(

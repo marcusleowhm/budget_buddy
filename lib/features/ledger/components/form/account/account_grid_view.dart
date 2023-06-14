@@ -3,22 +3,41 @@ import 'package:flutter/material.dart';
 class AccountGridView extends StatelessWidget {
   const AccountGridView({
     super.key,
-    required this.accounts,
+    required this.accountGroups,
     required this.onItemPressed,
   });
 
-  final List<String> accounts;
-  final void Function(String?) onItemPressed;
+  final Map<String, List<String>> accountGroups;
+  final void Function(String?, String?) onItemPressed;
+
+  List<Map<String, String>> flattenAccountGroups() {
+    List<Map<String, String>> accounts = [];
+    for (MapEntry entry in accountGroups.entries) {
+      String key = entry.key;
+      List<String> values = entry.value;
+      //Treat account as subAccount if there is no subAccount
+      if (values.isEmpty) {
+        accounts.add({key: key});
+        continue;
+      }
+
+      for (String value in values) {
+        accounts.add({key: value});
+      }
+    }
+    return accounts;
+  }
 
   @override
   Widget build(BuildContext context) {
+    List<Map<String, String>> flattenedAccount = flattenAccountGroups();
     return Expanded(
       child: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           mainAxisExtent: 64,
           crossAxisCount: 3,
         ),
-        itemCount: accounts.length,
+        itemCount: flattenedAccount.length,
         itemBuilder: (context, index) {
           return GestureDetector(
             child: Container(
@@ -31,11 +50,14 @@ class AccountGridView extends StatelessWidget {
                 ),
               ),
               child: Text(
-                accounts[index],
+                flattenedAccount.elementAt(index).values.first,
                 textAlign: TextAlign.center,
               ),
             ),
-            onTap: () => onItemPressed(accounts[index]),
+            onTap: () => onItemPressed(
+              flattenedAccount.elementAt(index).keys.first,
+              flattenedAccount.elementAt(index).values.first,
+            ),
           );
         },
       ),

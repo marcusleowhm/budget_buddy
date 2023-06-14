@@ -12,7 +12,7 @@ class CategoryListView extends StatelessWidget {
   final int selectedGroupIndex;
   final Map<String, List<String>> categoryGroups;
   final void Function(int) selectGroupIndex;
-  final void Function(String) onSelectCategory;
+  final void Function(String, String?) onSelectCategory;
 
   @override
   Widget build(BuildContext context) {
@@ -42,10 +42,12 @@ class CategoryListView extends StatelessWidget {
                             ),
                           ),
                           child: categoryGroups.values.elementAt(index).isEmpty
-                              //Without chevron, without sub groups
+                              //Without chevron, without sub groups. Treat Category as SubCategory
                               ? ListTile(
                                   onTap: () => onSelectCategory(
-                                      categoryGroups.keys.elementAt(index)),
+                                    categoryGroups.keys.elementAt(index),
+                                    categoryGroups.keys.elementAt(index),
+                                  ),
                                   title: Text(
                                       categoryGroups.keys.elementAt(index)),
                                   trailing: null,
@@ -54,7 +56,7 @@ class CategoryListView extends StatelessWidget {
                               : ListTile(
                                   onTap: selectedGroupIndex == index
                                       ? () => onSelectCategory(
-                                          categoryGroups.keys.elementAt(index))
+                                          categoryGroups.keys.elementAt(index), null)
                                       : () => selectGroupIndex(index),
                                   title: Text(
                                     categoryGroups.keys.elementAt(index),
@@ -94,7 +96,8 @@ class CategoryListView extends StatelessWidget {
                             onTap: () {
                               onSelectCategory(
                                 //Value stored in the data structure
-                                '${categoryGroups.keys.elementAt(selectedGroupIndex)} (${categoryGroups.values.elementAt(selectedGroupIndex).elementAt(index)})',
+                                categoryGroups.keys.elementAt(selectedGroupIndex),
+                                categoryGroups.values.elementAt(selectedGroupIndex).elementAt(index)
                               );
                             },
                             title: Text(

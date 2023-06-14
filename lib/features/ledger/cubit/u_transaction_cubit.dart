@@ -37,10 +37,14 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     //Copy the data
     setTypeOf(newInput, previousInput.data.type);
     setDateOf(newInput, previousInput.data.utcDateTime);
-    setAccountOf(newInput, previousInput.data.account);
-    setIncomeCategoryOf(newInput, previousInput.data.incomeCategory);
-    setExpenseCategoryOf(newInput, previousInput.data.expenseCategory);
-    setTransferCategoryOf(newInput, previousInput.data.transferCategory);
+    setAccountOf(
+        newInput, previousInput.data.account, previousInput.data.subAccount);
+    setIncomeCategoryOf(newInput, previousInput.data.incomeCategory,
+        previousInput.data.incomeSubCategory);
+    setExpenseCategoryOf(newInput, previousInput.data.expenseCategory,
+        previousInput.data.expenseSubCategory);
+    setTransferCategoryOf(newInput, previousInput.data.transferCategory,
+        previousInput.data.transferSubCategory);
     setCurrencyOf(newInput, previousInput.data.currency);
     setAmountOf(newInput, previousInput.data.amount);
     setNoteOf(newInput, previousInput.data.note);
@@ -104,44 +108,68 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     ));
   }
 
-  void setAccountOf(LedgerInput input, String account) {
+  void setAccountOf(LedgerInput input, String account, String? subAccount) {
     LedgerInput firstMatchedInput =
         state.entries.firstWhere((entry) => entry.data.id == input.data.id);
     firstMatchedInput.data.account = account;
-    firstMatchedInput.accountController.text = account;
+    firstMatchedInput.data.subAccount = '$subAccount';
+    firstMatchedInput.accountController.text = '$subAccount';
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
     ));
   }
 
-  void setIncomeCategoryOf(LedgerInput input, String incomeCategory) {
+  void setIncomeCategoryOf(
+      LedgerInput input, String incomeCategory, String? subIncomeCategory) {
     LedgerInput firstMatchedInput =
         state.entries.firstWhere((entry) => entry.data.id == input.data.id);
     firstMatchedInput.data.incomeCategory = incomeCategory;
-    firstMatchedInput.incomeCategoryController.text = incomeCategory;
+    firstMatchedInput.data.incomeSubCategory = subIncomeCategory;
+
+    if (subIncomeCategory != null) {
+      firstMatchedInput.incomeCategoryController.text =
+          '$incomeCategory ($subIncomeCategory)';
+    } else {
+      firstMatchedInput.incomeCategoryController.text = incomeCategory;
+    }
+
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
     ));
   }
 
-  void setExpenseCategoryOf(LedgerInput input, String category) {
+  void setExpenseCategoryOf(
+      LedgerInput input, String expenseCategory, String? expenseSubCategory) {
     LedgerInput firstMatchedInput =
         state.entries.firstWhere((entry) => entry.data.id == input.data.id);
-    firstMatchedInput.data.expenseCategory = category;
-    firstMatchedInput.expenseCategoryController.text = category;
+    firstMatchedInput.data.expenseCategory = expenseCategory;
+    firstMatchedInput.data.expenseSubCategory = expenseSubCategory;
+    if (expenseSubCategory != null) {
+      firstMatchedInput.expenseCategoryController.text =
+          '$expenseCategory ($expenseSubCategory)';
+    } else {
+      firstMatchedInput.expenseCategoryController.text = expenseCategory;
+    }
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
     ));
   }
 
-  void setTransferCategoryOf(LedgerInput input, String transfer) {
+  void setTransferCategoryOf(
+      LedgerInput input, String transferCategory, String? transferSubCategory) {
     LedgerInput firstMatchedInput =
         state.entries.firstWhere((entry) => entry.data.id == input.data.id);
-    firstMatchedInput.data.transferCategory = transfer;
-    firstMatchedInput.transferCategoryController.text = transfer;
+    firstMatchedInput.data.transferCategory = transferCategory;
+
+    if (transferSubCategory != null) {
+      firstMatchedInput.transferCategoryController.text =
+          '$transferCategory ($transferSubCategory)';
+    } else {
+      firstMatchedInput.transferCategoryController.text = transferCategory;
+    }
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,

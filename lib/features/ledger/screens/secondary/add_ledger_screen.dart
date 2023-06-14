@@ -171,11 +171,11 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
             _scaffoldKey.currentState?.showBottomSheet<void>(
           (context) {
             return AccountPicker(
-              onPressed: (selectedAccount) async {
+              onPressed: (selectedAccount, selectedSubAccount) async {
                 if (selectedAccount != null) {
                   //Set value and validate account
                   BlocProvider.of<UTransactionCubit>(context)
-                      .setAccountOf(input, selectedAccount);
+                      .setAccountOf(input, selectedAccount, selectedSubAccount);
                   input.accountKey.currentState?.validate();
 
                   _closeBottomSheet();
@@ -210,23 +210,25 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
         _scaffoldKey.currentState?.showBottomSheet<void>((context) {
       return CategoryPicker(
         type: input.data.type,
-        onPressed: (selectedCategory) {
+        onPressed: (selectedCategory, selectedSubCategory) {
           if (selectedCategory != null) {
             //Set value depending on type and validate category
             switch (input.data.type) {
               case TransactionType.income:
-                BlocProvider.of<UTransactionCubit>(context)
-                    .setIncomeCategoryOf(input, selectedCategory);
+                BlocProvider.of<UTransactionCubit>(context).setIncomeCategoryOf(
+                    input, selectedCategory, selectedSubCategory);
                 input.incomeCategoryKey.currentState?.validate();
                 break;
               case TransactionType.expense:
                 BlocProvider.of<UTransactionCubit>(context)
-                    .setExpenseCategoryOf(input, selectedCategory);
+                    .setExpenseCategoryOf(
+                        input, selectedCategory, selectedSubCategory);
                 input.expenseCategoryKey.currentState?.validate();
                 break;
               case TransactionType.transfer:
                 BlocProvider.of<UTransactionCubit>(context)
-                    .setTransferCategoryOf(input, selectedCategory);
+                    .setTransferCategoryOf(
+                        input, selectedCategory, selectedSubCategory);
                 input.transferCategoryKey.currentState?.validate();
                 break;
             }

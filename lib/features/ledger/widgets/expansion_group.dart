@@ -66,7 +66,7 @@ class ExpansionGroup extends StatelessWidget {
               child: Text(
                 input.data.account.isEmpty
                     ? 'No account selected'
-                    : input.data.account,
+                    : input.data.subAccount,
                 style: const TextStyle(fontWeight: FontWeight.bold),
                 overflow: TextOverflow.ellipsis,
               ),
@@ -75,13 +75,17 @@ class ExpansionGroup extends StatelessWidget {
               padding: const EdgeInsets.all(3.0),
               child: Text(
                 input.data.type == TransactionType.income
-                    ? input.data.incomeCategory.isEmpty
-                        ? 'No category selected'
-                        : input.data.incomeCategory
-                    : input.data.type == TransactionType.expense
-                        ? input.data.expenseCategory.isEmpty
+                    ? input.data.incomeSubCategory != null
+                        ? '${input.data.incomeCategory} (${input.data.incomeSubCategory})'
+                        : input.data.incomeCategory.isEmpty
                             ? 'No category selected'
-                            : input.data.expenseCategory
+                            : input.data.incomeCategory
+                    : input.data.type == TransactionType.expense
+                        ? input.data.expenseSubCategory != null
+                            ? '${input.data.expenseCategory} (${input.data.expenseSubCategory})'
+                            : input.data.expenseCategory.isEmpty
+                                ? 'No category selected'
+                                : input.data.expenseCategory
                         : input.data.transferCategory.isEmpty
                             ? 'No account selected'
                             : input.data.transferCategory,

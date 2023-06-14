@@ -5,6 +5,7 @@ class TransactionData {
   TransactionData({
     this.type = TransactionType.expense,
     this.account = '',
+    this.subAccount = '',
     this.incomeCategory = '',
     this.incomeSubCategory = '',
     this.expenseCategory = '',
@@ -22,6 +23,7 @@ class TransactionData {
     return TransactionData(
       type: previousData.type,
       account: previousData.account,
+      subAccount: previousData.subAccount,
       incomeCategory: previousData.incomeCategory,
       incomeSubCategory: previousData.incomeSubCategory,
       expenseCategory: previousData.expenseCategory,
@@ -45,12 +47,13 @@ class TransactionData {
   TransactionType type = TransactionType.expense;
   DateTime utcDateTime = DateTime.now().toUtc();
   String account;
+  String subAccount;
   String incomeCategory;
-  String incomeSubCategory;
+  String? incomeSubCategory;
   String expenseCategory;
-  String expenseSubCategory;
+  String? expenseSubCategory;
   String transferCategory;
-  String transferSubCategory;
+  String? transferSubCategory;
   String currency;
   double amount;
   String note;
