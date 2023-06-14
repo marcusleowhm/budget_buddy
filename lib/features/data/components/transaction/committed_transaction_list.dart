@@ -3,7 +3,6 @@ import 'package:budget_buddy/features/data/components/transaction/daily/daily_tr
 import 'package:budget_buddy/features/data/widgets/month_picker.dart';
 import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
 import 'package:budget_buddy/features/ledger/model/daily_ledger_input.dart';
-import 'package:budget_buddy/features/ledger/model/monthly_ledger_input.dart';
 import 'package:budget_buddy/features/ledger/model/transaction_data.dart';
 import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:flutter/material.dart';
@@ -28,8 +27,8 @@ class CommittedTransactionList extends StatelessWidget {
   final VoidCallback decrementMonth;
   final VoidCallback resetDate;
 
-  MonthlyLedgerInput getMonthlyTransactionData(CTransactionState state) {
-    MonthlyLedgerInput monthlyLedgerInput = MonthlyLedgerInput();
+  Map<String, double> getMonthlyTransactionData(CTransactionState state) {
+    Map<String, double> sum = {'income': 0.0, 'expense': 0.0, 'transfer': 0.0};
     for (TransactionData data in state.committedEntries) {
       DateTime localDateTime = DateTime(
         data.utcDateTime.toLocal().year,
@@ -40,27 +39,21 @@ class CommittedTransactionList extends StatelessWidget {
           currentLocalDate.year == localDateTime.year) {
         switch (data.type) {
           case TransactionType.income:
-            double cumulativeMonthlyIncome =
-                monthlyLedgerInput.sum['income'] ?? 0.0;
-            monthlyLedgerInput.sum['income'] =
-                cumulativeMonthlyIncome + data.amount;
+            double cumulativeMonthlyIncome = sum['income'] ?? 0.0;
+            sum['income'] = cumulativeMonthlyIncome + data.amount;
             break;
           case TransactionType.expense:
-            double cumulativeMonthlyExpense =
-                monthlyLedgerInput.sum['expense'] ?? 0.0;
-            monthlyLedgerInput.sum['expense'] =
-                cumulativeMonthlyExpense + data.amount;
+            double cumulativeMonthlyExpense = sum['expense'] ?? 0.0;
+            sum['expense'] = cumulativeMonthlyExpense + data.amount;
             break;
           case TransactionType.transfer:
-            double cumulativeTransferExpense =
-                monthlyLedgerInput.sum['transfer'] ?? 0.0;
-            monthlyLedgerInput.sum['transfer'] =
-                cumulativeTransferExpense + data.amount;
+            double cumulativeTransferExpense = sum['transfer'] ?? 0.0;
+            sum['transfer'] = cumulativeTransferExpense + data.amount;
             break;
         }
       }
     }
-    return monthlyLedgerInput;
+    return sum;
   }
 
   Map<DateTime, DailyLedgerInput> getDailyTransactionData(
@@ -127,8 +120,7 @@ class CommittedTransactionList extends StatelessWidget {
         //Total sum for the selected month
         BlocBuilder<CTransactionCubit, CTransactionState>(
           builder: (context, state) {
-            MonthlyLedgerInput monthlyLedgerInput =
-                getMonthlyTransactionData(state);
+            Map<String, double> monthlySum = getMonthlyTransactionData(state);
             return Card(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -146,7 +138,7 @@ class CommittedTransactionList extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(vertical: 3.0),
                           child: Text(
                             englishDisplayCurrencyFormatter
-                                .format(monthlyLedgerInput.sum['income']),
+                                .format(monthlySum['income']),
                             style: TextStyle(color: Colors.blue[700]),
                           ),
                         )
@@ -168,7 +160,7 @@ class CommittedTransactionList extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(vertical: 3.0),
                           child: Text(
                             englishDisplayCurrencyFormatter
-                                .format(monthlyLedgerInput.sum['expense']),
+                                .format(monthlySum['expense']),
                             style: const TextStyle(color: Colors.red),
                           ),
                         )
@@ -192,7 +184,7 @@ class CommittedTransactionList extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(vertical: 3.0),
                           child: Text(
                             englishDisplayCurrencyFormatter
-                                .format(monthlyLedgerInput.sum['transfer']),
+                                .format(monthlySum['transfer']),
                             style: const TextStyle(color: Colors.grey),
                           ),
                         )

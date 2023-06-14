@@ -1,7 +1,7 @@
 import 'package:budget_buddy/features/ledger/widgets/keypad_item.dart';
 import 'package:flutter/material.dart';
 
-import '../model/keyset.dart';
+import 'keyset.dart';
 
 class Keypad extends StatelessWidget {
   const Keypad({

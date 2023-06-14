@@ -113,11 +113,7 @@ class _CategoryPickerState extends State<CategoryPicker> {
                             setState(() => selectedGroupIndex = index);
                           },
                           onSelectCategory: widget.onPressed,
-                        )
-              // CategoryGridView(
-              //     outflowC outflowC
-              //     onItemPressed: widget.onPressed,
-              //   ),
+                        ),
             ],
           ),
         ));

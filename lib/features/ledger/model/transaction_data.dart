@@ -6,8 +6,11 @@ class TransactionData {
     this.type = TransactionType.expense,
     this.account = '',
     this.incomeCategory = '',
+    this.incomeSubCategory = '',
     this.expenseCategory = '',
+    this.expenseSubCategory = '',
     this.transferCategory = '',
+    this.transferSubCategory = '',
     this.currency = 'USD', //TODO paramterize it in the settings
     this.amount = 0.0,
     this.note = '',
@@ -20,8 +23,11 @@ class TransactionData {
       type: previousData.type,
       account: previousData.account,
       incomeCategory: previousData.incomeCategory,
+      incomeSubCategory: previousData.incomeSubCategory,
       expenseCategory: previousData.expenseCategory,
+      expenseSubCategory: previousData.expenseSubCategory,
       transferCategory: previousData.transferCategory,
+      transferSubCategory: previousData.transferSubCategory,
       currency: previousData.currency,
       amount: previousData.amount,
       note: previousData.note,
@@ -40,8 +46,11 @@ class TransactionData {
   DateTime utcDateTime = DateTime.now().toUtc();
   String account;
   String incomeCategory;
+  String incomeSubCategory;
   String expenseCategory;
+  String expenseSubCategory;
   String transferCategory;
+  String transferSubCategory;
   String currency;
   double amount;
   String note;
@@ -53,6 +62,18 @@ class TransactionData {
 
   @override
   String toString() {
-    return '\nTransactionData{\nid = $id,\ntype = $type,\nutcDateTime = $utcDateTime,\naccount = $account,\nincomeCategory=$incomeCategory,\nexpenseCategory = $expenseCategory,\ntransferCategory=$transferCategory,\ncurrency=$currency,\namount=$amount,\nnote=$note,\nadditionalNote=$additionalNote}';
+    return '\nTransactionData{\n'
+        'id = $id,\n'
+        'type = $type,\n'
+        'utcDateTime = $utcDateTime,\n'
+        'account = $account,\n'
+        'incomeCategory = $incomeCategory,\n'
+        'expenseCategory = $expenseCategory,\n'
+        'transferCategory=$transferCategory,\n'
+        'currency=$currency,\n'
+        'amount=$amount,\n'
+        'note=$note,\n'
+        'additionalNote=$additionalNote\n'
+        '}\n';
   }
 }

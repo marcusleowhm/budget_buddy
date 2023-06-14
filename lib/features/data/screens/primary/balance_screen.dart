@@ -11,6 +11,7 @@ class BalanceScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('${titles[MainRoutes.balance]}')
       ),
+      backgroundColor: Colors.grey[200], //TODO change this color
     );
   }
 }
