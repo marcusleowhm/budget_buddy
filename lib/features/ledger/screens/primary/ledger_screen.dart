@@ -12,28 +12,30 @@ class LedgerScreen extends StatefulWidget {
 }
 
 class _LedgerScreenState extends State<LedgerScreen> {
-  DateTime utcNow = DateTime.now();
-  late DateTime currentLocalDate;
+  DateTime localNow = DateTime.now();
+  late DateTime dateTimeValue;
 
   @override
   void initState() {
-    setState(() => currentLocalDate =
-        DateTime(utcNow.year, utcNow.month, utcNow.day).toLocal());
+    setState(
+      () => dateTimeValue =
+          DateTime(localNow.year, localNow.month, localNow.day),
+    );
     super.initState();
   }
 
   void incrementMonth() {
-    setState(() => currentLocalDate = DateTime(currentLocalDate.year,
-        currentLocalDate.month + 1, currentLocalDate.day));
+    setState(() => dateTimeValue = DateTime(dateTimeValue.year,
+        dateTimeValue.month + 1, dateTimeValue.day));
   }
 
   void decrementMonth() {
-    setState(() => currentLocalDate = DateTime(currentLocalDate.year,
-        currentLocalDate.month - 1, currentLocalDate.day));
+    setState(() => dateTimeValue = DateTime(dateTimeValue.year,
+        dateTimeValue.month - 1, dateTimeValue.day));
   }
 
   void resetDate() {
-    setState(() => currentLocalDate = utcNow);
+    setState(() => dateTimeValue = DateTime.now());
   }
 
   @override
@@ -52,8 +54,8 @@ class _LedgerScreenState extends State<LedgerScreen> {
       ),
       backgroundColor: Colors.grey[200],
       body: CommittedTransactionList(
-        currentLocalDate: currentLocalDate,
-        nowDate: utcNow,
+        dateTimeValue: dateTimeValue,
+        localNow: localNow,
         incrementMonth: incrementMonth,
         decrementMonth: decrementMonth,
         resetDate: resetDate,

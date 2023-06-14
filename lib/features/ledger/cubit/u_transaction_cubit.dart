@@ -164,7 +164,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
         state.entries.firstWhere((entry) => entry.data.id == input.data.id);
     firstMatchedInput.data.transferCategory = transferCategory;
     firstMatchedInput.data.transferSubCategory = transferSubCategory;
-    firstMatchedInput.transferCategoryController.text = transferSubCategory!;
+    firstMatchedInput.transferCategoryController.text = transferSubCategory ?? '';
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,

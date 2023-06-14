@@ -11,15 +11,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class CommittedTransactionList extends StatelessWidget {
   CommittedTransactionList({
     super.key,
-    required this.currentLocalDate,
-    required this.nowDate,
+    required this.dateTimeValue,
+    required this.localNow,
     required this.incrementMonth,
     required this.decrementMonth,
     required this.resetDate,
   });
 
-  final DateTime currentLocalDate;
-  final DateTime nowDate;
+  final DateTime dateTimeValue;
+  final DateTime localNow;
 
   //Scroll controller for scrolling down
   final ScrollController _scrollController = ScrollController();
@@ -35,8 +35,8 @@ class CommittedTransactionList extends StatelessWidget {
         data.utcDateTime.toLocal().month,
         data.utcDateTime.toLocal().day,
       );
-      if (currentLocalDate.month == localDateTime.month &&
-          currentLocalDate.year == localDateTime.year) {
+      if (dateTimeValue.month == localDateTime.month &&
+          dateTimeValue.year == localDateTime.year) {
         switch (data.type) {
           case TransactionType.income:
             double cumulativeMonthlyIncome = sum['income'] ?? 0.0;
@@ -68,8 +68,8 @@ class CommittedTransactionList extends StatelessWidget {
         data.utcDateTime.toLocal().day,
       );
 
-      if (currentLocalDate.month == localDateTime.month &&
-          currentLocalDate.year == localDateTime.year) {
+      if (dateTimeValue.month == localDateTime.month &&
+          dateTimeValue.year == localDateTime.year) {
         map.putIfAbsent(localDateTime, () => DailyLedgerInput());
 
         //Add the elements back into the map
@@ -110,8 +110,8 @@ class CommittedTransactionList extends StatelessWidget {
       children: [
         //Month picker
         MonthPicker(
-          currentLocalDate: currentLocalDate,
-          nowDate: nowDate,
+          dateTimeValue: dateTimeValue,
+          localNow: localNow,
           incrementMonth: incrementMonth,
           decrementMonth: decrementMonth,
           resetDate: resetDate,

@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 class MonthPicker extends StatelessWidget {
   const MonthPicker({
     super.key,
-    required this.currentLocalDate,
-    required this.nowDate,
+    required this.dateTimeValue,
+    required this.localNow,
     required this.incrementMonth,
     required this.decrementMonth,
     required this.resetDate,
   });
 
-  final DateTime currentLocalDate;
-  final DateTime nowDate;
+  final DateTime dateTimeValue;
+  final DateTime localNow;
   final VoidCallback incrementMonth;
   final VoidCallback decrementMonth;
   final VoidCallback resetDate;
@@ -32,7 +32,7 @@ class MonthPicker extends StatelessWidget {
           ),
           SizedBox(
             width: 80,
-            child: Text(dateMonthYearFormatter.format(currentLocalDate),
+            child: Text(dateMonthYearFormatter.format(dateTimeValue),
                 textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 16)),
           ),
@@ -45,10 +45,10 @@ class MonthPicker extends StatelessWidget {
           ),
           if (
               //Same month but different year
-              (currentLocalDate.month == nowDate.month &&
-                      currentLocalDate.year != nowDate.year) ||
+              (dateTimeValue.month == localNow.month &&
+                      dateTimeValue.year != localNow.year) ||
                   //Different month, year is irrelevant
-                  (currentLocalDate.month != nowDate.month))
+                  (dateTimeValue.month != localNow.month))
             IconButton(
               icon: const Icon(Icons.refresh),
               onPressed: resetDate,

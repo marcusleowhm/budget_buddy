@@ -28,8 +28,8 @@ class CommittedTransactionStatistics extends StatelessWidget {
     return Column(
       children: [
         MonthPicker(
-          currentLocalDate: currentLocalDate,
-          nowDate: nowDate,
+          dateTimeValue: currentLocalDate,
+          localNow: nowDate,
           incrementMonth: incrementMonth,
           decrementMonth: decrementMonth,
           resetDate: resetDate,
