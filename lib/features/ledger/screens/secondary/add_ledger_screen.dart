@@ -229,6 +229,8 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
                 BlocProvider.of<UTransactionCubit>(context)
                     .setTransferCategoryOf(
                         input, selectedCategory, selectedSubCategory);
+                print(selectedCategory);
+                print(selectedSubCategory);
                 input.transferCategoryKey.currentState?.validate();
                 break;
             }

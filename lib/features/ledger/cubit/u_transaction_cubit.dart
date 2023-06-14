@@ -163,13 +163,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     LedgerInput firstMatchedInput =
         state.entries.firstWhere((entry) => entry.data.id == input.data.id);
     firstMatchedInput.data.transferCategory = transferCategory;
-
-    if (transferSubCategory != null) {
-      firstMatchedInput.transferCategoryController.text =
-          '$transferCategory ($transferSubCategory)';
-    } else {
-      firstMatchedInput.transferCategoryController.text = transferCategory;
-    }
+    firstMatchedInput.transferCategoryController.text = transferCategory;
     emit(UTransactionState(
       entries: state.entries,
       currenciesTotal: state.currenciesTotal,
@@ -296,6 +290,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
         state.entries.firstWhere((entry) => entry.data.id == input.data.id);
     firstMatchedInput.accountController.clear();
     firstMatchedInput.data.account = input.accountController.text;
+    firstMatchedInput.data.subAccount = input.accountController.text;
 
     //Trigger the validation error
     input.accountKey.currentState?.validate();
@@ -311,6 +306,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
         state.entries.firstWhere((entry) => entry.data.id == input.data.id);
     firstMatchedInput.incomeCategoryController.clear();
     firstMatchedInput.data.incomeCategory = input.incomeCategoryController.text;
+    firstMatchedInput.data.incomeSubCategory = null;
 
     //Trigger validation
     input.incomeCategoryKey.currentState?.validate();
@@ -327,6 +323,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     firstMatchedInput.expenseCategoryController.clear();
     firstMatchedInput.data.expenseCategory =
         input.expenseCategoryController.text;
+    firstMatchedInput.data.expenseSubCategory = null;
 
     //Trigger validation
     input.expenseCategoryKey.currentState?.validate();
@@ -343,6 +340,7 @@ class UTransactionCubit extends Cubit<UTransactionState> {
     firstMatchedInput.transferCategoryController.clear();
     firstMatchedInput.data.transferCategory =
         input.transferCategoryController.text;
+    firstMatchedInput.data.transferSubCategory = null;
 
     //Trigger validation
     input.transferCategoryKey.currentState?.validate();

@@ -22,15 +22,21 @@ class CTransactionCubit extends Cubit<CTransactionState> {
       switch (data.type) {
         case TransactionType.income:
           data.expenseCategory = '';
+          data.expenseSubCategory = null;
           data.transferCategory = '';
+          data.transferSubCategory = null;
           break;
         case TransactionType.expense:
           data.incomeCategory = '';
+          data.incomeSubCategory = null;
           data.transferCategory = '';
+          data.transferSubCategory = null;
           break;
         case TransactionType.transfer:
           data.incomeCategory = '';
+          data.incomeSubCategory = null;
           data.expenseCategory = '';
+          data.expenseSubCategory = null;
           break;
       }
     }
@@ -100,15 +106,21 @@ class CTransactionCubit extends Cubit<CTransactionState> {
     switch (data.type) {
       case TransactionType.income:
         data.expenseCategory = '';
+        data.expenseSubCategory = null;
         data.transferCategory = '';
+        data.transferSubCategory = null;
         break;
       case TransactionType.expense:
         data.incomeCategory = '';
+        data.incomeSubCategory = null;
         data.transferCategory = '';
+        data.transferSubCategory = null;
         break;
       case TransactionType.transfer:
         data.incomeCategory = '';
+        data.incomeSubCategory = null;
         data.expenseCategory = '';
+        data.expenseSubCategory = null;
         break;
     }
 
@@ -117,8 +129,11 @@ class CTransactionCubit extends Cubit<CTransactionState> {
       ..utcDateTime = data.utcDateTime
       ..account = data.account
       ..incomeCategory = data.incomeCategory
+      ..incomeSubCategory = data.incomeSubCategory
       ..expenseCategory = data.expenseCategory
+      ..expenseSubCategory = data.expenseSubCategory
       ..transferCategory = data.transferCategory
+      ..transferSubCategory = data.transferSubCategory
       ..currency = data.currency
       ..amount = data.amount
       ..note = data.note

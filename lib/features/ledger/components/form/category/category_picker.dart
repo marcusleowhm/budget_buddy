@@ -14,7 +14,8 @@ class CategoryPicker extends StatefulWidget {
   });
 
   final TransactionType type;
-  final void Function(String? selectedCategory, String? selectedSubCategory) onPressed;
+  final void Function(String? selectedCategory, String? selectedSubCategory)
+      onPressed;
 
   @override
   State<CategoryPicker> createState() => _CategoryPickerState();
@@ -40,82 +41,82 @@ class _CategoryPickerState extends State<CategoryPicker> {
     outflowCategoryGroups.forEach((key, value) => outflowCategories += value);
 
     @Deprecated('inflowCategories unused. Reserved for category grid view')
-    List<String> inflowCategories = []; 
+    List<String> inflowCategories = [];
     inflowCategoryGroups.forEach((key, value) => inflowCategories += value);
 
     return FractionallySizedBox(
-        heightFactor: 0.4,
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.grey,
-            border: Border.all(
-              width: 0.5,
-              color: Theme.of(context).dividerColor,
-            ),
+      heightFactor: 0.4,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.grey,
+          border: Border.all(
+            width: 0.5,
+            color: Theme.of(context).dividerColor,
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Container(
-                color: Theme.of(context).primaryColor,
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Container(
+              color: Theme.of(context).primaryColor,
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  IconButton(
+                    onPressed: () => widget.onPressed(null, null),
+                    icon: const Icon(Icons.cancel_rounded),
+                    color: Theme.of(context).canvasColor,
+                  ),
+                  if (widget.type == TransactionType.transfer)
                     IconButton(
-                      onPressed: () => widget.onPressed(null, null),
-                      icon: const Icon(Icons.cancel_rounded),
+                      onPressed: () => setState(() => isGridView = !isGridView),
+                      icon: isGridView
+                          ? const Icon(Icons.list)
+                          : const Icon(Icons.window_rounded),
                       color: Theme.of(context).canvasColor,
                     ),
-                    if (widget.type == TransactionType.transfer)
-                      IconButton(
-                        onPressed: () =>
-                            setState(() => isGridView = !isGridView),
-                        icon: isGridView
-                            ? const Icon(Icons.list)
-                            : const Icon(Icons.window_rounded),
-                        color: Theme.of(context).canvasColor,
-                      ),
-                    IconButton(
-                      onPressed: () {}, //TODO edit button
-                      icon: const Icon(Icons.mode_edit_outline_outlined),
-                      color: Theme.of(context).canvasColor,
-                    ),
-                  ],
-                ),
+                  IconButton(
+                    onPressed: () {}, //TODO edit button
+                    icon: const Icon(Icons.mode_edit_outline_outlined),
+                    color: Theme.of(context).canvasColor,
+                  ),
+                ],
               ),
-              widget.type == TransactionType.transfer
-                  ? isGridView
-                      ? AccountGridView(
-                          accountGroups: accountGroups,
-                          onItemPressed: widget.onPressed,
-                        )
-                      : AccountListView(
-                          selectedGroupIndex: selectedGroupIndex,
-                          accountGroups: accountGroups,
-                          selectGroupIndex: (index) {
-                            setState(() => selectedGroupIndex = index);
-                          },
-                          onSelectAccount: widget.onPressed)
-                  : widget.type == TransactionType.expense
-                      ? CategoryListView(
-                          selectedGroupIndex: selectedGroupIndex,
-                          categoryGroups: outflowCategoryGroups,
-                          selectGroupIndex: (index) {
-                            setState(() => selectedGroupIndex = index);
-                          },
-                          onSelectCategory: widget.onPressed,
-                        )
-                      : CategoryListView(
-                          selectedGroupIndex: selectedGroupIndex,
-                          categoryGroups: inflowCategoryGroups,
-                          selectGroupIndex: (index) {
-                            setState(() => selectedGroupIndex = index);
-                          },
-                          onSelectCategory: widget.onPressed,
-                        ),
-            ],
-          ),
-        ));
+            ),
+            widget.type == TransactionType.transfer
+                ? isGridView
+                    ? AccountGridView(
+                        accountGroups: accountGroups,
+                        onItemPressed: widget.onPressed,
+                      )
+                    : AccountListView(
+                        selectedGroupIndex: selectedGroupIndex,
+                        accountGroups: accountGroups,
+                        selectGroupIndex: (index) {
+                          setState(() => selectedGroupIndex = index);
+                        },
+                        onSelectAccount: widget.onPressed)
+                : widget.type == TransactionType.expense
+                    ? CategoryListView(
+                        selectedGroupIndex: selectedGroupIndex,
+                        categoryGroups: outflowCategoryGroups,
+                        selectGroupIndex: (index) {
+                          setState(() => selectedGroupIndex = index);
+                        },
+                        onSelectCategory: widget.onPressed,
+                      )
+                    : CategoryListView(
+                        selectedGroupIndex: selectedGroupIndex,
+                        categoryGroups: inflowCategoryGroups,
+                        selectGroupIndex: (index) {
+                          setState(() => selectedGroupIndex = index);
+                        },
+                        onSelectCategory: widget.onPressed,
+                      ),
+          ],
+        ),
+      ),
+    );
   }
 }

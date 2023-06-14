@@ -54,6 +54,40 @@ class ExpansionGroup extends StatelessWidget {
     );
   }
 
+  String getCategoryString() {
+    String categoryToDisplay;
+    switch (input.data.type) {
+      case TransactionType.income:
+        if (input.data.incomeSubCategory != null) {
+          categoryToDisplay =
+              '${input.data.incomeCategory} (${input.data.incomeSubCategory})';
+        } else if (input.data.incomeCategory.isEmpty) {
+          categoryToDisplay = 'No category selected';
+        } else {
+          categoryToDisplay = input.data.incomeCategory;
+        }
+        break;
+      case TransactionType.expense:
+        if (input.data.expenseSubCategory != null) {
+          categoryToDisplay =
+              '${input.data.expenseCategory} (${input.data.expenseSubCategory})';
+        } else if (input.data.expenseCategory.isEmpty) {
+          categoryToDisplay = 'No category selected';
+        } else {
+          categoryToDisplay = input.data.expenseCategory;
+        }
+        break;
+      case TransactionType.transfer:
+        if (input.data.transferCategory.isNotEmpty) {
+          categoryToDisplay = input.data.transferCategory;
+        } else {
+          categoryToDisplay = 'No account selected';
+        }
+        break;
+    }
+    return categoryToDisplay;
+  }
+
   Widget _buildInformationColumn() {
     return Flexible(
       child: Padding(
@@ -74,21 +108,7 @@ class ExpansionGroup extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(3.0),
               child: Text(
-                input.data.type == TransactionType.income
-                    ? input.data.incomeSubCategory != null
-                        ? '${input.data.incomeCategory} (${input.data.incomeSubCategory})'
-                        : input.data.incomeCategory.isEmpty
-                            ? 'No category selected'
-                            : input.data.incomeCategory
-                    : input.data.type == TransactionType.expense
-                        ? input.data.expenseSubCategory != null
-                            ? '${input.data.expenseCategory} (${input.data.expenseSubCategory})'
-                            : input.data.expenseCategory.isEmpty
-                                ? 'No category selected'
-                                : input.data.expenseCategory
-                        : input.data.transferCategory.isEmpty
-                            ? 'No account selected'
-                            : input.data.transferCategory,
+                getCategoryString(),
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   color: input.data.type == TransactionType.income
