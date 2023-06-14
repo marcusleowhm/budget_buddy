@@ -11,28 +11,30 @@ class StatisticsScreen extends StatefulWidget {
 }
 
 class _StatisticsScreenState extends State<StatisticsScreen> {
-  DateTime utcNow = DateTime.now();
-  late DateTime currentLocalDate;
+  DateTime localNow = DateTime.now();
+  late DateTime dateTimeValue;
 
   @override
   void initState() {
-    setState(() => currentLocalDate =
-        DateTime(utcNow.year, utcNow.month, utcNow.day).toLocal());
+    setState(
+      () =>
+          dateTimeValue = DateTime(localNow.year, localNow.month, localNow.day),
+    );
     super.initState();
   }
 
   void incrementMonth() {
-    setState(() => currentLocalDate = DateTime(currentLocalDate.year,
-        currentLocalDate.month + 1, currentLocalDate.day));
+    setState(() => dateTimeValue = DateTime(
+        dateTimeValue.year, dateTimeValue.month + 1, dateTimeValue.day));
   }
 
   void decrementMonth() {
-    setState(() => currentLocalDate = DateTime(currentLocalDate.year,
-        currentLocalDate.month - 1, currentLocalDate.day));
+    setState(() => dateTimeValue = DateTime(
+        dateTimeValue.year, dateTimeValue.month - 1, dateTimeValue.day));
   }
 
   void resetDate() {
-    setState(() => currentLocalDate = utcNow);
+    setState(() => dateTimeValue = localNow);
   }
 
   @override
@@ -41,8 +43,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       appBar: AppBar(title: Text('${titles[MainRoutes.statistics]}')),
       backgroundColor: Colors.grey[200], //TODO change this color
       body: CommittedTransactionStatistics(
-        currentLocalDate: currentLocalDate,
-        nowDate: utcNow,
+        dateTimeValue: dateTimeValue,
+        localNow: localNow,
         incrementMonth: incrementMonth,
         decrementMonth: decrementMonth,
         resetDate: resetDate,

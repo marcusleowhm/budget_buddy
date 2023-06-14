@@ -7,15 +7,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class CommittedTransactionStatistics extends StatelessWidget {
   CommittedTransactionStatistics({
     super.key,
-    required this.currentLocalDate,
-    required this.nowDate,
+    required this.dateTimeValue,
+    required this.localNow,
     required this.incrementMonth,
     required this.decrementMonth,
     required this.resetDate,
   });
 
-  final DateTime currentLocalDate;
-  final DateTime nowDate;
+  final DateTime dateTimeValue;
+  final DateTime localNow;
 
   //Scroll controller for scrolling down
   final ScrollController _scrollController = ScrollController();
@@ -28,8 +28,8 @@ class CommittedTransactionStatistics extends StatelessWidget {
     return Column(
       children: [
         MonthPicker(
-          dateTimeValue: currentLocalDate,
-          localNow: nowDate,
+          dateTimeValue: dateTimeValue,
+          localNow: localNow,
           incrementMonth: incrementMonth,
           decrementMonth: decrementMonth,
           resetDate: resetDate,
@@ -40,9 +40,10 @@ class CommittedTransactionStatistics extends StatelessWidget {
             physics: const BouncingScrollPhysics(),
             child: BlocBuilder<CTransactionCubit, CTransactionState>(
               builder: (context, state) {
-                return const Column(
+                return Column(
                   children: [
-                    CategoryBreakdown(),
+                    CategoryBreakdown(dateTimeValue: dateTimeValue,),
+                    //TODO Other analytics widgets
                     Card(
                       child: Row(children: [Text('2')]),
                     ),

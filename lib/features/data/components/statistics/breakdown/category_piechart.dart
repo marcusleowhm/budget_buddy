@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CategoryPiechart extends StatefulWidget {
-  const CategoryPiechart({super.key, required this.type});
+  const CategoryPiechart({super.key, required this.type, required this.dateTimeValue});
 
   final TransactionType type;
+  final DateTime dateTimeValue;
 
   @override
   State<CategoryPiechart> createState() => _CategoryPiechartState();
@@ -15,8 +16,6 @@ class CategoryPiechart extends StatefulWidget {
 
 class _CategoryPiechartState extends State<CategoryPiechart> {
   int touchedIndex = -1;
-
-  
 
   @override
   Widget build(BuildContext context) {

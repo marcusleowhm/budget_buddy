@@ -3,7 +3,9 @@ import 'package:budget_buddy/features/data/components/statistics/breakdown/categ
 import 'package:flutter/material.dart';
 
 class CategoryBreakdown extends StatelessWidget {
-  const CategoryBreakdown({super.key});
+  const CategoryBreakdown({super.key, required this.dateTimeValue});
+
+  final DateTime dateTimeValue;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +26,7 @@ class CategoryBreakdown extends StatelessWidget {
                 length: 2,
                 child: Column(
                   children: [
-                    TabBar(
+                    const TabBar(
                       tabs: [
                         Tab(
                           child: Text('Income',
@@ -40,16 +42,22 @@ class CategoryBreakdown extends StatelessWidget {
                       aspectRatio: 1,
                       child: TabBarView(
                         children: [
-                          CategoryPiechart(type: TransactionType.income),
-                          CategoryPiechart(type: TransactionType.expense),
+                          CategoryPiechart(
+                            type: TransactionType.income,
+                            dateTimeValue: dateTimeValue,
+                          ),
+                          CategoryPiechart(
+                            type: TransactionType.expense,
+                            dateTimeValue: dateTimeValue,
+                          ),
                         ],
                       ),
                     )
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(5.0),
+              const Padding(
+                padding: EdgeInsets.all(5.0),
                 child: Row(
                   children: [],
                 ),
