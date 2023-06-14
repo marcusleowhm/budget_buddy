@@ -303,9 +303,9 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
           () {
             newData.transferCategory = widget.data.transferCategory;
             newData.transferSubCategory = widget.data.transferSubCategory;
-            
+
             formControl.transferCategoryController.text =
-                  widget.data.transferSubCategory!;
+                widget.data.transferSubCategory!;
           },
         );
         break;
@@ -566,17 +566,86 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                     },
                                     onDeletePressed: () {
                                       //Provide confirmation dialog first
+
+                                      String category = '';
+                                      switch (newData.type) {
+                                        case TransactionType.income:
+                                          if (newData.incomeSubCategory !=
+                                              null) {
+                                            category =
+                                                '${newData.incomeCategory} (${newData.incomeSubCategory})';
+                                          } else {
+                                            category = newData.incomeCategory;
+                                          }
+                                          break;
+                                        case TransactionType.expense:
+                                          if (newData.expenseSubCategory !=
+                                              null) {
+                                            category =
+                                                '${newData.expenseCategory} (${newData.expenseSubCategory})';
+                                          } else {
+                                            category = newData.expenseCategory;
+                                          }
+                                          break;
+                                        case TransactionType.transfer:
+                                          category =
+                                              newData.transferSubCategory!;
+                                          break;
+                                      }
+
                                       showCupertinoDialog<bool>(
                                         context: context,
                                         builder: (context) => AlertDialog(
                                           title: const Text('Confirm Delete'),
-                                          content: Text(
-                                              'You\'re about to delete the following transaction: \n\n'
-                                              'Date: ${dateFormatter.format(widget.data.utcDateTime.toLocal())}\n'
-                                              'Account: ${widget.data.account}\n'
-                                              'Category: ${widget.data.expenseCategory}\n'
-                                              'Amount: ${widget.data.currency} ${englishDisplayCurrencyFormatter.format(widget.data.amount)}\n\n'
-                                              'Are you sure?'),
+                                          content: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              const Text(
+                                                  'You\'re about to delete the following transaction: '),
+                                              const SizedBox(
+                                                height: 10.0,
+                                              ),
+                                              Text(
+                                                dateFormatter.format(widget
+                                                    .data.utcDateTime
+                                                    .toLocal()),
+                                                style: const TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              Text(
+                                                widget.data.subAccount,
+                                                style: const TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              Text(
+                                                category,
+                                                style: const TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              Text(
+                                                '${widget.data.currency} ${englishDisplayCurrencyFormatter.format(widget.data.amount)}',
+                                                style: const TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              const SizedBox(height: 10.0),
+                                              const Text(
+                                                'Are you sure?',
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
                                           actions: [
                                             TextButton(
                                               onPressed: () {

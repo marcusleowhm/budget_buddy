@@ -16,6 +16,8 @@ class CategoryPiechart extends StatefulWidget {
 class _CategoryPiechartState extends State<CategoryPiechart> {
   int touchedIndex = -1;
 
+  
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CTransactionCubit, CTransactionState>(
