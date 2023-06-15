@@ -47,76 +47,97 @@ class _CategoryBreakdownPieChartState extends State<CategoryBreakdownPieChart> {
     List<PieChartSectionData> pieChartSections = <PieChartSectionData>[];
     int colorValue = 900;
 
+    //Pie chart for income
     if (widget.type == TransactionType.income) {
-      categorySumData.entries.toList().asMap().forEach(
-        (int index, MapEntry entry) {
-          final isTouched = index == touchedIndex;
-          final fontSize = isTouched ? 25.0 : 16.0;
-          final radius = isTouched ? activeRadius : dormantRadius;
-          const shadow = [Shadow(color: Colors.black, blurRadius: 1)];
+      for (MapEntry<int, MapEntry<String, double>> entry
+          in categorySumData.entries.toList().asMap().entries) {
+        int index = entry.key - 1;
+        MapEntry<String, double> data = entry.value;
+        String incomeCategory = data.key;
+        double categorySum = data.value;
 
-          String incomeCategory = entry.key;
-          double sum = entry.value ?? 0.0;
-          if (sum > 0) {
-            pieChartSections.add(
-              PieChartSectionData(
-                color: Colors.blue[
-                    colorValue], //TODO refactor this to use a heatmap library instead?
-                value: sum,
-                title: '',
-                radius: radius,
-                badgeWidget: Container(
-                  padding: const EdgeInsets.all(5.0),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    border: Border.all(width: 1),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Text(incomeCategory),
+        final isTouched = index == touchedIndex;
+        final radius = isTouched ? activeRadius : dormantRadius;
+
+        //Skip the total when making the piechart
+        if (incomeCategory == 'total') {
+          continue;
+        }
+
+        if (categorySum > 0) {
+          pieChartSections.add(
+            PieChartSectionData(
+              color: Colors.blue[
+                  colorValue], //TODO refactor this to use a heatmap library instead?
+              value: categorySum,
+              title: '',
+              radius: radius,
+              badgeWidget: Container(
+                padding: const EdgeInsets.all(5.0),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  border: Border.all(width: 1),
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
-                badgePositionPercentageOffset: 1,
-                titleStyle: TextStyle(fontSize: fontSize, shadows: shadow),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(incomeCategory),
+                  ],
+                ),
               ),
-            );
-            colorValue -= 100;
-          }
-        },
-      );
+              badgePositionPercentageOffset: 1,
+            ),
+          );
+          colorValue -= 100;
+        }
+      }
+      //Pie chart for expense
     } else if (widget.type == TransactionType.expense) {
-      categorySumData.entries.toList().asMap().forEach(
-        (int index, MapEntry entry) {
-          final isTouched = index == touchedIndex;
-          final fontSize = isTouched ? 25.0 : 16.0;
-          final radius = isTouched ? activeRadius : dormantRadius;
-          const shadow = [Shadow(color: Colors.black, blurRadius: 1)];
+      for (MapEntry<int, MapEntry<String, double>> entry
+          in categorySumData.entries.toList().asMap().entries) {
+        //Need to remove 1 because we are skipping the first entry
+        int index = entry.key - 1;
+        MapEntry<String, double> data = entry.value;
+        String expenseCategory = data.key;
+        double categorySum = data.value;
 
-          String expenseCategory = entry.key;
-          double sum = entry.value ?? 0.0;
-          if (sum > 0) {
-            pieChartSections.add(
-              PieChartSectionData(
-                color: Colors.red[
-                    colorValue], //TODO refactor this to use a heatmap library instead?
-                value: sum,
-                title: '',
-                radius: radius,
-                badgeWidget: Container(
-                  padding: const EdgeInsets.all(5.0),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    border: Border.all(width: 1),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Text(expenseCategory),
+        final isTouched = index == touchedIndex;
+        final radius = isTouched ? activeRadius : dormantRadius;
+
+        //Skip the total when making the piechart
+        if (expenseCategory == 'total') {
+          continue;
+        }
+
+        if (categorySum > 0) {
+          pieChartSections.add(
+            PieChartSectionData(
+              color: Colors.red[
+                  colorValue], //TODO refactor this to use a heatmap library instead?
+              value: categorySum,
+              title: '',
+              radius: radius,
+              badgeWidget: Container(
+                padding: const EdgeInsets.all(5.0),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  border: Border.all(width: 1),
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
-                badgePositionPercentageOffset: 1,
-                titleStyle: TextStyle(fontSize: fontSize, shadows: shadow),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(expenseCategory),
+                  ],
+                ),
               ),
-            );
-            colorValue -= 100;
-          }
-        },
-      );
+              badgePositionPercentageOffset: 1,
+            ),
+          );
+          colorValue -= 100;
+        }
+      }
     }
 
     return pieChartSections;
@@ -142,12 +163,18 @@ class _CategoryBreakdownPieChartState extends State<CategoryBreakdownPieChart> {
             //otherwise simply add to it
             double categoryIncomeSum = categorySum[data.incomeCategory] ?? 0.0;
             categorySum[data.incomeCategory] = categoryIncomeSum + data.amount;
+
+            double grandTotal = categorySum['total'] ?? 0.0;
+            categorySum['total'] = grandTotal += data.amount;
             break;
           case TransactionType.expense:
             double categoryExpenseSum =
                 categorySum[data.expenseCategory] ?? 0.0;
             categorySum[data.expenseCategory] =
                 categoryExpenseSum + data.amount;
+
+            double grandTotal = categorySum['total'] ?? 0.0;
+            categorySum['total'] = grandTotal += data.amount;
             break;
           default:
             //Do nothing, there is no use for transfer type
@@ -167,7 +194,7 @@ class _CategoryBreakdownPieChartState extends State<CategoryBreakdownPieChart> {
     return BlocBuilder<CTransactionCubit, CTransactionState>(
       builder: (context, state) {
         Map<String, double> categorySum = filterByCriteria(state);
-        return categorySum.isEmpty
+        return categorySum.isEmpty || categorySum['total'] == 0.0
             ? Expanded(
                 child: PieChart(
                   PieChartData(
@@ -182,19 +209,22 @@ class _CategoryBreakdownPieChartState extends State<CategoryBreakdownPieChart> {
                 child: PieChart(
                   PieChartData(
                     pieTouchData: PieTouchData(
-                        touchCallback: (FlTouchEvent event, pieTouchResponse) {
-                      setState(() {
-                        //If non of the piechart sections were touched
-                        if (!event.isInterestedForInteractions ||
-                            pieTouchResponse == null ||
-                            pieTouchResponse.touchedSection == null) {
-                          touchedIndex = -1;
-                          return;
-                        }
-                        touchedIndex = pieTouchResponse
-                            .touchedSection!.touchedSectionIndex;
-                      });
-                    }),
+                      touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                        setState(
+                          () {
+                            //If non of the piechart sections were touched
+                            if (!event.isInterestedForInteractions ||
+                                pieTouchResponse == null ||
+                                pieTouchResponse.touchedSection == null) {
+                              touchedIndex = -1;
+                              return;
+                            }
+                            touchedIndex = pieTouchResponse
+                                .touchedSection!.touchedSectionIndex;
+                          },
+                        );
+                      },
+                    ),
                     borderData: FlBorderData(show: false),
                     sectionsSpace: 2,
                     startDegreeOffset: 45,
