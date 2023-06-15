@@ -62,39 +62,30 @@ class _CategoryBreakdownListState extends State<CategoryBreakdownList> {
       builder: (context, state) {
         Map<String, double> categorySum = filterByCriteria(state);
         return categorySum.isEmpty
-            ? const Flexible(
-              child: Center(
-                  child: Text('No data added yet'),
-                ),
-            )
-            : Flexible(
-              flex: 2,
-              child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Column(
-                      children: [
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: categorySum.length,
-                          itemBuilder: (context, index) {
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(categorySum.entries.elementAt(index).key),
-                                Text(categorySum.entries
-                                    .elementAt(index)
-                                    .value
-                                    .toString())
-                              ],
-                            );
-                          },
-                        ),
-                      ],
-                    ),
+            ? const Text('No data added yet')
+            : Container(
+              padding: const EdgeInsets.all(5.0),
+              child: Column(
+                children: [
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: categorySum.length,
+                    itemBuilder: (context, index) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(categorySum.entries.elementAt(index).key),
+                          Text(categorySum.entries
+                              .elementAt(index)
+                              .value
+                              .toString())
+                        ],
+                      );
+                    },
                   ),
-                ),
+                ],
+              ),
             );
       },
     );

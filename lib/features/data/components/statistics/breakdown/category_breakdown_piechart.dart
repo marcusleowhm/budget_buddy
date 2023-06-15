@@ -19,6 +19,28 @@ class CategoryBreakdownPieChart extends StatefulWidget {
 
 class _CategoryBreakdownPieChartState extends State<CategoryBreakdownPieChart> {
   int touchedIndex = -1;
+  double dormantRadius = 50.0;
+  double activeRadius = 60.0;
+  double centerSpaceRadius = 40.0;
+
+  List<PieChartSectionData> prepareEmptyChartData() {
+    return <PieChartSectionData>[
+      PieChartSectionData(
+          color: Colors.grey,
+          value: 100,
+          title: '',
+          badgeWidget: Container(
+            padding: const EdgeInsets.all(5.0),
+            decoration: BoxDecoration(
+                color: Colors.grey[100],
+                border: Border.all(width: 1),
+                borderRadius: BorderRadius.circular(10.0)),
+            child: const Text('No data added yet'),
+          ),
+          //Position the badge in the middle of the chart
+          badgePositionPercentageOffset: -1),
+    ];
+  }
 
   List<PieChartSectionData> preparePieChartData(
       Map<String, double> categorySumData) {
@@ -30,7 +52,7 @@ class _CategoryBreakdownPieChartState extends State<CategoryBreakdownPieChart> {
         (int index, MapEntry entry) {
           final isTouched = index == touchedIndex;
           final fontSize = isTouched ? 25.0 : 16.0;
-          final radius = isTouched ? 60.0 : 50.0;
+          final radius = isTouched ? activeRadius : dormantRadius;
           const shadow = [Shadow(color: Colors.black, blurRadius: 1)];
 
           String incomeCategory = entry.key;
@@ -45,9 +67,14 @@ class _CategoryBreakdownPieChartState extends State<CategoryBreakdownPieChart> {
                 radius: radius,
                 badgeWidget: Container(
                   padding: const EdgeInsets.all(5.0),
-                  decoration: BoxDecoration(border: Border.all(width: 1)),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    border: Border.all(width: 1),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
                   child: Text(incomeCategory),
                 ),
+                badgePositionPercentageOffset: 1,
                 titleStyle: TextStyle(fontSize: fontSize, shadows: shadow),
               ),
             );
@@ -60,7 +87,7 @@ class _CategoryBreakdownPieChartState extends State<CategoryBreakdownPieChart> {
         (int index, MapEntry entry) {
           final isTouched = index == touchedIndex;
           final fontSize = isTouched ? 25.0 : 16.0;
-          final radius = isTouched ? 60.0 : 50.0;
+          final radius = isTouched ? activeRadius : dormantRadius;
           const shadow = [Shadow(color: Colors.black, blurRadius: 1)];
 
           String expenseCategory = entry.key;
@@ -82,7 +109,7 @@ class _CategoryBreakdownPieChartState extends State<CategoryBreakdownPieChart> {
                   ),
                   child: Text(expenseCategory),
                 ),
-                badgePositionPercentageOffset: 2,
+                badgePositionPercentageOffset: 1,
                 titleStyle: TextStyle(fontSize: fontSize, shadows: shadow),
               ),
             );
@@ -141,42 +168,41 @@ class _CategoryBreakdownPieChartState extends State<CategoryBreakdownPieChart> {
       builder: (context, state) {
         Map<String, double> categorySum = filterByCriteria(state);
         return categorySum.isEmpty
-            ? const Flexible(
-                child: Center(
-                  child: Text('No data added yet'),
-                ),
-              )
-            : Flexible(
-              flex: 8,
-              child: Center(
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: PieChart(
-                      PieChartData(
-                        pieTouchData: PieTouchData(touchCallback:
-                            (FlTouchEvent event, pieTouchResponse) {
-                          setState(() {
-                            //If non of the piechart sections were touched
-                            if (!event.isInterestedForInteractions ||
-                                pieTouchResponse == null ||
-                                pieTouchResponse.touchedSection == null) {
-                              touchedIndex = -1;
-                              return;
-                            }
-                            touchedIndex = pieTouchResponse
-                                .touchedSection!.touchedSectionIndex;
-                          });
-                        }),
-                        borderData: FlBorderData(show: false),
-                        sectionsSpace: 2,
-                        startDegreeOffset: 45,
-                        centerSpaceRadius: 40,
-                        sections: preparePieChartData(categorySum),
-                      ),
-                    ),
+            ? Expanded(
+                child: PieChart(
+                  PieChartData(
+                    borderData: FlBorderData(show: false),
+                    startDegreeOffset: 90,
+                    centerSpaceRadius: centerSpaceRadius,
+                    sections: prepareEmptyChartData(),
                   ),
                 ),
-            );
+              )
+            : Expanded(
+                child: PieChart(
+                  PieChartData(
+                    pieTouchData: PieTouchData(
+                        touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                      setState(() {
+                        //If non of the piechart sections were touched
+                        if (!event.isInterestedForInteractions ||
+                            pieTouchResponse == null ||
+                            pieTouchResponse.touchedSection == null) {
+                          touchedIndex = -1;
+                          return;
+                        }
+                        touchedIndex = pieTouchResponse
+                            .touchedSection!.touchedSectionIndex;
+                      });
+                    }),
+                    borderData: FlBorderData(show: false),
+                    sectionsSpace: 2,
+                    startDegreeOffset: 45,
+                    centerSpaceRadius: centerSpaceRadius,
+                    sections: preparePieChartData(categorySum),
+                  ),
+                ),
+              );
       },
     );
   }
