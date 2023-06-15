@@ -1,5 +1,5 @@
 import 'package:budget_buddy/features/constants/enum.dart';
-import 'package:budget_buddy/features/data/components/statistics/breakdown/category_piechart.dart';
+import 'package:budget_buddy/features/data/components/statistics/breakdown/category_breakdown_page.dart';
 import 'package:flutter/material.dart';
 
 class CategoryBreakdown extends StatelessWidget {
@@ -20,6 +20,7 @@ class CategoryBreakdown extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(10.0),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               DefaultTabController(
                 initialIndex: 1,
@@ -35,18 +36,18 @@ class CategoryBreakdown extends StatelessWidget {
                         Tab(
                           child: Text('Expense',
                               style: TextStyle(color: Colors.black)),
-                        )
+                        ),
                       ],
                     ),
                     AspectRatio(
                       aspectRatio: 1,
                       child: TabBarView(
                         children: [
-                          CategoryPiechart(
+                          CategoryBreakdownPage(
                             type: TransactionType.income,
                             dateTimeValue: dateTimeValue,
                           ),
-                          CategoryPiechart(
+                          CategoryBreakdownPage(
                             type: TransactionType.expense,
                             dateTimeValue: dateTimeValue,
                           ),
@@ -56,12 +57,6 @@ class CategoryBreakdown extends StatelessWidget {
                   ],
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.all(5.0),
-                child: Row(
-                  children: [],
-                ),
-              )
             ],
           ),
         ),

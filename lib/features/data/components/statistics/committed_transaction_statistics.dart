@@ -1,8 +1,6 @@
 import 'package:budget_buddy/features/data/components/statistics/breakdown/category_breakdown.dart';
 import 'package:budget_buddy/features/data/widgets/month_picker.dart';
-import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CommittedTransactionStatistics extends StatelessWidget {
   CommittedTransactionStatistics({
@@ -38,18 +36,14 @@ class CommittedTransactionStatistics extends StatelessWidget {
           child: SingleChildScrollView(
             controller: _scrollController,
             physics: const BouncingScrollPhysics(),
-            child: BlocBuilder<CTransactionCubit, CTransactionState>(
-              builder: (context, state) {
-                return Column(
-                  children: [
-                    CategoryBreakdown(dateTimeValue: dateTimeValue,),
-                    //TODO Other analytics widgets
-                    Card(
-                      child: Row(children: [Text('2')]),
-                    ),
-                  ],
-                );
-              },
+            child: Column(
+              children: [
+                CategoryBreakdown(dateTimeValue: dateTimeValue,),
+                //TODO Other analytics widgets
+                Card(
+                  child: Row(children: [Text('2')]),
+                ),
+              ],
             ),
           ),
         )

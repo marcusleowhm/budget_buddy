@@ -27,16 +27,16 @@ class CommittedTransactionList extends StatelessWidget {
   final VoidCallback decrementMonth;
   final VoidCallback resetDate;
 
-  Map<String, double> getMonthlyTransactionData(CTransactionState state) {
+  Map<String, double> getMonthlyTransactionSum(CTransactionState state) {
     Map<String, double> sum = {'income': 0.0, 'expense': 0.0, 'transfer': 0.0};
     for (TransactionData data in state.committedEntries) {
-      DateTime localDateTime = DateTime(
+      DateTime dataLocalDateTime = DateTime(
         data.utcDateTime.toLocal().year,
         data.utcDateTime.toLocal().month,
         data.utcDateTime.toLocal().day,
       );
-      if (dateTimeValue.month == localDateTime.month &&
-          dateTimeValue.year == localDateTime.year) {
+      if (dateTimeValue.month == dataLocalDateTime.month &&
+          dateTimeValue.year == dataLocalDateTime.year) {
         switch (data.type) {
           case TransactionType.income:
             double cumulativeMonthlyIncome = sum['income'] ?? 0.0;
@@ -120,7 +120,7 @@ class CommittedTransactionList extends StatelessWidget {
         //Total sum for the selected month
         BlocBuilder<CTransactionCubit, CTransactionState>(
           builder: (context, state) {
-            Map<String, double> monthlySum = getMonthlyTransactionData(state);
+            Map<String, double> monthlySum = getMonthlyTransactionSum(state);
             return Card(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
