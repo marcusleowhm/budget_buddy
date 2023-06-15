@@ -1,5 +1,5 @@
 import 'package:budget_buddy/features/data/components/statistics/breakdown/category_breakdown.dart';
-import 'package:budget_buddy/features/data/widgets/month_picker.dart';
+import 'package:budget_buddy/features/data/widgets/month_carousel.dart';
 import 'package:flutter/material.dart';
 
 class CommittedTransactionStatistics extends StatelessWidget {
@@ -25,7 +25,7 @@ class CommittedTransactionStatistics extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        MonthPicker(
+        MonthCarousel(
           dateTimeValue: dateTimeValue,
           localNow: localNow,
           incrementMonth: incrementMonth,

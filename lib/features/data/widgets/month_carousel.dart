@@ -1,8 +1,8 @@
 import 'package:budget_buddy/utilities/date_formatter.dart';
 import 'package:flutter/material.dart';
 
-class MonthPicker extends StatelessWidget {
-  const MonthPicker({
+class MonthCarousel extends StatelessWidget {
+  const MonthCarousel({
     super.key,
     required this.dateTimeValue,
     required this.localNow,

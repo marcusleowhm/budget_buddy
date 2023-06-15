@@ -26,19 +26,19 @@ class _CategoryBreakdownPieChartState extends State<CategoryBreakdownPieChart> {
   List<PieChartSectionData> prepareEmptyChartData() {
     return <PieChartSectionData>[
       PieChartSectionData(
-          color: Colors.grey,
-          value: 100,
-          title: '',
-          badgeWidget: Container(
-            padding: const EdgeInsets.all(5.0),
-            decoration: BoxDecoration(
-                color: Colors.grey[100],
-                border: Border.all(width: 1),
-                borderRadius: BorderRadius.circular(10.0)),
-            child: const Text('No data added yet'),
-          ),
-          //Position the badge in the middle of the chart
-          badgePositionPercentageOffset: -1),
+        color: Colors.grey,
+        value: 100,
+        title: '',
+        radius: dormantRadius,
+        badgeWidget: Container(
+          padding: const EdgeInsets.all(5.0),
+          decoration: BoxDecoration(
+              color: Colors.grey[100],
+              border: Border.all(width: 1),
+              borderRadius: BorderRadius.circular(10.0)),
+          child: const Text('No data added yet'),
+        ),
+      ),
     ];
   }
 

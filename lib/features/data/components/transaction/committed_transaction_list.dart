@@ -1,6 +1,6 @@
 import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/features/data/components/transaction/daily/daily_transaction_block.dart';
-import 'package:budget_buddy/features/data/widgets/month_picker.dart';
+import 'package:budget_buddy/features/data/widgets/month_carousel.dart';
 import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
 import 'package:budget_buddy/features/ledger/model/daily_ledger_input.dart';
 import 'package:budget_buddy/features/ledger/model/transaction_data.dart';
@@ -109,7 +109,7 @@ class CommittedTransactionList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         //Month picker
-        MonthPicker(
+        MonthCarousel(
           dateTimeValue: dateTimeValue,
           localNow: localNow,
           incrementMonth: incrementMonth,
