@@ -49,7 +49,9 @@ class CategoryListView extends StatelessWidget {
                                     null,
                                   ),
                                   title: Text(
-                                      categoryGroups.keys.elementAt(index)),
+                                    categoryGroups.keys.elementAt(index),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                   trailing: null,
                                 )
                               //With chevron
@@ -63,6 +65,7 @@ class CategoryListView extends StatelessWidget {
                                       : () => selectGroupIndex(index),
                                   title: Text(
                                     categoryGroups.keys.elementAt(index),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                   trailing: const Icon(
                                     Icons.chevron_right,
@@ -109,6 +112,7 @@ class CategoryListView extends StatelessWidget {
                               categoryGroups.values
                                   .elementAt(selectedGroupIndex)
                                   .elementAt(index),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         );

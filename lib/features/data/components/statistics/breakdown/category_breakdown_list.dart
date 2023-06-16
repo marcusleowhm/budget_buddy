@@ -1,6 +1,7 @@
 import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
 import 'package:budget_buddy/features/ledger/model/transaction_data.dart';
+import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -56,11 +57,24 @@ class _CategoryBreakdownListState extends State<CategoryBreakdownList> {
     return categorySum;
   }
 
+  double calculateTotal(Map<String, double> filteredCategory) {
+    double total = 0.0;
+    for (double sum in filteredCategory.values) {
+      if (sum > 0) {
+        total += sum;
+      }
+    }
+    return total;
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CTransactionCubit, CTransactionState>(
       builder: (context, state) {
         Map<String, double> categorySum = filterByCriteria(state);
+        double total = calculateTotal(categorySum);
+        int colorValue = 900;
+
         return categorySum.isEmpty
             ? const Text('No data added yet')
             : Container(
@@ -70,19 +84,139 @@ class _CategoryBreakdownListState extends State<CategoryBreakdownList> {
                     ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: categorySum.length,
+                      itemCount: categorySum.length + 1,
                       itemBuilder: (context, index) {
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(categorySum.entries.elementAt(index).key),
-                            Text(
-                              categorySum.entries
-                                  .elementAt(index)
-                                  .value
-                                  .toStringAsFixed(2),
-                            )
-                          ],
+                        //Row header
+                        if (index == 0) {
+                          return const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 10.0),
+                            child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Click or Tap on amount to see full amount',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ]),
+                          );
+                        }
+
+                        index--;
+                        double percentage =
+                            categorySum.entries.elementAt(index).value /
+                                total *
+                                100;
+                        GlobalKey<TooltipState> tooltipKey = GlobalKey();
+
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 3.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              //Category
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    print('TODO implement category trend feature');
+                                    //TODO implement
+                                  },
+                                  child: Text(
+                                    categorySum.entries.elementAt(index).key,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ),
+                        
+                              //Subtotal
+                              Row(
+                                children: [
+                                  //Sum
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 5.0),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        tooltipKey.currentState
+                                            ?.ensureTooltipVisible();
+                                      },
+                                      child: Tooltip(
+                                        message: englishDisplayCurrencyFormatter
+                                            .format(categorySum.entries
+                                                .elementAt(index)
+                                                .value),
+                                        triggerMode: TooltipTriggerMode.manual,
+                                        showDuration:
+                                            const Duration(seconds: 5),
+                                        key: tooltipKey,
+                                        child: Container(
+                                          width: 80,
+                                          padding: const EdgeInsets.all(5.0),
+                                          decoration: BoxDecoration(
+                                            color: Colors
+                                                .red[colorValue - 100 * index]!,
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                          ),
+                                          child: Text(
+                                              (categorySum.entries
+                                                              .elementAt(index)
+                                                              .value >
+                                                          1000 ||
+                                                      categorySum.entries
+                                                              .elementAt(index)
+                                                              .value <
+                                                          -1000)
+                                                  ? compactCurrencyFormatter
+                                                      .format(categorySum
+                                                          .entries
+                                                          .elementAt(index)
+                                                          .value)
+                                                  : englishDisplayCurrencyFormatter
+                                                      .format(
+                                                      categorySum.entries
+                                                          .elementAt(index)
+                                                          .value,
+                                                    ),
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  color: Theme.of(context)
+                                                      .canvasColor)),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  //Percentage
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 5.0),
+                                    child: Container(
+                                      width: 70,
+                                      padding: const EdgeInsets.all(5.0),
+                                      decoration: BoxDecoration(
+                                        color: Colors
+                                            .red[colorValue - 100 * index]!,
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                      ),
+                                      child: Text(
+                                        percentage > 0
+                                            ? '${percentage.toStringAsFixed(2)}%'
+                                            : 'N/A',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color:
+                                                Theme.of(context).canvasColor),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         );
                       },
                     ),

@@ -1,6 +1,7 @@
 import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
 import 'package:budget_buddy/features/ledger/model/transaction_data.dart';
+import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -47,100 +48,81 @@ class _CategoryBreakdownPieChartState extends State<CategoryBreakdownPieChart> {
     List<PieChartSectionData> pieChartSections = <PieChartSectionData>[];
     int colorValue = 900;
 
-    //Pie chart for income
-    if (widget.type == TransactionType.income) {
-      for (MapEntry<int, MapEntry<String, double>> entry
-          in categorySumData.entries.toList().asMap().entries) {
-        int index = entry.key - 1;
-        MapEntry<String, double> data = entry.value;
-        String incomeCategory = data.key;
-        double categorySum = data.value;
-
-        final isTouched = index == touchedIndex;
-        final radius = isTouched ? activeRadius : dormantRadius;
-        
-        //Skip the total when making the piechart
-        if (incomeCategory == 'total') {
-          continue;
-        }
-
-        if (categorySum > 0) {
-          pieChartSections.add(
-            PieChartSectionData(
-              color: Colors.blue[
-                  colorValue], //TODO refactor this to use a heatmap library instead?
-              value: categorySum,
-              title: '',
-              radius: radius,
-              badgeWidget: Container(
-                padding: const EdgeInsets.all(5.0),
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  border: Border.all(width: 1),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(incomeCategory),
-                  ],
-                ),
-              ),
-              badgePositionPercentageOffset: 1.5,
-            ),
-          );
-          colorValue -= 100;
-        }
+    //Calculate total in map
+    double total = 0.0;
+    for (MapEntry entry in categorySumData.entries) {
+      if (entry.value > 0) {
+        total += entry.value;
       }
-      //Pie chart for expense
-    } else if (widget.type == TransactionType.expense) {
-      for (MapEntry<int, MapEntry<String, double>> entry
-          in categorySumData.entries.toList().asMap().entries) {
-        //Need to remove 1 because we are skipping the first entry
-        int index = entry.key - 1;
-        MapEntry<String, double> data = entry.value;
-        String expenseCategory = data.key;
-        double categorySum = data.value;
+    }
 
-        final isTouched = index == touchedIndex;
-        final radius = isTouched ? activeRadius : dormantRadius;
+    for (MapEntry<int, MapEntry<String, double>> entry
+        in categorySumData.entries.toList().asMap().entries) {
+      int index = entry.key;
+      MapEntry<String, double> data = entry.value;
+      String categoryName = data.key;
+      double categorySum = data.value;
 
-        //Skip the total when making the piechart
-        if (expenseCategory == 'total') {
-          continue;
-        }
+      final isTouched = index == touchedIndex;
+      final radius = isTouched ? activeRadius : dormantRadius;
 
-        if (categorySum > 0) {
-          pieChartSections.add(
-            PieChartSectionData(
-              color: Colors.red[
-                  colorValue], //TODO refactor this to use a heatmap library instead?
-              value: categorySum,
-              title: '',
-              radius: radius,
-              badgeWidget: Container(
-                padding: const EdgeInsets.all(5.0),
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  border: Border.all(width: 1),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
+      if (categorySum > 0) {
+        pieChartSections.add(
+          PieChartSectionData(
+            color: widget.type == TransactionType.income
+                ? Colors.blue[colorValue]
+                : Colors.red[
+                    colorValue], //TODO refactor this to use a heatmap library instead?
+            value: categorySum,
+            title: '',
+            radius: radius,
+            badgeWidget: Container(
+              padding: const EdgeInsets.all(5.0),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                border: Border.all(width: 1),
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 140),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(expenseCategory),
+                    Flexible(
+                      child: Text(
+                        categoryName,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Text('${(categorySum / total * 100).toStringAsFixed(2)}%'),
+                    if (isTouched) const SizedBox(height: 5.0),
+                    if (isTouched)
+                      Text(
+                        englishDisplayCurrencyFormatter.format(categorySum),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
                   ],
                 ),
               ),
-              badgePositionPercentageOffset: 1.5,
             ),
-          );
-          colorValue -= 100;
-        }
+            badgePositionPercentageOffset: 0.8,
+          ),
+        );
+        colorValue -= 100;
       }
     }
 
     return pieChartSections;
+  }
+
+  double calculatePositiveTotal (Map<String, double> categorySum) {
+    double total = 0.0;
+    for (MapEntry entry in categorySum.entries) {
+      if (entry.value > 0) {
+        total += entry.value;
+      }
+    }
+    return total;
   }
 
   Map<String, double> filterByCriteria(CTransactionState state) {
@@ -163,18 +145,12 @@ class _CategoryBreakdownPieChartState extends State<CategoryBreakdownPieChart> {
             //otherwise simply add to it
             double categoryIncomeSum = categorySum[data.incomeCategory] ?? 0.0;
             categorySum[data.incomeCategory] = categoryIncomeSum + data.amount;
-
-            double grandTotal = categorySum['total'] ?? 0.0;
-            categorySum['total'] = grandTotal += data.amount;
             break;
           case TransactionType.expense:
             double categoryExpenseSum =
                 categorySum[data.expenseCategory] ?? 0.0;
             categorySum[data.expenseCategory] =
                 categoryExpenseSum + data.amount;
-
-            double grandTotal = categorySum['total'] ?? 0.0;
-            categorySum['total'] = grandTotal += data.amount;
             break;
           default:
             //Do nothing, there is no use for transfer type
@@ -194,7 +170,8 @@ class _CategoryBreakdownPieChartState extends State<CategoryBreakdownPieChart> {
     return BlocBuilder<CTransactionCubit, CTransactionState>(
       builder: (context, state) {
         Map<String, double> categorySum = filterByCriteria(state);
-        return categorySum.isEmpty || categorySum['total'] == 0.0
+        double total = calculatePositiveTotal(categorySum);
+        return categorySum.isEmpty || total == 0.0
             ? AspectRatio(
                 aspectRatio: 1,
                 child: PieChart(
@@ -228,7 +205,7 @@ class _CategoryBreakdownPieChartState extends State<CategoryBreakdownPieChart> {
                       },
                     ),
                     borderData: FlBorderData(show: false),
-                    sectionsSpace: 2,
+                    sectionsSpace: 3,
                     startDegreeOffset: 45,
                     centerSpaceRadius: centerSpaceRadius,
                     sections: preparePieChartData(categorySum),

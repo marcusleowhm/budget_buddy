@@ -1,6 +1,8 @@
 import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/features/data/components/statistics/breakdown/category_breakdown_page.dart';
+import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CategoryBreakdown extends StatefulWidget {
   const CategoryBreakdown({super.key, required this.dateTimeValue});
@@ -33,10 +35,9 @@ class _CategoryBreakdownState extends State<CategoryBreakdown>
       child: Text('Expense', style: TextStyle(color: Colors.black)),
     ),
   ];
-
-  late List<Widget> _pages;
-  void createPages() {
-    _pages = [
+  
+  List<Widget> createPages() {
+    return [
       CategoryBreakdownPage(
         type: TransactionType.income,
         dateTimeValue: widget.dateTimeValue,
@@ -51,7 +52,6 @@ class _CategoryBreakdownState extends State<CategoryBreakdown>
   @override
   void initState() {
     initController();
-    createPages();
     super.initState();
   }
 
@@ -80,9 +80,13 @@ class _CategoryBreakdownState extends State<CategoryBreakdown>
                 controller: _tabController,
                 tabs: _tabs,
               ),
-              Builder(
-                builder: (context) {
-                  return _pages[selectedIndex];
+              BlocBuilder<CTransactionCubit, CTransactionState>(
+                builder: (context, state) {
+                  return Builder(
+                    builder: (context) {
+                      return createPages()[selectedIndex];
+                    },
+                  );
                 },
               ),
             ],

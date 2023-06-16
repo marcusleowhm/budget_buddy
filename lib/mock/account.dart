@@ -19,7 +19,7 @@ final Map<String, List<String>> inflowCategoryGroups = {
 };
 
 final Map<String, List<String>> outflowCategoryGroups = {
-  'Food & Beverage': ['Eating Out', 'Groceries', 'Snacks', 'Drinks', 'Convenience Storeeeeeeeeeeeeeeeeeeeeeeeeeee'],
+  'Food & Beverageeeeeeeeeeeeeeeeeeeeeeeee': ['Eating Out', 'Groceries', 'Snacks', 'Drinks', 'Convenience Storeeeeeeeeeeeeeeeeeeeeeeeeeee'],
   'Leisure': ['Videogames', 'Holiday', 'Arcade'],
   'Transport': ['Bus', 'MRT', 'Car', 'Taxi'],
   'Housing': ['Renovation', 'Maintenance', 'Furniture'],

@@ -48,8 +48,10 @@ class AccountListView extends StatelessWidget {
                                       accountGroups.keys.elementAt(index),
                                       accountGroups.keys.elementAt(index),
                                     ),
-                                title:
-                                    Text(accountGroups.keys.elementAt(index)),
+                                title: Text(
+                                  accountGroups.keys.elementAt(index),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                                 trailing: null)
                             //With chevron
                             : ListTile(
@@ -60,6 +62,7 @@ class AccountListView extends StatelessWidget {
                                     : () => selectGroupIndex(index),
                                 title: Text(
                                   accountGroups.keys.elementAt(index),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                                 trailing: const Icon(
                                   Icons.chevron_right,
@@ -109,6 +112,7 @@ class AccountListView extends StatelessWidget {
                             accountGroups.values
                                 .elementAt(selectedGroupIndex)
                                 .elementAt(index),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       );
