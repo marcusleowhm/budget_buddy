@@ -19,9 +19,9 @@ class CategoryBreakdownPieChart extends StatefulWidget {
 
 class _CategoryBreakdownPieChartState extends State<CategoryBreakdownPieChart> {
   int touchedIndex = -1;
-  double dormantRadius = 50.0;
-  double activeRadius = 60.0;
-  double centerSpaceRadius = 40.0;
+  final double centerSpaceRadius = 70.0;
+  final double dormantRadius = 50.0;
+  final double activeRadius = 60.0;
 
   List<PieChartSectionData> prepareEmptyChartData() {
     return <PieChartSectionData>[
@@ -58,7 +58,7 @@ class _CategoryBreakdownPieChartState extends State<CategoryBreakdownPieChart> {
 
         final isTouched = index == touchedIndex;
         final radius = isTouched ? activeRadius : dormantRadius;
-
+        
         //Skip the total when making the piechart
         if (incomeCategory == 'total') {
           continue;
@@ -86,7 +86,7 @@ class _CategoryBreakdownPieChartState extends State<CategoryBreakdownPieChart> {
                   ],
                 ),
               ),
-              badgePositionPercentageOffset: 1,
+              badgePositionPercentageOffset: 1.5,
             ),
           );
           colorValue -= 100;
@@ -132,7 +132,7 @@ class _CategoryBreakdownPieChartState extends State<CategoryBreakdownPieChart> {
                   ],
                 ),
               ),
-              badgePositionPercentageOffset: 1,
+              badgePositionPercentageOffset: 1.5,
             ),
           );
           colorValue -= 100;
@@ -195,7 +195,8 @@ class _CategoryBreakdownPieChartState extends State<CategoryBreakdownPieChart> {
       builder: (context, state) {
         Map<String, double> categorySum = filterByCriteria(state);
         return categorySum.isEmpty || categorySum['total'] == 0.0
-            ? Expanded(
+            ? AspectRatio(
+                aspectRatio: 1,
                 child: PieChart(
                   PieChartData(
                     borderData: FlBorderData(show: false),
@@ -205,7 +206,8 @@ class _CategoryBreakdownPieChartState extends State<CategoryBreakdownPieChart> {
                   ),
                 ),
               )
-            : Expanded(
+            : AspectRatio(
+                aspectRatio: 1,
                 child: PieChart(
                   PieChartData(
                     pieTouchData: PieTouchData(

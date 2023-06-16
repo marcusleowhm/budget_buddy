@@ -31,44 +31,57 @@ class _TrendState extends State<Trend> {
           padding: const EdgeInsets.all(10.0),
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(5.0),
+              const Padding(
+                padding: EdgeInsets.all(5.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       'Trend',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Row(
-                      children: [
-                        PopupMenuButton<ChartAmountDisplayCriteria>(
-                          initialValue: amountFilter,
-                          onSelected: (ChartAmountDisplayCriteria value) =>
-                              setState(() => amountFilter = value),
-                          itemBuilder: (context) => [
-                            PopupMenuItem(
-                              value: ChartAmountDisplayCriteria.gross,
-                              child: Text(
-                                  labels[ChartAmountDisplayCriteria.gross]!),
-                            ),
-                            PopupMenuItem(
-                              value: ChartAmountDisplayCriteria.nett,
-                              child: Text(
-                                  labels[ChartAmountDisplayCriteria.nett]!),
-                            ),
-                          ],
-                          child: TextButton.icon(
-                            icon: Text(labels[amountFilter]!),
-                            label: const Icon(Icons.arrow_drop_down_rounded),
-                            onPressed: null,
-                          ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'View',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    PopupMenuButton<ChartAmountDisplayCriteria>(
+                      initialValue: amountFilter,
+                      onSelected: (ChartAmountDisplayCriteria value) =>
+                          setState(() => amountFilter = value),
+                      itemBuilder: (context) => [
+                        PopupMenuItem(
+                          value: ChartAmountDisplayCriteria.gross,
+                          child:
+                              Text(labels[ChartAmountDisplayCriteria.gross]!),
+                        ),
+                        PopupMenuItem(
+                          value: ChartAmountDisplayCriteria.nett,
+                          child: Text(labels[ChartAmountDisplayCriteria.nett]!),
                         ),
                       ],
-                    )
+                      child: TextButton.icon(
+                        icon: Text(labels[amountFilter]!),
+                        label: const Icon(Icons.arrow_drop_down_rounded),
+                        onPressed: null,
+                        style: const ButtonStyle(
+                          padding:
+                              MaterialStatePropertyAll<EdgeInsetsGeometry?>(
+                            EdgeInsets.zero,
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),

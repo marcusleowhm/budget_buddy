@@ -32,19 +32,17 @@ class CommittedTransactionStatistics extends StatelessWidget {
           decrementMonth: decrementMonth,
           resetDate: resetDate,
         ),
-        Expanded(
-          child: SingleChildScrollView(
-            controller: _scrollController,
-            physics: const BouncingScrollPhysics(),
-            child: Column(
-              children: [
-                CategoryBreakdown(dateTimeValue: dateTimeValue,),
-                //TODO Other analytics widgets
-                Card(
-                  child: Row(children: [Text('2')]),
-                ),
-              ],
-            ),
+        SingleChildScrollView(
+          controller: _scrollController,
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            children: [
+              CategoryBreakdown(dateTimeValue: dateTimeValue,),
+              //TODO Other analytics widgets
+              Card(
+                child: Row(children: [Text('2')]),
+              ),
+            ],
           ),
         )
       ],

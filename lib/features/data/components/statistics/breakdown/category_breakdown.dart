@@ -2,10 +2,64 @@ import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/features/data/components/statistics/breakdown/category_breakdown_page.dart';
 import 'package:flutter/material.dart';
 
-class CategoryBreakdown extends StatelessWidget {
+class CategoryBreakdown extends StatefulWidget {
   const CategoryBreakdown({super.key, required this.dateTimeValue});
 
   final DateTime dateTimeValue;
+
+  @override
+  State<CategoryBreakdown> createState() => _CategoryBreakdownState();
+}
+
+class _CategoryBreakdownState extends State<CategoryBreakdown>
+    with TickerProviderStateMixin {
+  int selectedIndex = 1;
+  late TabController _tabController;
+
+  void initController() {
+    _tabController =
+        TabController(length: 2, vsync: this, initialIndex: selectedIndex);
+    _tabController.addListener(() {
+      selectedIndex = _tabController.index;
+      setState(() => _tabController.index);
+    });
+  }
+
+  static const List<Widget> _tabs = [
+    Tab(
+      child: Text('Income', style: TextStyle(color: Colors.black)),
+    ),
+    Tab(
+      child: Text('Expense', style: TextStyle(color: Colors.black)),
+    ),
+  ];
+
+  late List<Widget> _pages;
+  void createPages() {
+    _pages = [
+      CategoryBreakdownPage(
+        type: TransactionType.income,
+        dateTimeValue: widget.dateTimeValue,
+      ),
+      CategoryBreakdownPage(
+        type: TransactionType.expense,
+        dateTimeValue: widget.dateTimeValue,
+      ),
+    ];
+  }
+
+  @override
+  void initState() {
+    initController();
+    createPages();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,40 +76,14 @@ class CategoryBreakdown extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              DefaultTabController(
-                initialIndex: 1,
-                length: 2,
-                child: Column(
-                  children: [
-                    const TabBar(
-                      tabs: [
-                        Tab(
-                          child: Text('Income',
-                              style: TextStyle(color: Colors.black)),
-                        ),
-                        Tab(
-                          child: Text('Expense',
-                              style: TextStyle(color: Colors.black)),
-                        ),
-                      ],
-                    ),
-                    AspectRatio(
-                      aspectRatio: 1,
-                      child: TabBarView(
-                        children: [
-                          CategoryBreakdownPage(
-                            type: TransactionType.income,
-                            dateTimeValue: dateTimeValue,
-                          ),
-                          CategoryBreakdownPage(
-                            type: TransactionType.expense,
-                            dateTimeValue: dateTimeValue,
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+              TabBar(
+                controller: _tabController,
+                tabs: _tabs,
+              ),
+              Builder(
+                builder: (context) {
+                  return _pages[selectedIndex];
+                },
               ),
             ],
           ),

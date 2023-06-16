@@ -114,40 +114,54 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
                       ],
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      PopupMenuButton(
-                        initialValue: filterCriteria,
-                        onSelected: (RecentTransactionFilterCriteria value) {
-                          setState(() => filterCriteria = value);
-                        },
-                        itemBuilder: (context) => [
-                          PopupMenuItem(
-                            value:
-                                RecentTransactionFilterCriteria.transactionDate,
-                            child: Text(labels[RecentTransactionFilterCriteria
-                                .transactionDate]!),
-                          ),
-                          PopupMenuItem(
-                            value: RecentTransactionFilterCriteria.createdDate,
-                            child: Text(labels[
-                                RecentTransactionFilterCriteria.createdDate]!),
-                          ),
-                          PopupMenuItem(
-                            value: RecentTransactionFilterCriteria.modifiedDate,
-                            child: Text(labels[
-                                RecentTransactionFilterCriteria.modifiedDate]!),
-                          ),
-                        ],
-                        child: TextButton.icon(
-                          icon: const Text('Filter by'),
-                          label: const Icon(Icons.arrow_drop_down_rounded),
-                          onPressed: null,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Filter by',
+                          style: TextStyle(fontWeight: FontWeight.w600),
                         ),
-                      ),
-                      Text(labels[filterCriteria]!),
-                    ],
+                        PopupMenuButton(
+                          initialValue: filterCriteria,
+                          onSelected: (RecentTransactionFilterCriteria value) {
+                            setState(() => filterCriteria = value);
+                          },
+                          itemBuilder: (context) => [
+                            PopupMenuItem(
+                              value: RecentTransactionFilterCriteria
+                                  .transactionDate,
+                              child: Text(labels[RecentTransactionFilterCriteria
+                                  .transactionDate]!),
+                            ),
+                            PopupMenuItem(
+                              value:
+                                  RecentTransactionFilterCriteria.createdDate,
+                              child: Text(labels[RecentTransactionFilterCriteria
+                                  .createdDate]!),
+                            ),
+                            PopupMenuItem(
+                              value:
+                                  RecentTransactionFilterCriteria.modifiedDate,
+                              child: Text(labels[RecentTransactionFilterCriteria
+                                  .modifiedDate]!),
+                            ),
+                          ],
+                          child: TextButton.icon(
+                            icon: Text(labels[filterCriteria]!),
+                            label: const Icon(Icons.arrow_drop_down_rounded),
+                            onPressed: null,
+                            style: const ButtonStyle(
+                              padding:
+                                  MaterialStatePropertyAll<EdgeInsetsGeometry?>(
+                                EdgeInsets.zero,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   const Divider(
                     thickness: 1,
