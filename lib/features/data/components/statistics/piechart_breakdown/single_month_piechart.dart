@@ -6,19 +6,19 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CategoryBreakdownPieChart extends StatefulWidget {
-  const CategoryBreakdownPieChart(
+class SingleMonthPiechart extends StatefulWidget {
+  const SingleMonthPiechart(
       {super.key, required this.type, required this.dateTimeValue});
 
   final TransactionType type;
   final DateTime dateTimeValue;
 
   @override
-  State<CategoryBreakdownPieChart> createState() =>
-      _CategoryBreakdownPieChartState();
+  State<SingleMonthPiechart> createState() =>
+      _SingleMonthPiechartState();
 }
 
-class _CategoryBreakdownPieChartState extends State<CategoryBreakdownPieChart> {
+class _SingleMonthPiechartState extends State<SingleMonthPiechart> {
   int touchedIndex = -1;
   final double centerSpaceRadius = 70.0;
   final double dormantRadius = 50.0;

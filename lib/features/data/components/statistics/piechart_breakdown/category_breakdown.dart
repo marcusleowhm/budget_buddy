@@ -1,5 +1,5 @@
 import 'package:budget_buddy/features/constants/enum.dart';
-import 'package:budget_buddy/features/data/components/statistics/breakdown/category_breakdown_page.dart';
+import 'package:budget_buddy/features/data/components/statistics/piechart_breakdown/piechart_page.dart';
 import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,11 +38,11 @@ class _CategoryBreakdownState extends State<CategoryBreakdown>
   
   List<Widget> createPages() {
     return [
-      CategoryBreakdownPage(
+      PiechartPage(
         type: TransactionType.income,
         dateTimeValue: widget.dateTimeValue,
       ),
-      CategoryBreakdownPage(
+      PiechartPage(
         type: TransactionType.expense,
         dateTimeValue: widget.dateTimeValue,
       ),
