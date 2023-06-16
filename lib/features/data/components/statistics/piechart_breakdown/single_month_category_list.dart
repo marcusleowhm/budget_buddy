@@ -13,7 +13,8 @@ class SingleMonthCategoryList extends StatefulWidget {
   final DateTime dateTimeValue;
 
   @override
-  State<SingleMonthCategoryList> createState() => _SingleMonthCategoryListState();
+  State<SingleMonthCategoryList> createState() =>
+      _SingleMonthCategoryListState();
 }
 
 class _SingleMonthCategoryListState extends State<SingleMonthCategoryList> {
@@ -121,7 +122,8 @@ class _SingleMonthCategoryListState extends State<SingleMonthCategoryList> {
                               Expanded(
                                 child: GestureDetector(
                                   onTap: () {
-                                    print('TODO implement category trend feature');
+                                    print(
+                                        'TODO implement category trend feature');
                                     //TODO implement
                                   },
                                   child: Text(
@@ -130,7 +132,7 @@ class _SingleMonthCategoryListState extends State<SingleMonthCategoryList> {
                                   ),
                                 ),
                               ),
-                        
+
                               //Subtotal
                               Row(
                                 children: [
@@ -156,8 +158,12 @@ class _SingleMonthCategoryListState extends State<SingleMonthCategoryList> {
                                           width: 80,
                                           padding: const EdgeInsets.all(5.0),
                                           decoration: BoxDecoration(
-                                            color: Colors
-                                                .red[colorValue - 100 * index]!,
+                                            color: widget.type ==
+                                                    TransactionType.income
+                                                ? Colors.blue[
+                                                    colorValue - 100 * index]
+                                                : Colors.red[
+                                                    colorValue - 100 * index],
                                             borderRadius:
                                                 BorderRadius.circular(10.0),
                                           ),
@@ -197,8 +203,12 @@ class _SingleMonthCategoryListState extends State<SingleMonthCategoryList> {
                                       width: 70,
                                       padding: const EdgeInsets.all(5.0),
                                       decoration: BoxDecoration(
-                                        color: Colors
-                                            .red[colorValue - 100 * index]!,
+                                        color: widget.type ==
+                                                TransactionType.income
+                                            ? Colors
+                                                .blue[colorValue - 100 * index]
+                                            : Colors
+                                                .red[colorValue - 100 * index],
                                         borderRadius:
                                             BorderRadius.circular(10.0),
                                       ),
