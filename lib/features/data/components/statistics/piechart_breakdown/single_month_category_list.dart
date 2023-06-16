@@ -114,7 +114,7 @@ class _SingleMonthCategoryListState extends State<SingleMonthCategoryList> {
                         GlobalKey<TooltipState> tooltipKey = GlobalKey();
 
                         return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 3.0),
+                          padding: const EdgeInsets.symmetric(vertical: 4.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -155,7 +155,7 @@ class _SingleMonthCategoryListState extends State<SingleMonthCategoryList> {
                                             const Duration(seconds: 5),
                                         key: tooltipKey,
                                         child: Container(
-                                          width: 80,
+                                          width: 90,
                                           padding: const EdgeInsets.all(5.0),
                                           decoration: BoxDecoration(
                                             color: widget.type ==
@@ -168,29 +168,31 @@ class _SingleMonthCategoryListState extends State<SingleMonthCategoryList> {
                                                 BorderRadius.circular(10.0),
                                           ),
                                           child: Text(
-                                              (categorySum.entries
-                                                              .elementAt(index)
-                                                              .value >
-                                                          1000 ||
-                                                      categorySum.entries
-                                                              .elementAt(index)
-                                                              .value <
-                                                          -1000)
-                                                  ? compactCurrencyFormatter
-                                                      .format(categorySum
-                                                          .entries
-                                                          .elementAt(index)
-                                                          .value)
-                                                  : englishDisplayCurrencyFormatter
-                                                      .format(
-                                                      categorySum.entries
-                                                          .elementAt(index)
-                                                          .value,
-                                                    ),
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .canvasColor)),
+                                            (categorySum.entries
+                                                            .elementAt(index)
+                                                            .value >
+                                                        1000 ||
+                                                    categorySum.entries
+                                                            .elementAt(index)
+                                                            .value <
+                                                        -1000)
+                                                ? compactCurrencyFormatter
+                                                    .format(categorySum.entries
+                                                        .elementAt(index)
+                                                        .value)
+                                                : englishDisplayCurrencyFormatter
+                                                    .format(
+                                                    categorySum.entries
+                                                        .elementAt(index)
+                                                        .value,
+                                                  ),
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color:
+                                                  Theme.of(context).canvasColor,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -200,7 +202,7 @@ class _SingleMonthCategoryListState extends State<SingleMonthCategoryList> {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 5.0),
                                     child: Container(
-                                      width: 70,
+                                      width: 80,
                                       padding: const EdgeInsets.all(5.0),
                                       decoration: BoxDecoration(
                                         color: widget.type ==
@@ -218,8 +220,9 @@ class _SingleMonthCategoryListState extends State<SingleMonthCategoryList> {
                                             : 'N/A',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                            color:
-                                                Theme.of(context).canvasColor),
+                                          color: Theme.of(context).canvasColor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ),

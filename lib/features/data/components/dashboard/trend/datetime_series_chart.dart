@@ -135,14 +135,17 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
     int x,
     double nettValue,
   ) {
-    return BarChartGroupData(x: x, barRods: [
-      BarChartRodData(
-        toY: nettValue,
-        color:
-            nettValue < 0 ? widget.netNegativeColor : widget.netPositiveColor,
-        width: width,
-      ),
-    ]);
+    return BarChartGroupData(
+      x: x,
+      barRods: [
+        BarChartRodData(
+          toY: nettValue,
+          color:
+              nettValue < 0 ? widget.netNegativeColor : widget.netPositiveColor,
+          width: width,
+        ),
+      ],
+    );
   }
 
   Widget _buildLeftTitles(double value, TitleMeta meta) {
@@ -279,7 +282,7 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
                               });
                               return;
                             }
-        
+
                             //Else handle when user touch the bar
                             if (event.isInterestedForInteractions &&
                                 response.spot != null) {
@@ -288,17 +291,15 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
                             }
                           },
                         ),
+                        borderData: FlBorderData(show: false),
+                        gridData: FlGridData(show: false),
                         titlesData: FlTitlesData(
                           show: true,
                           rightTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              showTitles: false,
-                            ),
+                            sideTitles: SideTitles(showTitles: false),
                           ),
                           topTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              showTitles: false,
-                            ),
+                            sideTitles: SideTitles(showTitles: false),
                           ),
                           bottomTitles: AxisTitles(
                             sideTitles: SideTitles(
@@ -315,13 +316,7 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
                             ),
                           ),
                         ),
-                        borderData: FlBorderData(
-                          show: false,
-                        ),
                         barGroups: prepareBarGroups(state),
-                        gridData: FlGridData(
-                          show: false,
-                        ),
                       ),
                     ),
                   ),

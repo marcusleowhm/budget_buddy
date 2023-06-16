@@ -7,7 +7,7 @@ class CustomTabController extends StatefulWidget {
     required this.length,
     required this.tabs,
     required this.views,
-  })  : assert(tabs.length == views.length);
+  }) : assert(tabs.length == views.length);
 
   final int? initialIndex;
   final int length;
@@ -19,7 +19,7 @@ class CustomTabController extends StatefulWidget {
 }
 
 class _CustomTabControllerState extends State<CustomTabController>
-    with TickerProviderStateMixin {
+    with SingleTickerProviderStateMixin {
   late int selectedIndex;
   late TabController _tabController;
 
@@ -37,8 +37,10 @@ class _CustomTabControllerState extends State<CustomTabController>
   }
 
   void _initInitialIndex() {
-
-    setState(() => selectedIndex = widget.initialIndex ?? 0);
+    setState(() {
+      selectedIndex = widget.initialIndex ?? 0;
+      _tabController.index = selectedIndex;
+    });
   }
 
   void _initController() {
@@ -61,7 +63,9 @@ class _CustomTabControllerState extends State<CustomTabController>
           tabs: widget.tabs,
         ),
         Builder(
-          builder: (context) => widget.views[selectedIndex],
+          builder: (context) {
+            return widget.views[selectedIndex];
+          },
         )
       ],
     );

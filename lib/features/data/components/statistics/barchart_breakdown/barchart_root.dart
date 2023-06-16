@@ -30,6 +30,7 @@ class BarchartRoot extends StatelessWidget {
                 ),
               ),
               CustomTabController(
+                initialIndex: 1,
                 length: 2,
                 tabs: const [
                   Tab(

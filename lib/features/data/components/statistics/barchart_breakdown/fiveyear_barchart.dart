@@ -17,17 +17,22 @@ class FiveYearBarchart extends StatefulWidget {
 }
 
 class _FiveYearBarchartState extends State<FiveYearBarchart> {
-  int selectedIndex = -1;
+  int touchedIndex = -1;
+  final double barWidth = 22;
 
   Map<int, List<Map<String, double>>> formatData(CTransactionState state) {
     Map<int, List<Map<String, double>>> formattedData = {};
+
     for (int i = widget.dateTimeValue.year - 4;
         i <= widget.dateTimeValue.year;
         i++) {
       List<Map<String, double>> yearlyData = [];
       for (TransactionData data in state.committedEntries) {
         DateTime dataLocalDateTime = data.utcDateTime.toLocal();
-        if (dataLocalDateTime.year == i && data.type == widget.type) {
+        //Ensure that the month, year and type is the same as what's being passed in
+        if (dataLocalDateTime.year == i &&
+            dataLocalDateTime.month == widget.dateTimeValue.month &&
+            data.type == widget.type) {
           switch (data.type) {
             case TransactionType.income:
               yearlyData.add({data.incomeCategory: data.amount});
@@ -52,8 +57,42 @@ class _FiveYearBarchartState extends State<FiveYearBarchart> {
   BarChartGroupData generateGroup(int year, List<Map<String, double>> values) {
     //Check if the smallest value is positive or negative
     //The list being passed in is a list of map with only 1 entry, hence, we use first to access the amount
-    bool isTop = values.first.values.first > 0;
-    return BarChartGroupData(x: 1);
+    bool isTop = values.isNotEmpty && values.first.values.first > 0;
+    double sum = 0;
+    for (Map<String, double> element in values) {
+      sum += element.values.first;
+    }
+    bool isTouched = touchedIndex == year;
+
+    return BarChartGroupData(
+      x: year,
+      groupVertically: true,
+      showingTooltipIndicators: isTouched ? [0] : [],
+      barRods: [
+        BarChartRodData(
+            toY: sum,
+            width: barWidth,
+            borderRadius: isTop
+                ? const BorderRadius.only(
+                    topLeft: Radius.circular(6),
+                    topRight: Radius.circular(6),
+                  )
+                : const BorderRadius.only(
+                    bottomLeft: Radius.circular(6),
+                    bottomRight: Radius.circular(6),
+                  ),
+            rodStackItems: []),
+      ],
+    );
+  }
+
+  Widget generateBottomTitles(double value, TitleMeta meta) {
+    const style = TextStyle(color: Colors.black, fontSize: 10);
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      space: 16,
+      child: Text(value.toInt().toString(), style: style),
+    );
   }
 
   @override
@@ -64,11 +103,36 @@ class _FiveYearBarchartState extends State<FiveYearBarchart> {
         return AspectRatio(
           aspectRatio: 1,
           child: Padding(
-            padding: const EdgeInsets.only(top: 20.0),
+            padding: const EdgeInsets.only(top: 20.0, right: 30.0),
             child: BarChart(
               BarChartData(
                 alignment: BarChartAlignment.center,
                 barTouchData: BarTouchData(handleBuiltInTouches: false),
+                barGroups: formattedData.entries
+                    .map((entry) => generateGroup(entry.key, entry.value))
+                    .toList(),
+                borderData: FlBorderData(show: false),
+                gridData: FlGridData(show: false),
+                titlesData: FlTitlesData(
+                  show: true,
+                  topTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: false,
+                    ),
+                  ),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 32,
+                      getTitlesWidget: generateBottomTitles,
+                    ),
+                  ),
+                  rightTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: false,
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
