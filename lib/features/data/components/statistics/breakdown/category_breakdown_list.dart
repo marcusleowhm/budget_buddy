@@ -64,29 +64,31 @@ class _CategoryBreakdownListState extends State<CategoryBreakdownList> {
         return categorySum.isEmpty
             ? const Text('No data added yet')
             : Container(
-              padding: const EdgeInsets.all(5.0),
-              child: Column(
-                children: [
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: categorySum.length,
-                    itemBuilder: (context, index) {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(categorySum.entries.elementAt(index).key),
-                          Text(categorySum.entries
-                              .elementAt(index)
-                              .value
-                              .toString())
-                        ],
-                      );
-                    },
-                  ),
-                ],
-              ),
-            );
+                padding: const EdgeInsets.all(5.0),
+                child: Column(
+                  children: [
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: categorySum.length,
+                      itemBuilder: (context, index) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(categorySum.entries.elementAt(index).key),
+                            Text(
+                              categorySum.entries
+                                  .elementAt(index)
+                                  .value
+                                  .toStringAsFixed(2),
+                            )
+                          ],
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              );
       },
     );
   }
