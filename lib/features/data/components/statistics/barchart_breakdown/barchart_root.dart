@@ -1,31 +1,22 @@
 import 'package:budget_buddy/features/constants/enum.dart';
-import 'package:budget_buddy/features/data/components/statistics/piechart_breakdown/piechart_page.dart';
+import 'package:budget_buddy/features/data/components/statistics/barchart_breakdown/fiveyear_barchart.dart';
 import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CategoryBreakdown extends StatefulWidget {
-  const CategoryBreakdown({super.key, required this.dateTimeValue});
+class BarchartRoot extends StatefulWidget {
+  const BarchartRoot({super.key, required this.dateTimeValue});
 
   final DateTime dateTimeValue;
 
   @override
-  State<CategoryBreakdown> createState() => _CategoryBreakdownState();
+  State<BarchartRoot> createState() => _BarchartRootState();
 }
 
-class _CategoryBreakdownState extends State<CategoryBreakdown>
+class _BarchartRootState extends State<BarchartRoot>
     with TickerProviderStateMixin {
   int selectedIndex = 1;
   late TabController _tabController;
-
-  void initController() {
-    _tabController =
-        TabController(length: 2, vsync: this, initialIndex: selectedIndex);
-    _tabController.addListener(() {
-      selectedIndex = _tabController.index;
-      setState(() => _tabController.index);
-    });
-  }
 
   static const List<Widget> _tabs = [
     Tab(
@@ -35,18 +26,14 @@ class _CategoryBreakdownState extends State<CategoryBreakdown>
       child: Text('Expense', style: TextStyle(color: Colors.black)),
     ),
   ];
-  
-  List<Widget> createPages() {
-    return [
-      PiechartPage(
-        type: TransactionType.income,
-        dateTimeValue: widget.dateTimeValue,
-      ),
-      PiechartPage(
-        type: TransactionType.expense,
-        dateTimeValue: widget.dateTimeValue,
-      ),
-    ];
+
+  void initController() {
+    _tabController =
+        TabController(length: 2, vsync: this, initialIndex: selectedIndex);
+    _tabController.addListener(() {
+      selectedIndex = _tabController.index;
+      setState(() => _tabController.index);
+    });
   }
 
   @override
@@ -59,6 +46,19 @@ class _CategoryBreakdownState extends State<CategoryBreakdown>
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  List<Widget> createPages() {
+    return [
+      FiveYearBarchart(
+        type: TransactionType.income,
+        dateTimeValue: widget.dateTimeValue,
+      ),
+      FiveYearBarchart(
+        type: TransactionType.expense,
+        dateTimeValue: widget.dateTimeValue,
+      ),
+    ];
   }
 
   @override
@@ -84,6 +84,7 @@ class _CategoryBreakdownState extends State<CategoryBreakdown>
                 builder: (context, state) {
                   return Builder(
                     builder: (context) {
+                      // return createPages()[selectedIndex];
                       return createPages()[selectedIndex];
                     },
                   );

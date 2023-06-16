@@ -1,4 +1,5 @@
-import 'package:budget_buddy/features/data/components/statistics/piechart_breakdown/category_breakdown.dart';
+import 'package:budget_buddy/features/data/components/statistics/barchart_breakdown/barchart_root.dart';
+import 'package:budget_buddy/features/data/components/statistics/piechart_breakdown/piechart_root.dart';
 import 'package:budget_buddy/features/data/widgets/month_carousel.dart';
 import 'package:flutter/material.dart';
 
@@ -38,11 +39,12 @@ class CommittedTransactionStatistics extends StatelessWidget {
             physics: const BouncingScrollPhysics(),
             child: Column(
               children: [
-                CategoryBreakdown(dateTimeValue: dateTimeValue,),
-                //TODO Other analytics widgets
-                Card(
-                  child: Row(children: [Text('2')]),
-                ),                
+                PiechartRoot(
+                  dateTimeValue: dateTimeValue,
+                ),
+                BarchartRoot(
+                  dateTimeValue: dateTimeValue,
+                ),
               ],
             ),
           ),
