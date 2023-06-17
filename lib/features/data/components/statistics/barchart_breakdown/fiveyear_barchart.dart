@@ -62,35 +62,40 @@ class _FiveYearBarchartState extends State<FiveYearBarchart> {
     for (Map<String, double> element in values) {
       sum += element.values.first;
     }
-    bool isTouched = touchedIndex == year;
+    bool isTouched =
+        touchedIndex == year; //TODO change this to something other than year
+    //touchedIndex is zero indexed, year is just the year itself
 
+    //TODO create another function, taking in list and computing each stack's value
     return BarChartGroupData(
       x: year,
       groupVertically: true,
+      barsSpace: 6,
       showingTooltipIndicators: isTouched ? [0] : [],
       barRods: [
         BarChartRodData(
-            toY: sum,
-            width: barWidth,
-            borderRadius: isTop
-                ? const BorderRadius.only(
-                    topLeft: Radius.circular(6),
-                    topRight: Radius.circular(6),
-                  )
-                : const BorderRadius.only(
-                    bottomLeft: Radius.circular(6),
-                    bottomRight: Radius.circular(6),
-                  ),
-            rodStackItems: []),
+          toY: sum,
+          width: barWidth,
+          borderRadius: isTop
+              ? const BorderRadius.only(
+                  topLeft: Radius.circular(6),
+                  topRight: Radius.circular(6),
+                )
+              : const BorderRadius.only(
+                  bottomLeft: Radius.circular(6),
+                  bottomRight: Radius.circular(6),
+                ),
+          rodStackItems: [],
+        ),
       ],
     );
   }
 
-  Widget generateBottomTitles(double value, TitleMeta meta) {
-    const style = TextStyle(color: Colors.black, fontSize: 10);
+  Widget _buildBottomTitles(double value, TitleMeta meta) {
+    const style = TextStyle(color: Colors.black);
     return SideTitleWidget(
       axisSide: meta.axisSide,
-      space: 16,
+      space: 16, //margin top
       child: Text(value.toInt().toString(), style: style),
     );
   }
@@ -107,24 +112,31 @@ class _FiveYearBarchartState extends State<FiveYearBarchart> {
             child: BarChart(
               BarChartData(
                 alignment: BarChartAlignment.center,
-                barTouchData: BarTouchData(handleBuiltInTouches: false),
+                // barTouchData: BarTouchData(handleBuiltInTouches: false),
                 barGroups: formattedData.entries
                     .map((entry) => generateGroup(entry.key, entry.value))
                     .toList(),
+                groupsSpace: 36,
                 borderData: FlBorderData(show: false),
                 gridData: FlGridData(show: false),
                 titlesData: FlTitlesData(
                   show: true,
-                  topTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: false,
-                    ),
-                  ),
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
                       reservedSize: 32,
-                      getTitlesWidget: generateBottomTitles,
+                      getTitlesWidget: _buildBottomTitles,
+                    ),
+                  ),
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 56,
+                    ),
+                  ),
+                  topTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: false,
                     ),
                   ),
                   rightTitles: AxisTitles(

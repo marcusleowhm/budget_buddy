@@ -1,6 +1,7 @@
 import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/features/data/components/statistics/barchart_breakdown/fiveyear_barchart.dart';
 import 'package:budget_buddy/features/data/widgets/custom_tab_controller.dart';
+import 'package:budget_buddy/utilities/date_formatter.dart';
 import 'package:flutter/material.dart';
 
 class BarchartRoot extends StatelessWidget {
@@ -23,9 +24,9 @@ class BarchartRoot extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                'Breakdown by Category over time',
-                style: TextStyle(
+              Text(
+                'Breakdown by Category for ${monthNameFormatter.format(dateTimeValue)}',
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
               ),

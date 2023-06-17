@@ -97,57 +97,133 @@ class MonthlySummary extends StatelessWidget {
                     Map<String, double> data = getData(state);
                     return Column(
                       children: [
-                        Row(
-                          children: [
-                            Flexible(
-                              child: Container(
-                                margin: const EdgeInsets.only(right: 10.0),
-                                padding: const EdgeInsets.all(10.0),
-                                decoration: BoxDecoration(
-                                  color: Colors.blue[700],
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        'Income',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 16,
-                                            color:
-                                                Theme.of(context).canvasColor),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 20.0),
+                          child: Row(
+                            children: [
+                              Flexible(
+                                child: Container(
+                                  margin: const EdgeInsets.only(right: 10.0),
+                                  padding: const EdgeInsets.all(10.0),
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue[700],
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          'Income',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 16,
+                                              color:
+                                                  Theme.of(context).canvasColor),
+                                        ),
                                       ),
-                                    ),
-                                    const Divider(),
-                                    Row(
+                                      const Divider(),
+                                      Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              (data['income']! >= 1000 ||
+                                                      data['income']! <= -1000)
+                                                  ? compactCurrencyFormatter
+                                                      .format(data['income'])
+                                                  : englishDisplayCurrencyFormatter
+                                                      .format(
+                                                      data['income'],
+                                                    ),
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontSize: 24,
+                                                  color: Theme.of(context)
+                                                      .canvasColor),
+                                            ),
+                                            if (data['income']! >= 1000 ||
+                                                data['income']! <= -1000)
+                                              Tooltip(
+                                                key: incomeToolTipKey,
+                                                message:
+                                                    englishDisplayCurrencyFormatter
+                                                        .format(data['income']),
+                                                triggerMode:
+                                                    TooltipTriggerMode.manual,
+                                                showDuration:
+                                                    const Duration(seconds: 10),
+                                                child: IconButton(
+                                                  padding: const EdgeInsets.only(
+                                                      left: 5),
+                                                  constraints:
+                                                      const BoxConstraints(),
+                                                  iconSize: 18,
+                                                  color: Theme.of(context)
+                                                      .canvasColor,
+                                                  icon: const Icon(
+                                                      Icons.info_outline_rounded),
+                                                  onPressed: () {
+                                                    incomeToolTipKey.currentState
+                                                        ?.ensureTooltipVisible();
+                                                  },
+                                                ),
+                                              ),
+                                          ]),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Flexible(
+                                child: Container(
+                                  padding: const EdgeInsets.all(10.0),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          'Expense',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 16,
+                                              color:
+                                                  Theme.of(context).canvasColor),
+                                        ),
+                                      ),
+                                      const Divider(),
+                                      Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
                                           Text(
-                                            (data['income']! >= 1000 ||
-                                                    data['income']! <= -1000)
+                                            (data['expense']! >= 1000 ||
+                                                    data['expense']! <= -1000)
                                                 ? compactCurrencyFormatter
-                                                    .format(data['income'])
+                                                    .format(data['expense'])
                                                 : englishDisplayCurrencyFormatter
                                                     .format(
-                                                    data['income'],
+                                                    data['expense'],
                                                   ),
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                                fontSize: 24,
-                                                color: Theme.of(context)
-                                                    .canvasColor),
+                                              fontSize: 24,
+                                              color:
+                                                  Theme.of(context).canvasColor,
+                                            ),
                                           ),
-                                          if (data['income']! >= 1000 ||
-                                              data['income']! <= -1000)
+                                          if (data['expense']! >= 1000 ||
+                                              data['expense']! <= -1000)
                                             Tooltip(
-                                              key: incomeToolTipKey,
+                                              key: expenseToolTipKey,
                                               message:
                                                   englishDisplayCurrencyFormatter
-                                                      .format(data['income']),
+                                                      .format(data['expense']),
                                               triggerMode:
                                                   TooltipTriggerMode.manual,
                                               showDuration:
@@ -158,179 +234,106 @@ class MonthlySummary extends StatelessWidget {
                                                 constraints:
                                                     const BoxConstraints(),
                                                 iconSize: 18,
-                                                color: Theme.of(context)
-                                                    .canvasColor,
+                                                color:
+                                                    Theme.of(context).canvasColor,
                                                 icon: const Icon(
                                                     Icons.info_outline_rounded),
                                                 onPressed: () {
-                                                  incomeToolTipKey.currentState
+                                                  expenseToolTipKey.currentState
                                                       ?.ensureTooltipVisible();
                                                 },
                                               ),
                                             ),
-                                        ]),
-                                  ],
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                            Flexible(
-                              child: Container(
-                                padding: const EdgeInsets.all(10.0),
-                                decoration: BoxDecoration(
-                                  color: Colors.red,
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        'Expense',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 16,
-                                            color:
-                                                Theme.of(context).canvasColor),
-                                      ),
-                                    ),
-                                    const Divider(),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          (data['expense']! >= 1000 ||
-                                                  data['expense']! <= -1000)
-                                              ? compactCurrencyFormatter
-                                                  .format(data['expense'])
-                                              : englishDisplayCurrencyFormatter
-                                                  .format(
-                                                  data['expense'],
-                                                ),
+                              Flexible(
+                                child: Container(
+                                  margin: const EdgeInsets.only(left: 10.0),
+                                  padding: const EdgeInsets.all(10.0),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey,
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          'Transfer',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
-                                            fontSize: 24,
-                                            color:
-                                                Theme.of(context).canvasColor,
-                                          ),
-                                        ),
-                                        if (data['expense']! >= 1000 ||
-                                            data['expense']! <= -1000)
-                                          Tooltip(
-                                            key: expenseToolTipKey,
-                                            message:
-                                                englishDisplayCurrencyFormatter
-                                                    .format(data['expense']),
-                                            triggerMode:
-                                                TooltipTriggerMode.manual,
-                                            showDuration:
-                                                const Duration(seconds: 10),
-                                            child: IconButton(
-                                              padding: const EdgeInsets.only(
-                                                  left: 5),
-                                              constraints:
-                                                  const BoxConstraints(),
-                                              iconSize: 18,
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 16,
                                               color:
-                                                  Theme.of(context).canvasColor,
-                                              icon: const Icon(
-                                                  Icons.info_outline_rounded),
-                                              onPressed: () {
-                                                expenseToolTipKey.currentState
-                                                    ?.ensureTooltipVisible();
-                                              },
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Flexible(
-                              child: Container(
-                                margin: const EdgeInsets.only(left: 10.0),
-                                padding: const EdgeInsets.all(10.0),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey,
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        'Transfer',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 16,
-                                            color:
-                                                Theme.of(context).canvasColor),
+                                                  Theme.of(context).canvasColor),
+                                        ),
                                       ),
-                                    ),
-                                    const Divider(),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          (data['transfer']! >= 1000 ||
-                                                  data['transfer']! <= -1000)
-                                              ? compactCurrencyFormatter
-                                                  .format(data['transfer'])
-                                              : englishDisplayCurrencyFormatter
-                                                  .format(
-                                                  data['transfer'],
-                                                ),
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              fontSize: 24,
-                                              color: Theme.of(context)
-                                                  .canvasColor),
-                                        ),
-                                        if (data['transfer']! >= 1000 ||
-                                            data['transfer']! <= -1000)
-                                          Tooltip(
-                                            key: transferToolTipKey,
-                                            message:
-                                                englishDisplayCurrencyFormatter
-                                                    .format(data['transfer']),
-                                            triggerMode:
-                                                TooltipTriggerMode.manual,
-                                            showDuration:
-                                                const Duration(seconds: 10),
-                                            child: IconButton(
-                                              padding: const EdgeInsets.only(
-                                                  left: 5),
-                                              constraints:
-                                                  const BoxConstraints(),
-                                              iconSize: 18,
-                                              color:
-                                                  Theme.of(context).canvasColor,
-                                              icon: const Icon(
-                                                  Icons.info_outline_rounded),
-                                              onPressed: () {
-                                                transferToolTipKey.currentState
-                                                    ?.ensureTooltipVisible();
-                                              },
-                                            ),
+                                      const Divider(),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            (data['transfer']! >= 1000 ||
+                                                    data['transfer']! <= -1000)
+                                                ? compactCurrencyFormatter
+                                                    .format(data['transfer'])
+                                                : englishDisplayCurrencyFormatter
+                                                    .format(
+                                                    data['transfer'],
+                                                  ),
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 24,
+                                                color: Theme.of(context)
+                                                    .canvasColor),
                                           ),
-                                      ],
-                                    ),
-                                  ],
+                                          if (data['transfer']! >= 1000 ||
+                                              data['transfer']! <= -1000)
+                                            Tooltip(
+                                              key: transferToolTipKey,
+                                              message:
+                                                  englishDisplayCurrencyFormatter
+                                                      .format(data['transfer']),
+                                              triggerMode:
+                                                  TooltipTriggerMode.manual,
+                                              showDuration:
+                                                  const Duration(seconds: 10),
+                                              child: IconButton(
+                                                padding: const EdgeInsets.only(
+                                                    left: 5),
+                                                constraints:
+                                                    const BoxConstraints(),
+                                                iconSize: 18,
+                                                color:
+                                                    Theme.of(context).canvasColor,
+                                                icon: const Icon(
+                                                    Icons.info_outline_rounded),
+                                                onPressed: () {
+                                                  transferToolTipKey.currentState
+                                                      ?.ensureTooltipVisible();
+                                                },
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Flexible(
-                              child: Padding(
-                                padding: const EdgeInsets.all(20.0),
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Flexible(
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
@@ -368,8 +371,8 @@ class MonthlySummary extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         )
                       ],
                     );

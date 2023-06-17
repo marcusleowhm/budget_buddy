@@ -202,7 +202,7 @@ class _SingleMonthCategoryListState extends State<SingleMonthCategoryList> {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 5.0),
                                     child: Container(
-                                      width: 80,
+                                      width: 60,
                                       padding: const EdgeInsets.all(5.0),
                                       decoration: BoxDecoration(
                                         color: widget.type ==
@@ -216,7 +216,7 @@ class _SingleMonthCategoryListState extends State<SingleMonthCategoryList> {
                                       ),
                                       child: Text(
                                         percentage > 0
-                                            ? '${percentage.toStringAsFixed(2)}%'
+                                            ? '${percentage.toStringAsFixed(0)}%'
                                             : 'N/A',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(

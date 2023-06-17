@@ -257,22 +257,21 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
                               int groupIndex,
                               BarChartRodData rod,
                               int rodIndex,
-                            ) {
-                              return BarTooltipItem(
-                                englishDisplayCurrencyFormatter.format(rod.toY),
-                                TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: rod.color,
-                                  fontSize: 16,
-                                  shadows: const [
-                                    Shadow(
-                                      color: Colors.black26,
-                                      blurRadius: 12,
-                                    )
-                                  ],
-                                ),
-                              );
-                            },
+                            ) =>
+                                BarTooltipItem(
+                              englishDisplayCurrencyFormatter.format(rod.toY),
+                              TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: rod.color,
+                                fontSize: 16,
+                                shadows: const [
+                                  Shadow(
+                                    color: Colors.black26,
+                                    blurRadius: 12,
+                                  )
+                                ],
+                              ),
+                            ),
                           ),
                           touchCallback: (FlTouchEvent event, response) {
                             if (response == null || response.spot == null) {
