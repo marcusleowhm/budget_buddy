@@ -94,7 +94,7 @@ class _SingleMonthPiechartState extends State<SingleMonthPiechart> {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    Text('${(categorySum / total * 100).toStringAsFixed(2)}%'),
+                    Text('${(categorySum / total * 100).toStringAsFixed(0)}%'),
                     if (isTouched) const SizedBox(height: 5.0),
                     if (isTouched)
                       Text(

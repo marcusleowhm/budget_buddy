@@ -1,6 +1,7 @@
 import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
 import 'package:budget_buddy/features/ledger/model/transaction_data.dart';
+import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -67,6 +68,7 @@ class _FiveYearBarchartState extends State<FiveYearBarchart> {
     //touchedIndex is zero indexed, year is just the year itself
 
     //TODO create another function, taking in list and computing each stack's value
+    generateBarChartRodStackItems(values);
     return BarChartGroupData(
       x: year,
       groupVertically: true,
@@ -85,10 +87,42 @@ class _FiveYearBarchartState extends State<FiveYearBarchart> {
                   bottomLeft: Radius.circular(6),
                   bottomRight: Radius.circular(6),
                 ),
-          rodStackItems: [],
+          rodStackItems: generateBarChartRodStackItems(values),
         ),
       ],
     );
+  }
+
+  List<BarChartRodStackItem> generateBarChartRodStackItems(
+      List<Map<String, double>> values) {
+    List<BarChartRodStackItem> items = [];
+    double stackItemTotal = 0.0;
+    int colorValue = 900;
+
+    for (int i = 0; i < values.length; i++) {
+      //The first rod stack item in the list
+      if (items.isEmpty) {
+        items.add(
+          BarChartRodStackItem(
+            0,
+            stackItemTotal + values.elementAt(i).values.first,
+            Colors.lightBlue[colorValue - 100 * i]!,
+          ),
+        );
+      } else {
+        items.add(
+          BarChartRodStackItem(
+            stackItemTotal,
+            stackItemTotal + values.elementAt(i).values.first,
+            Colors.lightBlue[colorValue - 100 * i]!,
+          ),
+        );
+      }
+
+      //Update the total for the next iteration
+      stackItemTotal += values.elementAt(i).values.first;
+    }
+    return items;
   }
 
   Widget _buildBottomTitles(double value, TitleMeta meta) {
@@ -98,6 +132,30 @@ class _FiveYearBarchartState extends State<FiveYearBarchart> {
       space: 16, //margin top
       child: Text(value.toInt().toString(), style: style),
     );
+  }
+
+  Widget _buildLeftTitles(double value, TitleMeta meta) {
+    double roundingThreshold = 0.5;
+
+    Widget axisTitle = Text(compactCurrencyFormatter.format(value));
+    // A workaround to hide the max value title as FLChart is overlapping it on top of previous
+    if (value == meta.max) {
+      final remainder = value % meta.appliedInterval;
+      if (remainder != 0.0 &&
+          remainder / meta.appliedInterval < roundingThreshold) {
+        axisTitle = const SizedBox.shrink();
+      }
+    }
+
+    if (value == meta.min) {
+      final remainder = -value % meta.appliedInterval;
+      if (remainder != 0.0 &&
+          -remainder / meta.appliedInterval < roundingThreshold) {
+        axisTitle = const SizedBox.shrink();
+      }
+    }
+
+    return SideTitleWidget(axisSide: meta.axisSide, child: axisTitle);
   }
 
   @override
@@ -112,13 +170,20 @@ class _FiveYearBarchartState extends State<FiveYearBarchart> {
             child: BarChart(
               BarChartData(
                 alignment: BarChartAlignment.center,
-                // barTouchData: BarTouchData(handleBuiltInTouches: false),
                 barGroups: formattedData.entries
                     .map((entry) => generateGroup(entry.key, entry.value))
                     .toList(),
                 groupsSpace: 36,
                 borderData: FlBorderData(show: false),
-                gridData: FlGridData(show: false),
+                // gridData: FlGridData(show: false),
+                barTouchData: BarTouchData(
+                  touchTooltipData: BarTouchTooltipData(
+                    fitInsideVertically: true,
+                  ),
+                  touchCallback: (FlTouchEvent event, barTouchResponse) {
+
+                  },
+                ),
                 titlesData: FlTitlesData(
                   show: true,
                   bottomTitles: AxisTitles(
@@ -132,6 +197,7 @@ class _FiveYearBarchartState extends State<FiveYearBarchart> {
                     sideTitles: SideTitles(
                       showTitles: true,
                       reservedSize: 56,
+                      getTitlesWidget: _buildLeftTitles,
                     ),
                   ),
                   topTitles: AxisTitles(
