@@ -1,6 +1,6 @@
 import 'package:budget_buddy/features/constants/enum.dart';
-import 'package:budget_buddy/features/data/components/statistics/piechart_breakdown/single_month_category_list.dart';
-import 'package:budget_buddy/features/data/components/statistics/piechart_breakdown/single_month_piechart.dart';
+import 'package:budget_buddy/features/data/components/statistics/piechart_breakdown/category_list.dart';
+import 'package:budget_buddy/features/data/components/statistics/piechart_breakdown/category_piechart.dart';
 import 'package:flutter/material.dart';
 
 class PiechartPage extends StatelessWidget {
@@ -14,12 +14,12 @@ class PiechartPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SingleMonthPiechart(
+        CategoryPiechart(
           type: type,
           dateTimeValue: dateTimeValue,
         ),
         const Divider(thickness: 2,),
-        SingleMonthCategoryList(
+        CategoryList(
           type: type,
           dateTimeValue: dateTimeValue,
         ),

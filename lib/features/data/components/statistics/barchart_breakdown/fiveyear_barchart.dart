@@ -55,6 +55,12 @@ class _FiveYearBarchartState extends State<FiveYearBarchart> {
     return formattedData;
   }
 
+  int countRodStackItems() {
+    int count = 0;
+
+    return count;
+  }
+
   BarChartGroupData generateGroup(int year, List<Map<String, double>> values) {
     //Check if the smallest value is positive or negative
     //The list being passed in is a list of map with only 1 entry, hence, we use first to access the amount
@@ -68,7 +74,6 @@ class _FiveYearBarchartState extends State<FiveYearBarchart> {
     //touchedIndex is zero indexed, year is just the year itself
 
     //TODO create another function, taking in list and computing each stack's value
-    generateBarChartRodStackItems(values);
     return BarChartGroupData(
       x: year,
       groupVertically: true,
@@ -91,6 +96,7 @@ class _FiveYearBarchartState extends State<FiveYearBarchart> {
         ),
       ],
     );
+    ;
   }
 
   List<BarChartRodStackItem> generateBarChartRodStackItems(
@@ -163,12 +169,14 @@ class _FiveYearBarchartState extends State<FiveYearBarchart> {
     return BlocBuilder<CTransactionCubit, CTransactionState>(
       builder: (context, state) {
         Map<int, List<Map<String, double>>> formattedData = formatData(state);
+        int count = countRodStackItems();
         return AspectRatio(
           aspectRatio: 1,
           child: Padding(
             padding: const EdgeInsets.only(top: 20.0, right: 30.0),
             child: BarChart(
               BarChartData(
+                maxY: 100.0,
                 alignment: BarChartAlignment.center,
                 barGroups: formattedData.entries
                     .map((entry) => generateGroup(entry.key, entry.value))
@@ -180,9 +188,7 @@ class _FiveYearBarchartState extends State<FiveYearBarchart> {
                   touchTooltipData: BarTouchTooltipData(
                     fitInsideVertically: true,
                   ),
-                  touchCallback: (FlTouchEvent event, barTouchResponse) {
-
-                  },
+                  touchCallback: (FlTouchEvent event, barTouchResponse) {},
                 ),
                 titlesData: FlTitlesData(
                   show: true,

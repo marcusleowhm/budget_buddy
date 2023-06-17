@@ -5,19 +5,19 @@ import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SingleMonthCategoryList extends StatefulWidget {
-  const SingleMonthCategoryList(
+class CategoryList extends StatefulWidget {
+  const CategoryList(
       {super.key, required this.type, required this.dateTimeValue});
 
   final TransactionType type;
   final DateTime dateTimeValue;
 
   @override
-  State<SingleMonthCategoryList> createState() =>
-      _SingleMonthCategoryListState();
+  State<CategoryList> createState() =>
+      _CategoryListState();
 }
 
-class _SingleMonthCategoryListState extends State<SingleMonthCategoryList> {
+class _CategoryListState extends State<CategoryList> {
   Map<String, double> filterByCriteria(CTransactionState state) {
     //Key is category, value is sum of that category depending on the type passed in
     Map<String, double> categorySum = {};
