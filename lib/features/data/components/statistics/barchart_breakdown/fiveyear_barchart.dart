@@ -55,9 +55,12 @@ class _FiveYearBarchartState extends State<FiveYearBarchart> {
     return formattedData;
   }
 
-  int countRodStackItems() {
+  int countRodStackItems(Map<int, List<Map<String, double>>> formatted) {
     int count = 0;
 
+    for (MapEntry<int, List<Map<String, double>>> entry in formatted.entries) {
+      count += entry.value.length;
+    }
     return count;
   }
 
@@ -69,16 +72,18 @@ class _FiveYearBarchartState extends State<FiveYearBarchart> {
     for (Map<String, double> element in values) {
       sum += element.values.first;
     }
+    //TODO calculate sum for positive number
+
+
     bool isTouched =
         touchedIndex == year; //TODO change this to something other than year
     //touchedIndex is zero indexed, year is just the year itself
 
-    //TODO create another function, taking in list and computing each stack's value
     return BarChartGroupData(
       x: year,
       groupVertically: true,
       barsSpace: 6,
-      showingTooltipIndicators: isTouched ? [0] : [],
+      showingTooltipIndicators: isTouched ? [2] : [],
       barRods: [
         BarChartRodData(
           toY: sum,
@@ -96,7 +101,6 @@ class _FiveYearBarchartState extends State<FiveYearBarchart> {
         ),
       ],
     );
-    ;
   }
 
   List<BarChartRodStackItem> generateBarChartRodStackItems(
@@ -105,6 +109,7 @@ class _FiveYearBarchartState extends State<FiveYearBarchart> {
     double stackItemTotal = 0.0;
     int colorValue = 900;
 
+    //TODO create logic for negative stack item
     for (int i = 0; i < values.length; i++) {
       //The first rod stack item in the list
       if (items.isEmpty) {
@@ -169,21 +174,34 @@ class _FiveYearBarchartState extends State<FiveYearBarchart> {
     return BlocBuilder<CTransactionCubit, CTransactionState>(
       builder: (context, state) {
         Map<int, List<Map<String, double>>> formattedData = formatData(state);
-        int count = countRodStackItems();
+        int count = countRodStackItems(formattedData);
         return AspectRatio(
           aspectRatio: 1,
           child: Padding(
             padding: const EdgeInsets.only(top: 20.0, right: 30.0),
             child: BarChart(
               BarChartData(
-                maxY: 100.0,
+                maxY: count == 0 ? 100.0 : null,
+                extraLinesData: ExtraLinesData(
+                  horizontalLines: [
+                    HorizontalLine(
+                      y: 0,
+                      strokeWidth: 0.5,
+                      color: Colors.grey,
+                      dashArray: [
+                        20,
+                        5,
+                      ],
+                    ),
+                  ],
+                ),
                 alignment: BarChartAlignment.center,
                 barGroups: formattedData.entries
                     .map((entry) => generateGroup(entry.key, entry.value))
                     .toList(),
                 groupsSpace: 36,
                 borderData: FlBorderData(show: false),
-                // gridData: FlGridData(show: false),
+                gridData: FlGridData(show: false),
                 barTouchData: BarTouchData(
                   touchTooltipData: BarTouchTooltipData(
                     fitInsideVertically: true,

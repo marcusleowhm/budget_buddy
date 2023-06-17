@@ -36,9 +36,44 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
     int currentLocalMonth = now.month;
     int currentLocalYear = now.year;
 
-    if (widget.dateFilter == ChartDateFilterCriteria.monthly) {
+    if (widget.dateFilter == ChartDateFilterCriteria.threeMonth) {
+      for (int i = currentLocalMonth - 2; i <= currentLocalMonth; i++) {
+        double incomeSum = 0.0;
+        double expenseSum = 0.0;
+
+        // Calculate the sum of income and expense in a particular month
+        for (TransactionData entry in data) {
+          DateTime entryLocalDateTime = entry.utcDateTime.toLocal();
+          if (entryLocalDateTime.month == i &&
+              entryLocalDateTime.year == currentLocalYear) {
+            switch (entry.type) {
+              case TransactionType.income:
+                incomeSum += entry.amount;
+                break;
+              case TransactionType.expense:
+                expenseSum += entry.amount;
+                break;
+              default:
+                //Do nothing when it's transfer
+                break;
+            }
+          }
+        }
+
+        switch (widget.amountFilter) {
+          case ChartAmountDisplayCriteria.gross:
+            groups.add(_makeDoubleBarGroupData(i, incomeSum, expenseSum));
+            break;
+          case ChartAmountDisplayCriteria.nett:
+            groups.add(_makeSingleBarGroupdata(i, incomeSum - expenseSum));
+            break;
+        }
+      }
+    }
+
+    if (widget.dateFilter == ChartDateFilterCriteria.sixMonth) {
       //Starting month will always be 1, since Monthly filter implies Year to Date in Monthly intervals
-      for (int i = 1; i <= currentLocalMonth; i++) {
+      for (int i = currentLocalMonth - 5; i <= currentLocalMonth; i++) {
         double incomeSum = 0.0;
         double expenseSum = 0.0;
 
@@ -73,7 +108,7 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
     }
 
     //Starting month will be the 5th past year from current year
-    if (widget.dateFilter == ChartDateFilterCriteria.yearly) {
+    if (widget.dateFilter == ChartDateFilterCriteria.fiveYear) {
       for (int i = currentLocalYear - 4; i <= currentLocalYear; i++) {
         double incomeSum = 0.0;
         double expenseSum = 0.0;
@@ -176,7 +211,8 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
     DateTime localNow = DateTime.now().toLocal();
 
     Widget text = const Text('');
-    if (widget.dateFilter == ChartDateFilterCriteria.monthly) {
+    
+    if (widget.dateFilter == ChartDateFilterCriteria.threeMonth || widget.dateFilter == ChartDateFilterCriteria.sixMonth) {
       text = Text(
         monthNameFormatter.format(
           DateTime(
@@ -197,7 +233,7 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
     }
 
     //If the date filter is yearly
-    if (widget.dateFilter == ChartDateFilterCriteria.yearly) {
+    if (widget.dateFilter == ChartDateFilterCriteria.fiveYear) {
       text = Text(
         yearLongFormatter.format(
           DateTime(

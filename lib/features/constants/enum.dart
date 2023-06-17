@@ -10,5 +10,5 @@ enum InputType { add, edit }
 enum RecentTransactionFilterCriteria { transactionDate, createdDate, modifiedDate }
 
 // Charts
-enum ChartDateFilterCriteria { monthly, yearly }
+enum ChartDateFilterCriteria { threeMonth, sixMonth, fiveYear }
 enum ChartAmountDisplayCriteria { gross, nett }
