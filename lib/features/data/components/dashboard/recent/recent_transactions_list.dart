@@ -283,20 +283,6 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
                               child: Container(
                                 padding: const EdgeInsets.all(5.0),
                                 decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: data.elementAt(index).type ==
-                                              TransactionType.income
-                                          ? Colors.blue[700]!
-                                          : data.elementAt(index).type ==
-                                                  TransactionType.expense
-                                              ? Colors.red
-                                              : Colors.grey,
-                                      width: 1,
-                                    ),
-                                    borderRadius: BorderRadius.circular(10.0)),
-                                child: Text(
-                                  '${data.elementAt(index).currency} ${englishDisplayCurrencyFormatter.format(data.elementAt(index).amount)}',
-                                  style: TextStyle(
                                     color: data.elementAt(index).type ==
                                             TransactionType.income
                                         ? Colors.blue[700]!
@@ -304,6 +290,12 @@ class _RecentTransactionsListState extends State<RecentTransactionsList> {
                                                 TransactionType.expense
                                             ? Colors.red
                                             : Colors.grey,
+                                    borderRadius: BorderRadius.circular(10.0)),
+                                child: Text(
+                                  '${data.elementAt(index).currency} ${englishDisplayCurrencyFormatter.format(data.elementAt(index).amount)}',
+                                  style: TextStyle(
+                                    color: Theme.of(context).canvasColor,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
