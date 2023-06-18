@@ -1,5 +1,4 @@
 import 'package:budget_buddy/features/constants/enum.dart';
-import 'package:budget_buddy/features/data/components/statistics/barchart_breakdown/barchart_root.dart';
 import 'package:budget_buddy/features/data/components/statistics/piechart_breakdown/piechart_root.dart';
 import 'package:budget_buddy/features/data/widgets/period_carousel.dart';
 import 'package:flutter/material.dart';
@@ -48,10 +47,6 @@ class CommittedTransactionStatistics extends StatelessWidget {
             child: Column(
               children: [
                 PiechartRoot(
-                  period: period,
-                  dateTimeValue: dateTimeValue,
-                ),
-                BarchartRoot(
                   period: period,
                   dateTimeValue: dateTimeValue,
                 ),

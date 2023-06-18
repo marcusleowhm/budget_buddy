@@ -258,20 +258,21 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
   Widget build(BuildContext context) {
     return BlocBuilder<CTransactionCubit, CTransactionState>(
       builder: (context, state) {
+        //TODO Create a variable for filteredData
+
+
         return Center(
           child: AspectRatio(
             aspectRatio: 1,
             child: Column(
               children: [
-                // const Row(
-                //   children: [Text('Left for future feature update')],
-                // ),
                 const SizedBox(height: 24),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(right: 20),
                     child: BarChart(
                       BarChartData(
+                        //TODO use the above variable to decide whether to display 100
                         maxY: state.committedEntries.isEmpty ? 100.0 : null,
                         extraLinesData: ExtraLinesData(
                           horizontalLines: [

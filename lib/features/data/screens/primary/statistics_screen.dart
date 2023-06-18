@@ -71,7 +71,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         period: period,
         periodSelector: PeriodSelector(
           period: period,
-          setPeriod: setPeriod,
+          setPeriod: (FilterPeriod newValue) {
+            resetDate();
+            setPeriod(newValue);
+          },
         ),
       ),
     );
