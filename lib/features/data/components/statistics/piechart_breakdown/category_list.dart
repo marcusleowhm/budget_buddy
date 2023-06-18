@@ -2,6 +2,7 @@ import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
 import 'package:budget_buddy/features/ledger/model/transaction_data.dart';
 import 'package:budget_buddy/utilities/currency_formatter.dart';
+import 'package:budget_buddy/utilities/date_utilities.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -33,31 +34,10 @@ class _CategoryListState extends State<CategoryList> {
 
       //Weekly filter
       if (widget.period == PeriodSelectorFilter.weekly) {
-        if ((DateTime(
-                  widget.dateTimeValue.year,
-                  widget.dateTimeValue.month,
-                  widget.dateTimeValue.day,
-                ).subtract(Duration(days: widget.dateTimeValue.weekday - 1)) ==
-                DateTime(
-                  dataLocalDateTime.year,
-                  dataLocalDateTime.month,
-                  dataLocalDateTime.day,
-                ).subtract(Duration(days: dataLocalDateTime.weekday - 1))) &&
-            (DateTime(
-                  widget.dateTimeValue.year,
-                  widget.dateTimeValue.month,
-                  widget.dateTimeValue.day,
-                ).add(Duration(
-                    days:
-                        DateTime.daysPerWeek - widget.dateTimeValue.weekday)) ==
-                DateTime(
-                  dataLocalDateTime.year,
-                  dataLocalDateTime.month,
-                  dataLocalDateTime.day,
-                ).add(
-                  Duration(
-                      days: DateTime.daysPerWeek - dataLocalDateTime.weekday),
-                )) &&
+        if (widget.dateTimeValue.getDateOfFirstDayOfWeek() ==
+                dataLocalDateTime.getDateOfFirstDayOfWeek() &&
+            widget.dateTimeValue.getDateOfLastDayOfWeek() ==
+                dataLocalDateTime.getDateOfLastDayOfWeek() &&
             widget.type == data.type) {
           switch (data.type) {
             case TransactionType.income:
