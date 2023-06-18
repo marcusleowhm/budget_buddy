@@ -30,6 +30,6 @@ enum RecentTransactionFilterCriteria {
 }
 
 // Charts
-enum ChartDateFilterCriteria { threeMonth, sixMonth, fiveYear }
+enum ChartDateFilterCriteria { sixMonth, fiveYear }
 
 enum ChartAmountDisplayCriteria { gross, nett }

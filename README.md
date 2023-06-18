@@ -17,4 +17,3 @@ Project Struture:
     - main.dart (program entry point)
     
 Current Known Issues:
-- Need to create additional properties on the transaction data for different TransactionType. e.g. Income Category, Expense Category, Account To

@@ -90,17 +90,11 @@ class _TrendState extends State<Trend> {
                 height: 5.0,
               ),
               DefaultTabController(
-                length: 3,
+                length: 2,
                 child: Column(
                   children: [
                     const TabBar(
                       tabs: [
-                        Tab(
-                          child: Text(
-                            '3M',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ),
                         Tab(
                           child: Text(
                             '6M',
@@ -119,10 +113,6 @@ class _TrendState extends State<Trend> {
                       aspectRatio: 1,
                       child: TabBarView(
                         children: [
-                          DateTimeSeriesChart(
-                            dateFilter: ChartDateFilterCriteria.threeMonth,
-                            amountFilter: amountFilter,
-                          ),
                           DateTimeSeriesChart(
                             dateFilter: ChartDateFilterCriteria.sixMonth,
                             amountFilter: amountFilter,
