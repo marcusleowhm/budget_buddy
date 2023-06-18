@@ -192,6 +192,45 @@ class CommittedTransactionList extends StatelessWidget {
                       ],
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5.0),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 3.0),
+                          child: Text(
+                            'Net Change',
+                            style: TextStyle(
+                              color: Theme.of(context).hintColor,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 3.0),
+                          child: Row(
+                            children: [
+                              Text(
+                                englishDisplayCurrencyFormatter.format(
+                                    monthlySum['income']! -
+                                        monthlySum['expense']!),
+                                style: TextStyle(
+                                  color: Theme.of(context).hintColor,
+                                ),
+                              ),
+                              monthlySum['income']! - monthlySum['expense']! < 0
+                                  ? const Icon(Icons.arrow_drop_down_rounded,
+                                      color: Colors.red)
+                                  : monthlySum['income']! - monthlySum['expense']! !=
+                                          0
+                                      ? const Icon(Icons.arrow_drop_up_rounded,
+                                          color: Colors.green)
+                                      : const Icon(Icons.remove)
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                 ],
               ),
             );
