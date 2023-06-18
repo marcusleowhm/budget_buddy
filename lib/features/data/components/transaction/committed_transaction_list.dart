@@ -220,7 +220,8 @@ class CommittedTransactionList extends StatelessWidget {
                               monthlySum['income']! - monthlySum['expense']! < 0
                                   ? const Icon(Icons.arrow_drop_down_rounded,
                                       color: Colors.red)
-                                  : monthlySum['income']! - monthlySum['expense']! !=
+                                  : monthlySum['income']! -
+                                              monthlySum['expense']! !=
                                           0
                                       ? const Icon(Icons.arrow_drop_up_rounded,
                                           color: Colors.green)
@@ -245,21 +246,41 @@ class CommittedTransactionList extends StatelessWidget {
             child: BlocBuilder<CTransactionCubit, CTransactionState>(
               builder: (context, state) {
                 return getDailyTransactionData(state).keys.isEmpty
-                    ? const Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                            Padding(
-                              padding: EdgeInsets.all(20.0),
-                              child: Text('<Some image>'),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.all(20.0),
-                              child: Text(
-                                'No transactions added yet',
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                    ? Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        child: const Card(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.all(20.0),
+                                    child: Text('<Some image>'),
+                                  ),
+                                ],
                               ),
-                            )
-                          ]) //TODO add some cool graphics here for no transaction
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.all(20.0),
+                                    child: Text(
+                                      'No transactions added yet',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ) //TODO add some cool graphics here for no transaction
                     : Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [

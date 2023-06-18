@@ -120,7 +120,6 @@ class MonthlySummary extends StatelessWidget {
                                                 Theme.of(context).canvasColor),
                                       ),
                                     ),
-                                    const Divider(),
                                     Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
@@ -193,7 +192,6 @@ class MonthlySummary extends StatelessWidget {
                                                 Theme.of(context).canvasColor),
                                       ),
                                     ),
-                                    const Divider(),
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
@@ -269,7 +267,6 @@ class MonthlySummary extends StatelessWidget {
                                                 Theme.of(context).canvasColor),
                                       ),
                                     ),
-                                    const Divider(),
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,

@@ -47,6 +47,13 @@ class _MoreScreenState extends State<MoreScreen> {
               textAlign: TextAlign.center,
             ),
           ),
+          ListTile(
+            title: Text(
+              'Made with ❤️ without 💵',
+              style: TextStyle(color: Theme.of(context).primaryColor),
+              textAlign: TextAlign.center,
+            ),
+          ),
         ],
       ),
     );

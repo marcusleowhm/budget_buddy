@@ -9,6 +9,12 @@ class PiechartRoot extends StatelessWidget {
   final PeriodSelectorFilter? period;
   final DateTime dateTimeValue;
 
+  static const Map<PeriodSelectorFilter, String> map = {
+    PeriodSelectorFilter.weekly: 'Weekly',
+    PeriodSelectorFilter.monthly: 'Monthly',
+    PeriodSelectorFilter.annual: 'Annual',
+  };
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -24,9 +30,9 @@ class PiechartRoot extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                'Monthly Breakdown by Category',
-                style: TextStyle(
+              Text(
+                '${map[period]} Breakdown by Category',
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
               ),
