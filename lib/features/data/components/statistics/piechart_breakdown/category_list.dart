@@ -7,14 +7,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CategoryList extends StatefulWidget {
   const CategoryList(
-      {super.key, required this.type, required this.dateTimeValue});
+      {super.key,
+      required this.type,
+      this.period,
+      required this.dateTimeValue});
 
   final TransactionType type;
+  final FilterPeriod? period;
   final DateTime dateTimeValue;
 
   @override
-  State<CategoryList> createState() =>
-      _CategoryListState();
+  State<CategoryList> createState() => _CategoryListState();
 }
 
 class _CategoryListState extends State<CategoryList> {
@@ -28,26 +31,57 @@ class _CategoryListState extends State<CategoryList> {
         data.utcDateTime.toLocal().day,
       );
 
-      //Month, Year, and Type of data must matched currently selected ones
-      if (widget.dateTimeValue.month == dataLocalDateTime.month &&
-          widget.dateTimeValue.year == dataLocalDateTime.year &&
-          widget.type == data.type) {
-        switch (data.type) {
-          case TransactionType.income:
-            //if key is not present, initialize it to 0.0
-            //otherwise simply add to it
-            double categoryIncomeSum = categorySum[data.incomeCategory] ?? 0.0;
-            categorySum[data.incomeCategory] = categoryIncomeSum + data.amount;
-            break;
-          case TransactionType.expense:
-            double categoryExpenseSum =
-                categorySum[data.expenseCategory] ?? 0.0;
-            categorySum[data.expenseCategory] =
-                categoryExpenseSum + data.amount;
-            break;
-          default:
-            //Do nothing, there is no use for transfer type
-            break;
+      if (widget.period == FilterPeriod.monthly) {
+        //Month, Year, and Type of data must matched currently selected ones
+        if (widget.dateTimeValue.month == dataLocalDateTime.month &&
+            widget.dateTimeValue.year == dataLocalDateTime.year &&
+            widget.type == data.type) {
+          switch (data.type) {
+            case TransactionType.income:
+              //if key is not present, initialize it to 0.0
+              //otherwise simply add to it
+              double categoryIncomeSum =
+                  categorySum[data.incomeCategory] ?? 0.0;
+              categorySum[data.incomeCategory] =
+                  categoryIncomeSum + data.amount;
+              break;
+            case TransactionType.expense:
+              double categoryExpenseSum =
+                  categorySum[data.expenseCategory] ?? 0.0;
+              categorySum[data.expenseCategory] =
+                  categoryExpenseSum + data.amount;
+              break;
+            default:
+              //Do nothing, there is no use for transfer type
+              break;
+          }
+        }
+      }
+
+      //annual filter
+      if (widget.period == FilterPeriod.annual) {
+        //Month, Year, and Type of data must matched currently selected ones
+        if (widget.dateTimeValue.year == dataLocalDateTime.year &&
+            widget.type == data.type) {
+          switch (data.type) {
+            case TransactionType.income:
+              //if key is not present, initialize it to 0.0
+              //otherwise simply add to it
+              double categoryIncomeSum =
+                  categorySum[data.incomeCategory] ?? 0.0;
+              categorySum[data.incomeCategory] =
+                  categoryIncomeSum + data.amount;
+              break;
+            case TransactionType.expense:
+              double categoryExpenseSum =
+                  categorySum[data.expenseCategory] ?? 0.0;
+              categorySum[data.expenseCategory] =
+                  categoryExpenseSum + data.amount;
+              break;
+            default:
+              //Do nothing, there is no use for transfer type
+              break;
+          }
         }
       }
     }

@@ -5,9 +5,10 @@ import 'package:budget_buddy/utilities/date_formatter.dart';
 import 'package:flutter/material.dart';
 
 class BarchartRoot extends StatelessWidget {
-  const BarchartRoot({super.key, required this.dateTimeValue});
+  const BarchartRoot({super.key, this.period, required this.dateTimeValue});
 
   final DateTime dateTimeValue;
+  final FilterPeriod? period;
 
   @override
   Widget build(BuildContext context) {

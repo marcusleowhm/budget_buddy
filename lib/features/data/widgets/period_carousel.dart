@@ -1,23 +1,26 @@
+import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/utilities/date_formatter.dart';
 import 'package:flutter/material.dart';
 
-class MonthCarousel extends StatelessWidget {
-  const MonthCarousel({
+class PeriodCarousel extends StatelessWidget {
+  const PeriodCarousel({
     super.key,
     required this.dateTimeValue,
     required this.localNow,
-    required this.incrementMonth,
-    required this.decrementMonth,
+    required this.incrementPeriod,
+    required this.decrementPeriod,
     required this.resetDate,
+    this.period,
     this.periodSelector,
   });
 
   final DateTime dateTimeValue;
   final DateTime localNow;
-  final VoidCallback incrementMonth;
-  final VoidCallback decrementMonth;
+  final VoidCallback incrementPeriod;
+  final VoidCallback decrementPeriod;
   final VoidCallback resetDate;
 
+  final FilterPeriod? period;
   final Widget? periodSelector;
 
   @override
@@ -32,7 +35,7 @@ class MonthCarousel extends StatelessWidget {
               //Left chevron button
               IconButton(
                 icon: const Icon(Icons.chevron_left),
-                onPressed: decrementMonth,
+                onPressed: decrementPeriod,
                 padding: const EdgeInsets.symmetric(
                     horizontal: 10.0, vertical: 15.0),
                 constraints: const BoxConstraints(),
@@ -40,24 +43,41 @@ class MonthCarousel extends StatelessWidget {
               //Date to display
               SizedBox(
                 width: 80,
-                child: Text(dateMonthYearFormatter.format(dateTimeValue),
+                child: Text(
+                    period == FilterPeriod.monthly
+                        ? dateMonthYearFormatter.format(dateTimeValue)
+                        : yearLongFormatter.format(dateTimeValue),
                     textAlign: TextAlign.center,
                     style: const TextStyle(fontSize: 16)),
               ),
               //Right chevron button
               IconButton(
                 icon: const Icon(Icons.chevron_right),
-                onPressed: incrementMonth,
+                onPressed: incrementPeriod,
                 padding: const EdgeInsets.symmetric(
                     horizontal: 10.0, vertical: 15.0),
                 constraints: const BoxConstraints(),
               ),
-              if (
-                  //Same month but different year
-                  (dateTimeValue.month == localNow.month &&
-                          dateTimeValue.year != localNow.year) ||
-                      //Different month, year is irrelevant
+              if ( 
+                //Monthly period
+                //Same month but different year
+                //Different month, year is irrelevant
+                  period == FilterPeriod.monthly &&
+                          (dateTimeValue.month == localNow.month &&
+                              dateTimeValue.year != localNow.year) ||
                       (dateTimeValue.month != localNow.month))
+                IconButton(
+                  icon: const Icon(Icons.refresh),
+                  onPressed: resetDate,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0, vertical: 15.0),
+                  constraints: const BoxConstraints(),
+                ),
+              if ( 
+                //Yearly period
+                //Different year
+                  period == FilterPeriod.annual &&
+                      dateTimeValue.year != localNow.year)
                 IconButton(
                   icon: const Icon(Icons.refresh),
                   onPressed: resetDate,
@@ -68,9 +88,7 @@ class MonthCarousel extends StatelessWidget {
             ],
           ),
           Row(
-            children: [
-               if (periodSelector != null) periodSelector!
-            ],
+            children: [if (periodSelector != null) periodSelector!],
           )
         ],
       ),

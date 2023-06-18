@@ -4,8 +4,9 @@ import 'package:budget_buddy/features/data/widgets/custom_tab_controller.dart';
 import 'package:flutter/material.dart';
 
 class PiechartRoot extends StatelessWidget {
-  const PiechartRoot({super.key, required this.dateTimeValue});
+  const PiechartRoot({super.key, this.period, required this.dateTimeValue});
 
+  final FilterPeriod? period;
   final DateTime dateTimeValue;
 
   @override
@@ -49,10 +50,12 @@ class PiechartRoot extends StatelessWidget {
                 views: [
                   PiechartPage(
                     type: TransactionType.income,
+                    period: period,
                     dateTimeValue: dateTimeValue,
                   ),
                   PiechartPage(
                     type: TransactionType.expense,
+                    period: period,
                     dateTimeValue: dateTimeValue,
                   ),
                 ],

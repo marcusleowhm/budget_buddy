@@ -25,14 +25,28 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     super.initState();
   }
 
-  void incrementMonth() {
-    setState(() => dateTimeValue = DateTime(
-        dateTimeValue.year, dateTimeValue.month + 1, dateTimeValue.day));
+  void incrementPeriod() {
+    if (period == FilterPeriod.monthly) {
+      setState(() => dateTimeValue = DateTime(
+          dateTimeValue.year, dateTimeValue.month + 1, dateTimeValue.day));
+    }
+
+    if (period == FilterPeriod.annual) {
+      setState(() => dateTimeValue = DateTime(
+          dateTimeValue.year + 1, dateTimeValue.month, dateTimeValue.day));
+    }
   }
 
-  void decrementMonth() {
-    setState(() => dateTimeValue = DateTime(
-        dateTimeValue.year, dateTimeValue.month - 1, dateTimeValue.day));
+  void decrementPeriod() {
+    if (period == FilterPeriod.monthly) {
+      setState(() => dateTimeValue = DateTime(
+          dateTimeValue.year, dateTimeValue.month - 1, dateTimeValue.day));
+    }
+
+    if (period == FilterPeriod.annual) {
+      setState(() => dateTimeValue = DateTime(
+          dateTimeValue.year - 1, dateTimeValue.month, dateTimeValue.day));
+    }
   }
 
   void resetDate() {
@@ -51,9 +65,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       body: CommittedTransactionStatistics(
         dateTimeValue: dateTimeValue,
         localNow: localNow,
-        incrementMonth: incrementMonth,
-        decrementMonth: decrementMonth,
+        incrementPeriod: incrementPeriod,
+        decrementPeriod: decrementPeriod,
         resetDate: resetDate,
+        period: period,
         periodSelector: PeriodSelector(
           period: period,
           setPeriod: setPeriod,

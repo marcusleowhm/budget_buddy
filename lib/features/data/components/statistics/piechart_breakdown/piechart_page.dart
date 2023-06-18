@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 
 class PiechartPage extends StatelessWidget {
   const PiechartPage(
-      {super.key, required this.type, required this.dateTimeValue});
+      {super.key, required this.type, this.period, required this.dateTimeValue});
 
   final TransactionType type;
+  final FilterPeriod? period;
   final DateTime dateTimeValue;
 
   @override
@@ -16,11 +17,13 @@ class PiechartPage extends StatelessWidget {
       children: [
         CategoryPiechart(
           type: type,
+          period: period,
           dateTimeValue: dateTimeValue,
         ),
         const Divider(thickness: 2,),
         CategoryList(
           type: type,
+          period: period,
           dateTimeValue: dateTimeValue,
         ),
       ],
