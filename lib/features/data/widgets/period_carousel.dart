@@ -42,11 +42,15 @@ class PeriodCarousel extends StatelessWidget {
               ),
               //Date to display
               SizedBox(
-                width: 80,
+                width: period == FilterPeriod.weekly ? 100 : 80,
                 child: Text(
                     period == FilterPeriod.monthly
                         ? dateMonthYearFormatter.format(dateTimeValue)
-                        : yearLongFormatter.format(dateTimeValue),
+                        : period == FilterPeriod.annual
+                            ? yearLongFormatter.format(dateTimeValue)
+                            : '${dateShortFormatter.format(dateTimeValue.subtract(Duration(days: dateTimeValue.weekday - 1)))} '
+                                'to '
+                                '${dateShortFormatter.format(dateTimeValue.add(Duration(days: DateTime.daysPerWeek - dateTimeValue.weekday)))}',
                     textAlign: TextAlign.center,
                     style: const TextStyle(fontSize: 16)),
               ),
@@ -58,10 +62,20 @@ class PeriodCarousel extends StatelessWidget {
                     horizontal: 10.0, vertical: 15.0),
                 constraints: const BoxConstraints(),
               ),
-              if ( 
-                //Monthly period
-                //Same month but different year
-                //Different month, year is irrelevant
+
+              //TODO fix the logic to display reset button
+              if (period == FilterPeriod.weekly && dateTimeValue != localNow)
+                IconButton(
+                  icon: const Icon(Icons.refresh),
+                  onPressed: resetDate,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0, vertical: 15.0),
+                  constraints: const BoxConstraints(),
+                ),
+              if (
+                  //Monthly period
+                  //Same month but different year
+                  //Different month, year is irrelevant
                   period == FilterPeriod.monthly &&
                           (dateTimeValue.month == localNow.month &&
                               dateTimeValue.year != localNow.year) ||
@@ -73,9 +87,9 @@ class PeriodCarousel extends StatelessWidget {
                       horizontal: 10.0, vertical: 15.0),
                   constraints: const BoxConstraints(),
                 ),
-              if ( 
-                //Yearly period
-                //Different year
+              if (
+                  //Yearly period
+                  //Different year
                   period == FilterPeriod.annual &&
                       dateTimeValue.year != localNow.year)
                 IconButton(

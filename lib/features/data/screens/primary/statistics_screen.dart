@@ -26,6 +26,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   }
 
   void incrementPeriod() {
+    if (period == FilterPeriod.weekly) {
+      setState(() => dateTimeValue = DateTime(
+          dateTimeValue.year, dateTimeValue.month, dateTimeValue.day + 7));
+    }
+
     if (period == FilterPeriod.monthly) {
       setState(() => dateTimeValue = DateTime(
           dateTimeValue.year, dateTimeValue.month + 1, dateTimeValue.day));
@@ -38,6 +43,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   }
 
   void decrementPeriod() {
+    if (period == FilterPeriod.weekly) {
+      setState(() => dateTimeValue = DateTime(
+          dateTimeValue.year, dateTimeValue.month, dateTimeValue.day - 7));
+    }
+    
     if (period == FilterPeriod.monthly) {
       setState(() => dateTimeValue = DateTime(
           dateTimeValue.year, dateTimeValue.month - 1, dateTimeValue.day));
