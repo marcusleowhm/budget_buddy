@@ -1,5 +1,6 @@
 import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/features/data/components/statistics/committed_transaction_statistics.dart';
+import 'package:budget_buddy/features/data/widgets/period_selector.dart';
 import 'package:budget_buddy/nav/routes.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +14,7 @@ class StatisticsScreen extends StatefulWidget {
 class _StatisticsScreenState extends State<StatisticsScreen> {
   DateTime localNow = DateTime.now();
   late DateTime dateTimeValue;
+  FilterPeriod period = FilterPeriod.monthly;
 
   @override
   void initState() {
@@ -37,6 +39,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     setState(() => dateTimeValue = localNow);
   }
 
+  void setPeriod(FilterPeriod newValue) {
+    setState(() => period = newValue);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,6 +54,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         incrementMonth: incrementMonth,
         decrementMonth: decrementMonth,
         resetDate: resetDate,
+        periodSelector: PeriodSelector(
+          period: period,
+          setPeriod: setPeriod,
+        ),
       ),
     );
   }

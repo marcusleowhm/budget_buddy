@@ -11,6 +11,7 @@ class CommittedTransactionStatistics extends StatelessWidget {
     required this.incrementMonth,
     required this.decrementMonth,
     required this.resetDate,
+    this.periodSelector,
   });
 
   final DateTime dateTimeValue;
@@ -22,6 +23,8 @@ class CommittedTransactionStatistics extends StatelessWidget {
   final VoidCallback decrementMonth;
   final VoidCallback resetDate;
 
+  final Widget? periodSelector;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -32,6 +35,7 @@ class CommittedTransactionStatistics extends StatelessWidget {
           incrementMonth: incrementMonth,
           decrementMonth: decrementMonth,
           resetDate: resetDate,
+          periodSelector: periodSelector,
         ),
         Expanded(
           child: SingleChildScrollView(

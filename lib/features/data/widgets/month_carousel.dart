@@ -9,6 +9,7 @@ class MonthCarousel extends StatelessWidget {
     required this.incrementMonth,
     required this.decrementMonth,
     required this.resetDate,
+    this.periodSelector,
   });
 
   final DateTime dateTimeValue;
@@ -17,45 +18,60 @@ class MonthCarousel extends StatelessWidget {
   final VoidCallback decrementMonth;
   final VoidCallback resetDate;
 
+  final Widget? periodSelector;
+
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Theme.of(context).cardColor,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          IconButton(
-            icon: const Icon(Icons.chevron_left),
-            onPressed: decrementMonth,
-            padding:
-                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
-            constraints: const BoxConstraints(),
+          Row(
+            children: [
+              //Left chevron button
+              IconButton(
+                icon: const Icon(Icons.chevron_left),
+                onPressed: decrementMonth,
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 10.0, vertical: 15.0),
+                constraints: const BoxConstraints(),
+              ),
+              //Date to display
+              SizedBox(
+                width: 80,
+                child: Text(dateMonthYearFormatter.format(dateTimeValue),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 16)),
+              ),
+              //Right chevron button
+              IconButton(
+                icon: const Icon(Icons.chevron_right),
+                onPressed: incrementMonth,
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 10.0, vertical: 15.0),
+                constraints: const BoxConstraints(),
+              ),
+              if (
+                  //Same month but different year
+                  (dateTimeValue.month == localNow.month &&
+                          dateTimeValue.year != localNow.year) ||
+                      //Different month, year is irrelevant
+                      (dateTimeValue.month != localNow.month))
+                IconButton(
+                  icon: const Icon(Icons.refresh),
+                  onPressed: resetDate,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0, vertical: 15.0),
+                  constraints: const BoxConstraints(),
+                ),
+            ],
           ),
-          SizedBox(
-            width: 80,
-            child: Text(dateMonthYearFormatter.format(dateTimeValue),
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 16)),
-          ),
-          IconButton(
-            icon: const Icon(Icons.chevron_right),
-            onPressed: incrementMonth,
-            padding:
-                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
-            constraints: const BoxConstraints(),
-          ),
-          if (
-              //Same month but different year
-              (dateTimeValue.month == localNow.month &&
-                      dateTimeValue.year != localNow.year) ||
-                  //Different month, year is irrelevant
-                  (dateTimeValue.month != localNow.month))
-            IconButton(
-              icon: const Icon(Icons.refresh),
-              onPressed: resetDate,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
-              constraints: const BoxConstraints(),
-            ),
+          Row(
+            children: [
+               if (periodSelector != null) periodSelector!
+            ],
+          )
         ],
       ),
     );

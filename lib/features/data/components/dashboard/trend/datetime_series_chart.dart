@@ -211,8 +211,9 @@ class _DateTimeSeriesChartState extends State<DateTimeSeriesChart> {
     DateTime localNow = DateTime.now().toLocal();
 
     Widget text = const Text('');
-    
-    if (widget.dateFilter == ChartDateFilterCriteria.threeMonth || widget.dateFilter == ChartDateFilterCriteria.sixMonth) {
+
+    if (widget.dateFilter == ChartDateFilterCriteria.threeMonth ||
+        widget.dateFilter == ChartDateFilterCriteria.sixMonth) {
       text = Text(
         monthNameFormatter.format(
           DateTime(

@@ -74,7 +74,6 @@ class _FiveYearBarchartState extends State<FiveYearBarchart> {
     }
     //TODO calculate sum for positive number
 
-
     bool isTouched =
         touchedIndex == year; //TODO change this to something other than year
     //touchedIndex is zero indexed, year is just the year itself
@@ -166,7 +165,10 @@ class _FiveYearBarchartState extends State<FiveYearBarchart> {
       }
     }
 
-    return SideTitleWidget(axisSide: meta.axisSide, child: axisTitle);
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      child: axisTitle,
+    );
   }
 
   @override

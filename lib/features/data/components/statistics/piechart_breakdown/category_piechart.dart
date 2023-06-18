@@ -86,6 +86,7 @@ class _CategoryPiechartState extends State<CategoryPiechart> {
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 140),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Flexible(

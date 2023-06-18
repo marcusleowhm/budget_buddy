@@ -12,14 +12,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     //Insert MultiBlocProvider here
     return MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (_) => CTransactionCubit(),
-          ),
-        ],
-        child: MaterialApp.router(
-          debugShowCheckedModeBanner: false,
-          routerConfig: goRouter,
-        ));
+      providers: [
+        BlocProvider(
+          create: (_) => CTransactionCubit(),
+        ),
+      ],
+      child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        routerConfig: goRouter,
+      ),
+    );
   }
 }
