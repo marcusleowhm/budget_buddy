@@ -9,7 +9,7 @@ enum TransactionType { income, expense, transfer }
 enum InputType { add, edit }
 
 // Period to filter
-enum FilterPeriod {
+enum PeriodSelectorFilter {
   monthly,
   annual,
   weekly,

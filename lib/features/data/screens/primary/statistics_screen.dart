@@ -14,7 +14,7 @@ class StatisticsScreen extends StatefulWidget {
 class _StatisticsScreenState extends State<StatisticsScreen> {
   DateTime localNow = DateTime.now();
   late DateTime dateTimeValue;
-  FilterPeriod period = FilterPeriod.monthly;
+  PeriodSelectorFilter period = PeriodSelectorFilter.monthly;
 
   @override
   void initState() {
@@ -26,34 +26,34 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   }
 
   void incrementPeriod() {
-    if (period == FilterPeriod.weekly) {
+    if (period == PeriodSelectorFilter.weekly) {
       setState(() => dateTimeValue = DateTime(
           dateTimeValue.year, dateTimeValue.month, dateTimeValue.day + 7));
     }
 
-    if (period == FilterPeriod.monthly) {
+    if (period == PeriodSelectorFilter.monthly) {
       setState(() => dateTimeValue = DateTime(
           dateTimeValue.year, dateTimeValue.month + 1, dateTimeValue.day));
     }
 
-    if (period == FilterPeriod.annual) {
+    if (period == PeriodSelectorFilter.annual) {
       setState(() => dateTimeValue = DateTime(
           dateTimeValue.year + 1, dateTimeValue.month, dateTimeValue.day));
     }
   }
 
   void decrementPeriod() {
-    if (period == FilterPeriod.weekly) {
+    if (period == PeriodSelectorFilter.weekly) {
       setState(() => dateTimeValue = DateTime(
           dateTimeValue.year, dateTimeValue.month, dateTimeValue.day - 7));
     }
     
-    if (period == FilterPeriod.monthly) {
+    if (period == PeriodSelectorFilter.monthly) {
       setState(() => dateTimeValue = DateTime(
           dateTimeValue.year, dateTimeValue.month - 1, dateTimeValue.day));
     }
 
-    if (period == FilterPeriod.annual) {
+    if (period == PeriodSelectorFilter.annual) {
       setState(() => dateTimeValue = DateTime(
           dateTimeValue.year - 1, dateTimeValue.month, dateTimeValue.day));
     }
@@ -63,7 +63,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     setState(() => dateTimeValue = localNow);
   }
 
-  void setPeriod(FilterPeriod newValue) {
+  void setPeriod(PeriodSelectorFilter newValue) {
     setState(() => period = newValue);
   }
 
@@ -81,7 +81,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         period: period,
         periodSelector: PeriodSelector(
           period: period,
-          setPeriod: (FilterPeriod newValue) {
+          setPeriod: (PeriodSelectorFilter newValue) {
             resetDate();
             setPeriod(newValue);
           },

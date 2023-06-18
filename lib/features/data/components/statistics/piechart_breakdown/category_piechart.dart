@@ -14,7 +14,7 @@ class CategoryPiechart extends StatefulWidget {
       required this.dateTimeValue});
 
   final TransactionType type;
-  final FilterPeriod? period;
+  final PeriodSelectorFilter? period;
   final DateTime dateTimeValue;
 
   @override
@@ -139,8 +139,58 @@ class _CategoryPiechartState extends State<CategoryPiechart> {
         data.utcDateTime.toLocal().day,
       );
 
+      //Weekly filter
+      if (widget.period == PeriodSelectorFilter.weekly) {
+        if ((DateTime(
+                  widget.dateTimeValue.year,
+                  widget.dateTimeValue.month,
+                  widget.dateTimeValue.day,
+                ).subtract(Duration(days: widget.dateTimeValue.weekday - 1)) ==
+                DateTime(
+                  dataLocalDateTime.year,
+                  dataLocalDateTime.month,
+                  dataLocalDateTime.day,
+                ).subtract(Duration(days: dataLocalDateTime.weekday - 1))) &&
+            (DateTime(
+                  widget.dateTimeValue.year,
+                  widget.dateTimeValue.month,
+                  widget.dateTimeValue.day,
+                ).add(Duration(
+                    days:
+                        DateTime.daysPerWeek - widget.dateTimeValue.weekday)) ==
+                DateTime(
+                  dataLocalDateTime.year,
+                  dataLocalDateTime.month,
+                  dataLocalDateTime.day,
+                ).subtract(
+                  Duration(
+                      days: DateTime.daysPerWeek - dataLocalDateTime.weekday),
+                )) &&
+            widget.type == data.type) {
+          switch (data.type) {
+            case TransactionType.income:
+              //if key is not present, initialize it to 0.0
+              //otherwise simply add to it
+              double categoryIncomeSum =
+                  categorySum[data.incomeCategory] ?? 0.0;
+              categorySum[data.incomeCategory] =
+                  categoryIncomeSum + data.amount;
+              break;
+            case TransactionType.expense:
+              double categoryExpenseSum =
+                  categorySum[data.expenseCategory] ?? 0.0;
+              categorySum[data.expenseCategory] =
+                  categoryExpenseSum + data.amount;
+              break;
+            default:
+              //Do nothing, there is no use for transfer type
+              break;
+          }
+        }
+      }
+
       //Month, Year, and Type of data must matched currently selected ones
-      if (widget.period == FilterPeriod.monthly) {
+      if (widget.period == PeriodSelectorFilter.monthly) {
         if (widget.dateTimeValue.month == dataLocalDateTime.month &&
             widget.dateTimeValue.year == dataLocalDateTime.year &&
             widget.type == data.type) {
@@ -167,7 +217,7 @@ class _CategoryPiechartState extends State<CategoryPiechart> {
       }
 
       //Find data that matches the year only
-      if (widget.period == FilterPeriod.annual) {
+      if (widget.period == PeriodSelectorFilter.annual) {
         if (widget.dateTimeValue.year == dataLocalDateTime.year &&
             widget.type == data.type) {
           switch (data.type) {

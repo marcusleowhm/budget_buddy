@@ -8,7 +8,7 @@ class PiechartPage extends StatelessWidget {
       {super.key, required this.type, this.period, required this.dateTimeValue});
 
   final TransactionType type;
-  final FilterPeriod? period;
+  final PeriodSelectorFilter? period;
   final DateTime dateTimeValue;
 
   @override

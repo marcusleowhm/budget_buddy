@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class PiechartRoot extends StatelessWidget {
   const PiechartRoot({super.key, this.period, required this.dateTimeValue});
 
-  final FilterPeriod? period;
+  final PeriodSelectorFilter? period;
   final DateTime dateTimeValue;
 
   @override

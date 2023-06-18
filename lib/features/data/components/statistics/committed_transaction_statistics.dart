@@ -24,7 +24,7 @@ class CommittedTransactionStatistics extends StatelessWidget {
   final VoidCallback decrementPeriod;
   final VoidCallback resetDate;
 
-  final FilterPeriod? period;
+  final PeriodSelectorFilter? period;
   final Widget? periodSelector;
 
   @override

@@ -114,7 +114,7 @@ class CommittedTransactionList extends StatelessWidget {
           localNow: localNow,
           incrementPeriod: incrementMonth,
           decrementPeriod: decrementMonth,
-          period: FilterPeriod.monthly,
+          period: PeriodSelectorFilter.monthly,
           resetDate: resetDate,
         ),
 
