@@ -1,43 +1,37 @@
+import 'package:budget_buddy/features/data/model/account.dart';
+import 'package:budget_buddy/features/data/model/account_group.dart';
 import 'package:flutter/material.dart';
 
 class AccountGridView extends StatelessWidget {
   const AccountGridView({
     super.key,
-    required this.accountGroups,
+    required this.mappedAccount,
     required this.onItemPressed,
   });
 
-  final Map<String, List<String>> accountGroups;
+  final Map<AccountGroup, List<Account>> mappedAccount;
   final void Function(String?, String?) onItemPressed;
 
-  List<Map<String, String>> flattenAccountGroups() {
-    List<Map<String, String>> accounts = [];
-    for (MapEntry entry in accountGroups.entries) {
-      String key = entry.key;
-      List<String> values = entry.value;
-      //Treat account as subAccount if there is no subAccount
-      if (values.isEmpty) {
-        accounts.add({key: key});
-        continue;
-      }
-
-      for (String value in values) {
-        accounts.add({key: value});
-      }
+  List<Account> flattenAccount() {
+    List<Account> flattenedAccounts = [];
+    for (MapEntry entry in mappedAccount.entries) {
+      flattenedAccounts.addAll(entry.value);
     }
-    return accounts;
+    return flattenedAccounts;
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, String>> flattenedAccount = flattenAccountGroups();
+
+    List<Account> flattenedAccounts = flattenAccount();
+
     return Expanded(
       child: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           mainAxisExtent: 64,
           crossAxisCount: 3,
         ),
-        itemCount: flattenedAccount.length,
+        itemCount: flattenedAccounts.length,
         itemBuilder: (context, index) {
           return GestureDetector(
             child: Container(
@@ -50,13 +44,13 @@ class AccountGridView extends StatelessWidget {
                 ),
               ),
               child: Text(
-                flattenedAccount.elementAt(index).values.first,
+                flattenedAccounts.elementAt(index).name,
                 textAlign: TextAlign.center,
               ),
             ),
             onTap: () => onItemPressed(
-              flattenedAccount.elementAt(index).keys.first,
-              flattenedAccount.elementAt(index).values.first,
+              flattenedAccounts.elementAt(index).group.name,
+              flattenedAccounts.elementAt(index).name,
             ),
           );
         },

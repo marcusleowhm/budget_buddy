@@ -1,3 +1,4 @@
+import 'package:budget_buddy/features/data/cubit/account_cubit.dart';
 import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
 import 'package:budget_buddy/nav/go_router.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,9 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (_) => CTransactionCubit(),
+        ),
+        BlocProvider(
+          create: (_) => AccountCubit()..fetchAccountBalance(),
         ),
       ],
       child: MaterialApp.router(

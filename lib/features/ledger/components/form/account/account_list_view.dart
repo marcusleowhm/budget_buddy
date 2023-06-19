@@ -1,16 +1,18 @@
+import 'package:budget_buddy/features/data/model/account.dart';
+import 'package:budget_buddy/features/data/model/account_group.dart';
 import 'package:flutter/material.dart';
 
 class AccountListView extends StatelessWidget {
   const AccountListView({
     super.key,
     required this.selectedGroupIndex,
-    required this.accountGroups,
+    required this.mappedAccount,
     required this.selectGroupIndex,
     required this.onSelectAccount,
   });
 
   final int selectedGroupIndex;
-  final Map<String, List<String>> accountGroups;
+  final Map<AccountGroup, List<Account>> mappedAccount;
   final void Function(int) selectGroupIndex;
   final void Function(String, String?) onSelectAccount;
 
@@ -29,7 +31,7 @@ class AccountListView extends StatelessWidget {
                   ListView.builder(
                     physics: const BouncingScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: accountGroups.keys.length,
+                    itemCount: mappedAccount.keys.length,
                     itemBuilder: (context, index) {
                       return Container(
                         decoration: BoxDecoration(
@@ -41,33 +43,20 @@ class AccountListView extends StatelessWidget {
                             color: Theme.of(context).dividerColor,
                           ),
                         ),
-                        child: accountGroups.values.elementAt(index).isEmpty
-                            //Without chevron, without sub groups. SubAccount will equal Account
-                            ? ListTile(
-                                onTap: () => onSelectAccount(
-                                      accountGroups.keys.elementAt(index),
-                                      accountGroups.keys.elementAt(index),
-                                    ),
-                                title: Text(
-                                  accountGroups.keys.elementAt(index),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                trailing: null)
-                            //With chevron
-                            : ListTile(
-                                onTap: selectedGroupIndex == index
-                                    //If the group is already selected, just select the index and disallow returning the group
-                                    ? () => () => selectGroupIndex(index)
-                                    //If group is not already selected, select it
-                                    : () => selectGroupIndex(index),
-                                title: Text(
-                                  accountGroups.keys.elementAt(index),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                trailing: const Icon(
-                                  Icons.chevron_right,
-                                ),
-                              ),
+                        child: ListTile(
+                          onTap: selectedGroupIndex == index
+                              //If the group is already selected, just select the index and disallow returning the group
+                              ? () => () => selectGroupIndex(index)
+                              //If group is not already selected, select it
+                              : () => selectGroupIndex(index),
+                          title: Text(
+                            mappedAccount.keys.elementAt(index).name,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          trailing: const Icon(
+                            Icons.chevron_right,
+                          ),
+                        ),
                       );
                     },
                   ),
@@ -83,7 +72,7 @@ class AccountListView extends StatelessWidget {
                   ListView.builder(
                     physics: const BouncingScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: accountGroups.values
+                    itemCount: mappedAccount.values
                         .elementAt(selectedGroupIndex)
                         .length,
                     itemBuilder: (context, index) {
@@ -100,18 +89,22 @@ class AccountListView extends StatelessWidget {
                             onSelectAccount(
                               //Value stored in the data structure
                               //Account
-                              accountGroups.keys.elementAt(selectedGroupIndex),
-                              //Sub account
-                              accountGroups.values
+                              mappedAccount.keys
                                   .elementAt(selectedGroupIndex)
-                                  .elementAt(index),
+                                  .name,
+                              //Sub account
+                              mappedAccount.values
+                                  .elementAt(selectedGroupIndex)
+                                  .elementAt(index)
+                                  .name,
                             );
                           },
                           title: Text(
                             //Sub account
-                            accountGroups.values
+                            mappedAccount.values
                                 .elementAt(selectedGroupIndex)
-                                .elementAt(index),
+                                .elementAt(index)
+                                .name,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
