@@ -1,14 +1,17 @@
-class CategoryGroup {
-  const CategoryGroup({required this.name});
+import 'package:uuid/uuid.dart';
 
+class CategoryGroup {
+  CategoryGroup({required this.name});
+
+  String id = const Uuid().v4();
   final String name;
 }
 
 
 class InflowCategoryGroup extends CategoryGroup {
-  const InflowCategoryGroup(name) : super(name: name);
+  InflowCategoryGroup(name) : super(name: name);
 }
 
 class OutflowCategoryGroup extends CategoryGroup {
-  const OutflowCategoryGroup(name) : super(name: name);
+  OutflowCategoryGroup(name) : super(name: name);
 }

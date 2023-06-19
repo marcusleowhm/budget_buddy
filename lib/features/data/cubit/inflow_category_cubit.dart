@@ -15,13 +15,10 @@ class InflowCategoryCubit extends Cubit<InflowCategoryState> {
 
   void fetchInflowCategories() {
     List<InflowCategoryGroup> inflowCategoryGroups = [];
-    InflowCategoryGroup incomeCategoryGroup =
-        const InflowCategoryGroup('Income');
-    InflowCategoryGroup investmentCategoryGroup =
-        const InflowCategoryGroup('Investment');
-    InflowCategoryGroup othersCategoryGroup =
-        const InflowCategoryGroup('Others');
-    InflowCategoryGroup bonusCategoryGroup = const InflowCategoryGroup('Bonus');
+    InflowCategoryGroup incomeCategoryGroup = InflowCategoryGroup('Income');
+    InflowCategoryGroup investmentCategoryGroup = InflowCategoryGroup('Investment');
+    InflowCategoryGroup othersCategoryGroup = InflowCategoryGroup('Others');
+    InflowCategoryGroup bonusCategoryGroup = InflowCategoryGroup('Bonus');
 
     inflowCategoryGroups.add(incomeCategoryGroup);
     inflowCategoryGroups.add(investmentCategoryGroup);

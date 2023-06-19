@@ -9,11 +9,11 @@ class AccountCubit extends Cubit<AccountState> {
   void fetchAccountBalance() {
     //Create accounts here for now
     List<AccountGroup> newAccountGroups = [];
-    AccountGroup bankAccountGroup = const AccountGroup(name: 'Bank Account');
-    AccountGroup cashAccountGroup = const AccountGroup(name: 'Cash');
-    AccountGroup cardAccountGroup = const AccountGroup(name: 'Card');
-    AccountGroup investmentGroup = const AccountGroup(name: 'Investment');
-    AccountGroup otherGroup = const AccountGroup(name: 'Others');
+    AccountGroup bankAccountGroup = AccountGroup(name: 'Bank Account');
+    AccountGroup cashAccountGroup = AccountGroup(name: 'Cash');
+    AccountGroup cardAccountGroup = AccountGroup(name: 'Card');
+    AccountGroup investmentGroup = AccountGroup(name: 'Investment');
+    AccountGroup otherGroup = AccountGroup(name: 'Others');
     newAccountGroups.add(bankAccountGroup);
     newAccountGroups.add(cashAccountGroup);
     newAccountGroups.add(cardAccountGroup);

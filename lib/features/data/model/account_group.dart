@@ -1,7 +1,10 @@
+import 'package:uuid/uuid.dart';
+
 class AccountGroup {
 
-  const AccountGroup({ required this.name });
+  AccountGroup({ required this.name });
 
+  String id = Uuid().v4();
   final String name;
 
 }

@@ -12,17 +12,14 @@ class OutflowCategoryCubit extends Cubit<OutflowCategoryState> {
   void fetchoutflowCategoryGroups() {
     List<OutflowCategoryGroup> outflowCategories = [];
     OutflowCategoryGroup fnbCategoryGroup =
-        const OutflowCategoryGroup('Food & Beverage');
-    OutflowCategoryGroup leisureCategoryGroup =
-        const OutflowCategoryGroup('Leisure');
+        OutflowCategoryGroup('Food & Beverage');
+    OutflowCategoryGroup leisureCategoryGroup = OutflowCategoryGroup('Leisure');
     OutflowCategoryGroup transportCategoryGroup =
-        const OutflowCategoryGroup('Transport');
-    OutflowCategoryGroup housingCategoryGroup =
-        const OutflowCategoryGroup('Housing');
+        OutflowCategoryGroup('Transport');
+    OutflowCategoryGroup housingCategoryGroup = OutflowCategoryGroup('Housing');
     OutflowCategoryGroup shoppingCategoryGroup =
-        const OutflowCategoryGroup('Shopping');
-    OutflowCategoryGroup othersCategoryGroup =
-        const OutflowCategoryGroup('Others');
+        OutflowCategoryGroup('Shopping');
+    OutflowCategoryGroup othersCategoryGroup = OutflowCategoryGroup('Others');
 
     outflowCategories.add(shoppingCategoryGroup);
     outflowCategories.add(othersCategoryGroup);
@@ -36,19 +33,26 @@ class OutflowCategoryCubit extends Cubit<OutflowCategoryState> {
     outflowCategoryGroups.add(OutflowCategory(fnbCategoryGroup, 'Groceries'));
     outflowCategoryGroups.add(OutflowCategory(fnbCategoryGroup, 'Snacks'));
     outflowCategoryGroups.add(OutflowCategory(fnbCategoryGroup, 'Drinks'));
-    outflowCategoryGroups.add(OutflowCategory(fnbCategoryGroup, 'Convenience Store'));
-    outflowCategoryGroups.add(OutflowCategory(leisureCategoryGroup, 'Videogames'));
+    outflowCategoryGroups
+        .add(OutflowCategory(fnbCategoryGroup, 'Convenience Store'));
+    outflowCategoryGroups
+        .add(OutflowCategory(leisureCategoryGroup, 'Videogames'));
     outflowCategoryGroups.add(OutflowCategory(leisureCategoryGroup, 'Holiday'));
     outflowCategoryGroups.add(OutflowCategory(leisureCategoryGroup, 'Arcade'));
     outflowCategoryGroups.add(OutflowCategory(transportCategoryGroup, 'Bus'));
     outflowCategoryGroups.add(OutflowCategory(transportCategoryGroup, 'MRT'));
     outflowCategoryGroups.add(OutflowCategory(transportCategoryGroup, 'Car'));
     outflowCategoryGroups.add(OutflowCategory(transportCategoryGroup, 'Taxi'));
-    outflowCategoryGroups.add(OutflowCategory(housingCategoryGroup, 'Renovation'));
-    outflowCategoryGroups.add(OutflowCategory(housingCategoryGroup, 'Maintenance'));
-    outflowCategoryGroups.add(OutflowCategory(housingCategoryGroup, 'Furniture'));
-    outflowCategoryGroups.add(OutflowCategory(shoppingCategoryGroup, 'e-Commerce'));
-    outflowCategoryGroups.add(OutflowCategory(shoppingCategoryGroup, 'Clothes'));
+    outflowCategoryGroups
+        .add(OutflowCategory(housingCategoryGroup, 'Renovation'));
+    outflowCategoryGroups
+        .add(OutflowCategory(housingCategoryGroup, 'Maintenance'));
+    outflowCategoryGroups
+        .add(OutflowCategory(housingCategoryGroup, 'Furniture'));
+    outflowCategoryGroups
+        .add(OutflowCategory(shoppingCategoryGroup, 'e-Commerce'));
+    outflowCategoryGroups
+        .add(OutflowCategory(shoppingCategoryGroup, 'Clothes'));
     outflowCategoryGroups.add(OutflowCategory(othersCategoryGroup, 'Others'));
 
     emit(OutflowCategoryState(

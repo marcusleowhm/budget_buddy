@@ -13,5 +13,6 @@ class Account {
   final AccountGroup group;
   final String name;
   final double balance;
+  DateTime openedDateTime = DateTime.now();
 
 }
