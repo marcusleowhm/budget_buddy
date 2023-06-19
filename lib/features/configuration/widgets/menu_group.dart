@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:budget_buddy/features/configuration/widgets/list_item.dart';
+import 'package:budget_buddy/features/configuration/widgets/menu_group_item.dart';
 
 //Menu Group will include a title, and a group of ListTile widgets
 //ListTile children comprises of icon, their own title and some contain trailing icon button

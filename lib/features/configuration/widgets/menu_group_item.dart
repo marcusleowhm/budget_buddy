@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 //Entity representing an object making up the MenuItem
-class ListItem {
-  const ListItem({
+class MenuGroupItem {
+  const MenuGroupItem({
     this.title,
     this.initiallyExpanded = false,
     this.leading,
     this.trailing,
     this.onTap,
-    this.children = const <ListItem>[],
+    this.children = const <MenuGroupItem>[],
   });
 
   final Widget? title;
@@ -16,15 +16,15 @@ class ListItem {
   final Widget? leading;
   final Widget? trailing;
   final VoidCallback? onTap;
-  final List<ListItem> children;
+  final List<MenuGroupItem> children;
 }
 
 class MenuItem extends StatelessWidget {
-  const MenuItem({this.entry = const ListItem(), super.key});
+  const MenuItem({this.entry = const MenuGroupItem(), super.key});
 
-  final ListItem entry;
+  final MenuGroupItem entry;
 
-  Widget _buildMenuTiles(ListItem root) {
+  Widget _buildMenuTiles(MenuGroupItem root) {
     if (root.children.isEmpty) {
       return ListTile(
         horizontalTitleGap: 0.0,
@@ -37,7 +37,7 @@ class MenuItem extends StatelessWidget {
     return ListTileTheme(
       horizontalTitleGap: 0.0,
       child: ExpansionTile(
-        key: PageStorageKey<ListItem>(root),
+        key: PageStorageKey<MenuGroupItem>(root),
         title: root.title != null ? root.title! : const Text(''),
         initiallyExpanded: root.initiallyExpanded!,
         leading: root.leading,
