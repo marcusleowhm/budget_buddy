@@ -1,5 +1,7 @@
-The folders are separated by features
+Command:  
+- To run the application: `flutter run`
 
+The folders are separated by features
 Project Struture:
 - cloud_functions: internal API calls
 - lib: 
