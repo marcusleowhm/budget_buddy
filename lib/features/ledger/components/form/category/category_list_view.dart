@@ -1,3 +1,5 @@
+import 'package:budget_buddy/features/data/model/category.dart';
+import 'package:budget_buddy/features/data/model/category_group.dart';
 import 'package:flutter/material.dart';
 
 class CategoryListView extends StatelessWidget {
@@ -10,7 +12,7 @@ class CategoryListView extends StatelessWidget {
   });
 
   final int selectedGroupIndex;
-  final Map<String, List<String>> categoryGroups;
+  final Map<CategoryGroup, List<Category>> categoryGroups;
   final void Function(int) selectGroupIndex;
   final void Function(String, String?) onSelectCategory;
 
@@ -45,11 +47,11 @@ class CategoryListView extends StatelessWidget {
                               //Without chevron, without sub groups. Treat Category as SubCategory
                               ? ListTile(
                                   onTap: () => onSelectCategory(
-                                    categoryGroups.keys.elementAt(index),
+                                    categoryGroups.keys.elementAt(index).name,
                                     null,
                                   ),
                                   title: Text(
-                                    categoryGroups.keys.elementAt(index),
+                                    categoryGroups.keys.elementAt(index).name,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   trailing: null,
@@ -59,12 +61,13 @@ class CategoryListView extends StatelessWidget {
                                   onTap: selectedGroupIndex == index
                                       ? () => onSelectCategory(
                                             categoryGroups.keys
-                                                .elementAt(index),
+                                                .elementAt(index)
+                                                .name,
                                             null,
                                           )
                                       : () => selectGroupIndex(index),
                                   title: Text(
-                                    categoryGroups.keys.elementAt(index),
+                                    categoryGroups.keys.elementAt(index).name,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   trailing: const Icon(
@@ -101,17 +104,21 @@ class CategoryListView extends StatelessWidget {
                           child: ListTile(
                             onTap: () {
                               onSelectCategory(
-                                  //Value stored in the data structure
-                                  categoryGroups.keys
-                                      .elementAt(selectedGroupIndex),
-                                  categoryGroups.values
-                                      .elementAt(selectedGroupIndex)
-                                      .elementAt(index));
+                                //Value stored in the data structure
+                                categoryGroups.keys
+                                    .elementAt(selectedGroupIndex)
+                                    .name,
+                                categoryGroups.values
+                                    .elementAt(selectedGroupIndex)
+                                    .elementAt(index)
+                                    .name,
+                              );
                             },
                             title: Text(
                               categoryGroups.values
                                   .elementAt(selectedGroupIndex)
-                                  .elementAt(index),
+                                  .elementAt(index)
+                                  .name,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),

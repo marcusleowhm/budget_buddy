@@ -9,7 +9,7 @@ class Account {
     required this.balance,
   });
 
-  final String id = const Uuid().v4().toString();
+  final String id = const Uuid().v4();
   final AccountGroup group;
   final String name;
   final double balance;

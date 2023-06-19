@@ -7,7 +7,6 @@ class AccountCubit extends Cubit<AccountState> {
   AccountCubit() : super(const AccountState(accounts: [], accountGroups: []));
 
   void fetchAccountBalance() {
-
     //Create accounts here for now
     List<AccountGroup> newAccountGroups = [];
     AccountGroup bankAccountGroup = const AccountGroup(name: 'Bank Account');
