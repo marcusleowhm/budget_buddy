@@ -1,11 +1,10 @@
+import 'package:budget_buddy/env.dart';
 import 'package:budget_buddy/features/data/cubit/account_cubit.dart';
 import 'package:budget_buddy/features/data/cubit/category_cubit.dart';
 import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
 import 'package:budget_buddy/nav/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -26,7 +25,8 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp.router(
-        debugShowCheckedModeBanner: false,
+        debugShowCheckedModeBanner:
+            AppEnvironment.environment == Environment.dev ? true : false,
         routerConfig: goRouter,
       ),
     );

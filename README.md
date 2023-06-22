@@ -1,5 +1,7 @@
 Command:  
-- To run the application: `flutter run`
+- To run the application: `flutter run -t lib/main_<env>.dart`. For example: 
+    - dev -> `flutter run -t lib/main_dev.dart`
+    - prod -> `flutter run -t lib/main_prod.dart`
 
 The folders are separated by features
 Project Struture:
