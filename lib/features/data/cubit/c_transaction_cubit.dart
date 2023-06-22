@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
+import 'package:budget_buddy/cloud_functions/healthcheck/health_check.dart';
 import 'package:budget_buddy/features/constants/enum.dart';
+import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
 import 'package:budget_buddy/features/ledger/model/transaction_data.dart';
-
-import '../model/ledger_input.dart';
-import '../widgets/widget_shaker.dart';
+import 'package:budget_buddy/features/ledger/widgets/widget_shaker.dart';
 
 part 'c_transaction_state.dart';
 
@@ -53,8 +53,9 @@ class CTransactionCubit extends Cubit<CTransactionState> {
     );
   }
 
-  void getTransactions() {
+  void fetchTransactions() {
     //TODO implement API and local storage
+    
   }
 
   bool _validateFormAndShake(LedgerInput input) {

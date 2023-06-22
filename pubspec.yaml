@@ -45,6 +45,7 @@ dependencies:
   flutter_slidable: ^3.0.0
   fl_chart: ^0.62.0
   expandable_page_view: ^1.0.17
+  http: ^1.0.0
 
 dev_dependencies:
   flutter_test:

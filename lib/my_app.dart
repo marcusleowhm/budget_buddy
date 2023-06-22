@@ -2,7 +2,7 @@ import 'package:budget_buddy/env.dart';
 import 'package:budget_buddy/features/auth/cubit/authentication_cubit.dart';
 import 'package:budget_buddy/features/configuration/cubit/account_cubit.dart';
 import 'package:budget_buddy/features/configuration/cubit/category_cubit.dart';
-import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
+import 'package:budget_buddy/features/data/cubit/c_transaction_cubit.dart';
 import 'package:budget_buddy/nav/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
           create: (_) => AuthenticationCubit(),
         ),
         BlocProvider(
-          create: (_) => CTransactionCubit(),
+          create: (_) => CTransactionCubit()..fetchTransactions(),
         ),
         BlocProvider(
           create: (_) => AccountCubit()..fetchAccountBalance(),

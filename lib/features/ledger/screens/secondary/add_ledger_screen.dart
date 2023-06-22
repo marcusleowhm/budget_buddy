@@ -12,7 +12,7 @@ import 'package:budget_buddy/features/ledger/components/form/form_fields/categor
 import 'package:budget_buddy/features/ledger/components/form/datetime/date_field.dart';
 import 'package:budget_buddy/features/ledger/components/form/note/note_field.dart';
 import 'package:budget_buddy/features/ledger/components/form/type/type_picker.dart';
-import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
+import 'package:budget_buddy/features/data/cubit/c_transaction_cubit.dart';
 import 'package:budget_buddy/features/ledger/cubit/u_transaction_cubit.dart';
 import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
 import 'package:budget_buddy/features/ledger/widgets/expansion_group.dart';

@@ -1,7 +1,7 @@
 enum Environment { local, dev, prod }
 
 abstract class AppEnvironment {
-
+  static late String scheme;
   static late String baseApiUrl;
   static late int port;
   static late Environment _environment;
@@ -11,19 +11,20 @@ abstract class AppEnvironment {
     _environment = env;
     switch (env) {
       case Environment.local:
-        baseApiUrl = 'http://localhost';
+        scheme = 'http';
+        baseApiUrl = 'localhost';
         port = 8080;
         break;
       case Environment.dev:
-        baseApiUrl = 'http://localhost_dev';
+        scheme = 'https';
+        baseApiUrl = 'localhost_dev';
         port = 8080;
         break;
       case Environment.prod:
-        baseApiUrl = 'http://localhost_prod';
+        scheme = 'https';
+        baseApiUrl = 'localhost_prod';
         port = 8080;
         break;
     }
   }
-
-
 }
