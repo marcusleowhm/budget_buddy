@@ -67,7 +67,9 @@ final goRouter = GoRouter(
                 parentNavigatorKey: _rootNavigatorKey,
                 path: '${routes[SubRoutes.addledger]}',
                 builder: (context, state) {
-                  //Currently used when duplicating entry from the edit ledger screen
+                  //Used when 
+                  //1. Duplicating entry from the edit ledger screen
+                  //2. Creating new entry from clicking on date of transaction block
                   var extraData = state.extra as Map<String, dynamic>;
                   var inputToClone = extraData['data'];
                   var defaultDateIsToday = extraData['defaultDateIsToday'];

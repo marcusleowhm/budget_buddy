@@ -46,7 +46,10 @@ class _LedgerScreenState extends State<LedgerScreen> {
         onPressed: () {
           context.go(
             '/${routes[MainRoutes.ledger]}/${routes[SubRoutes.addledger]}',
-            extra: {'data': null, 'defaultDateIsToday': true},
+            extra: {
+              'data': null,
+              'defaultDateIsToday': true,
+            },
           );
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
         },

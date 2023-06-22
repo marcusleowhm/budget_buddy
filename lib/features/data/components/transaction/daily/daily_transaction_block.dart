@@ -27,7 +27,10 @@ class DailyTransactionBlock extends StatelessWidget {
         formControl.data.utcDateTime = localDateTime.toUtc();
         context.go(
           '/${routes[MainRoutes.ledger]}/${routes[SubRoutes.addledger]}',
-          extra: {'data': formControl, 'defaultDateIsToday': false},
+          extra: {
+            'data': formControl,
+            'defaultDateIsToday': false,
+          },
         );
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
       },
