@@ -1,7 +1,6 @@
 import 'package:budget_buddy/features/constants/enum.dart';
 import 'package:budget_buddy/features/data/cubit/account_cubit.dart';
-import 'package:budget_buddy/features/data/cubit/inflow_category_cubit.dart';
-import 'package:budget_buddy/features/data/cubit/outflow_category_cubit.dart';
+import 'package:budget_buddy/features/data/cubit/category_cubit.dart';
 import 'package:budget_buddy/features/data/model/account.dart';
 import 'package:budget_buddy/features/data/model/account_group.dart';
 import 'package:budget_buddy/features/data/model/category.dart';
@@ -41,22 +40,16 @@ class _CategoryPickerState extends State<CategoryPicker> {
     return mappedAccount;
   }
 
-  Map<CategoryGroup, List<Category>> mapInflowCategory(
-      InflowCategoryState state) {
+  Map<CategoryGroup, List<Category>> mapCategory(
+    CategoryState state,
+    CategoryType type,
+  ) {
     Map<CategoryGroup, List<Category>> mappedCategories = {};
-    for (Category category in state.inflowCategories) {
-      mappedCategories.putIfAbsent(category.group, () => []);
-      mappedCategories[category.group]?.add(category);
-    }
-    return mappedCategories;
-  }
-
-  Map<CategoryGroup, List<Category>> mapOutflowCategory(
-      OutflowCategoryState state) {
-    Map<CategoryGroup, List<Category>> mappedCategories = {};
-    for (OutflowCategory category in state.outflowCategories) {
-      mappedCategories.putIfAbsent(category.group, () => []);
-      mappedCategories[category.group]?.add(category);
+    for (Category category in state.categories) {
+      if (category.group.type == type) {
+        mappedCategories.putIfAbsent(category.group, () => []);
+        mappedCategories[category.group]?.add(category);
+      }
     }
     return mappedCategories;
   }
@@ -67,94 +60,88 @@ class _CategoryPickerState extends State<CategoryPicker> {
       builder: (context, accountState) {
         Map<AccountGroup, List<Account>> mappedAccount =
             mapAccount(accountState);
-        return BlocBuilder<InflowCategoryCubit, InflowCategoryState>(
-          builder: (context, inflowCategoryState) {
-            Map<CategoryGroup, List<Category>> mappedInflowCategories =
-                mapInflowCategory(inflowCategoryState);
-            return BlocBuilder<OutflowCategoryCubit, OutflowCategoryState>(
-              builder: (context, outflowCategoryState) {
-                Map<CategoryGroup, List<Category>> mappedOutflowCategories =
-                    mapOutflowCategory(outflowCategoryState);
-                return FractionallySizedBox(
-                    heightFactor: 0.4,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey,
-                        border: Border.all(
-                          width: 0.5,
-                          color: Theme.of(context).dividerColor,
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+        return BlocBuilder<CategoryCubit, CategoryState>(
+          builder: (context, categoryState) {
+            return FractionallySizedBox(
+              heightFactor: 0.4,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  border: Border.all(
+                    width: 0.5,
+                    color: Theme.of(context).dividerColor,
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Container(
+                      color: Theme.of(context).primaryColor,
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Container(
-                            color: Theme.of(context).primaryColor,
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                IconButton(
-                                  onPressed: () => widget.onPressed(null, null),
-                                  icon: const Icon(Icons.cancel_rounded),
-                                  color: Theme.of(context).canvasColor,
-                                ),
-                                if (widget.type == TransactionType.transfer)
-                                  IconButton(
-                                    onPressed: () => setState(
-                                        () => isGridView = !isGridView),
-                                    icon: isGridView
-                                        ? const Icon(Icons.list)
-                                        : const Icon(Icons.window_rounded),
-                                    color: Theme.of(context).canvasColor,
-                                  ),
-                                IconButton(
-                                  onPressed: () {}, //TODO edit button
-                                  icon: const Icon(
-                                      Icons.mode_edit_outline_outlined),
-                                  color: Theme.of(context).canvasColor,
-                                ),
-                              ],
-                            ),
+                          IconButton(
+                            onPressed: () => widget.onPressed(null, null),
+                            icon: const Icon(Icons.cancel_rounded),
+                            color: Theme.of(context).canvasColor,
                           ),
-                          widget.type == TransactionType.transfer
-                              ? isGridView
-                                  ? AccountGridView(
-                                      mappedAccount: mappedAccount,
-                                      onItemPressed: widget.onPressed,
-                                    )
-                                  : AccountListView(
-                                      selectedGroupIndex: selectedGroupIndex,
-                                      mappedAccount: mappedAccount,
-                                      selectGroupIndex: (index) {
-                                        setState(
-                                            () => selectedGroupIndex = index);
-                                      },
-                                      onSelectAccount: widget.onPressed)
-                              : widget.type == TransactionType.expense
-                                  ? CategoryListView(
-                                      selectedGroupIndex: selectedGroupIndex,
-                                      categoryGroups: mappedOutflowCategories,
-                                      selectGroupIndex: (index) {
-                                        setState(
-                                            () => selectedGroupIndex = index);
-                                      },
-                                      onSelectCategory: widget.onPressed,
-                                    )
-                                  : CategoryListView(
-                                      selectedGroupIndex: selectedGroupIndex,
-                                      categoryGroups: mappedInflowCategories,
-                                      selectGroupIndex: (index) {
-                                        setState(
-                                            () => selectedGroupIndex = index);
-                                      },
-                                      onSelectCategory: widget.onPressed,
-                                    ),
+                          if (widget.type == TransactionType.transfer)
+                            IconButton(
+                              onPressed: () =>
+                                  setState(() => isGridView = !isGridView),
+                              icon: isGridView
+                                  ? const Icon(Icons.list)
+                                  : const Icon(Icons.window_rounded),
+                              color: Theme.of(context).canvasColor,
+                            ),
+                          IconButton(
+                            onPressed: () {}, //TODO edit button
+                            icon: const Icon(Icons.mode_edit_outline_outlined),
+                            color: Theme.of(context).canvasColor,
+                          ),
                         ],
                       ),
-                    ));
-              },
+                    ),
+                    widget.type == TransactionType.transfer
+                        ? isGridView
+                            ? AccountGridView(
+                                mappedAccount: mappedAccount,
+                                onItemPressed: widget.onPressed,
+                              )
+                            : AccountListView(
+                                selectedGroupIndex: selectedGroupIndex,
+                                mappedAccount: mappedAccount,
+                                selectGroupIndex: (index) {
+                                  setState(() => selectedGroupIndex = index);
+                                },
+                                onSelectAccount: widget.onPressed)
+                        : widget.type == TransactionType.expense
+                            ? CategoryListView(
+                                selectedGroupIndex: selectedGroupIndex,
+                                categoryGroups: mapCategory(
+                                  categoryState,
+                                  CategoryType.outflow,
+                                ),
+                                selectGroupIndex: (index) {
+                                  setState(() => selectedGroupIndex = index);
+                                },
+                                onSelectCategory: widget.onPressed,
+                              )
+                            : CategoryListView(
+                                selectedGroupIndex: selectedGroupIndex,
+                                categoryGroups: mapCategory(
+                                  categoryState,
+                                  CategoryType.inflow,
+                                ),
+                                selectGroupIndex: (index) {
+                                  setState(() => selectedGroupIndex = index);
+                                },
+                                onSelectCategory: widget.onPressed,
+                              ),
+                  ],
+                ),
+              ),
             );
           },
         );

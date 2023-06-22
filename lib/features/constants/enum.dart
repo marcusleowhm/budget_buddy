@@ -5,6 +5,7 @@ enum SubRoutes { useredit, reportbug, editLedger, addledger }
 
 // Data input
 enum TransactionType { income, expense, transfer }
+enum CategoryType { inflow, outflow }
 
 enum InputType { add, edit }
 

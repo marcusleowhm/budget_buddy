@@ -8,13 +8,3 @@ class Category {
   final CategoryGroup group;
   final String name;
 }
-
-class InflowCategory extends Category {
-  InflowCategory(CategoryGroup group, String name)
-      : super(group: group, name: name);
-}
-
-class OutflowCategory extends Category {
-  OutflowCategory(CategoryGroup group, String name)
-      : super(group: group, name: name);
-}
