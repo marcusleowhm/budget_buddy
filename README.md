@@ -13,7 +13,7 @@ Project Struture:
         - constants: Application constants
         - widgets: Custom widgets to wrap and extend Flutter widgets with additional properties or methods
     - mock: 
-        - account.dart keeps mock data for building the app
+        - account.dart keeps mock data for building the app (refactored to be initialized in the cubit since 22 June 2023)
     - theme (reserved for use in the future to customize the app look)
     - utilities (Help functions (Json utilities, serializer, converter etc))
     - main.dart (program entry point)

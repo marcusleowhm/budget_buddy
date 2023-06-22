@@ -28,6 +28,7 @@ class CategoryListView extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    //Category Group
                     ListView.builder(
                       physics: const BouncingScrollPhysics(),
                       shrinkWrap: true,
@@ -86,12 +87,13 @@ class CategoryListView extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    //Category Sub Group
                     ListView.builder(
                       physics: const BouncingScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: categoryGroups.values
-                          .elementAt(selectedGroupIndex)
-                          .length,
+                              .elementAt(selectedGroupIndex)
+                              .length,
                       itemBuilder: (context, index) {
                         return Container(
                           decoration: BoxDecoration(

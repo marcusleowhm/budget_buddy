@@ -4,7 +4,7 @@ class AccountGroup {
 
   AccountGroup({ required this.name });
 
-  String id = Uuid().v4();
+  String id = const Uuid().v4();
   final String name;
 
 }

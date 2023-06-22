@@ -1,6 +1,5 @@
 import 'package:budget_buddy/features/data/cubit/account_cubit.dart';
 import 'package:budget_buddy/features/data/cubit/category_cubit.dart';
-import 'package:budget_buddy/features/data/cubit/outflow_category_cubit.dart';
 import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
 import 'package:budget_buddy/nav/go_router.dart';
 import 'package:flutter/material.dart';
