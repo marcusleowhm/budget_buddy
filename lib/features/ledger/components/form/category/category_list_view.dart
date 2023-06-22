@@ -44,18 +44,23 @@ class CategoryListView extends StatelessWidget {
                               color: Theme.of(context).dividerColor,
                             ),
                           ),
-                          child: categoryGroups.values.elementAt(index).isEmpty
+                          child: categoryGroups.values
+                                  .elementAt(index)
+                                  .isEmpty
                               //Without chevron, without sub groups. Treat Category as SubCategory
                               ? ListTile(
                                   onTap: () => onSelectCategory(
-                                    categoryGroups.keys.elementAt(index).name,
+                                    categoryGroups.keys
+                                        .elementAt(index)
+                                        .name,
                                     null,
                                   ),
                                   title: Text(
-                                    categoryGroups.keys.elementAt(index).name,
+                                    categoryGroups.keys
+                                        .elementAt(index)
+                                        .name,
                                     overflow: TextOverflow.ellipsis,
                                   ),
-                                  trailing: null,
                                 )
                               //With chevron
                               : ListTile(
@@ -68,7 +73,9 @@ class CategoryListView extends StatelessWidget {
                                           )
                                       : () => selectGroupIndex(index),
                                   title: Text(
-                                    categoryGroups.keys.elementAt(index).name,
+                                    categoryGroups.keys
+                                        .elementAt(index)
+                                        .name,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   trailing: const Icon(
@@ -92,8 +99,8 @@ class CategoryListView extends StatelessWidget {
                       physics: const BouncingScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: categoryGroups.values
-                              .elementAt(selectedGroupIndex)
-                              .length,
+                          .elementAt(selectedGroupIndex)
+                          .length,
                       itemBuilder: (context, index) {
                         return Container(
                           decoration: BoxDecoration(
