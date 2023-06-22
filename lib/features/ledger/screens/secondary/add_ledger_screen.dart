@@ -26,9 +26,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class AddLedgerScreen extends StatefulWidget {
-  const AddLedgerScreen({super.key, this.inputToClone});
+  const AddLedgerScreen({
+    super.key,
+    this.inputToClone,
+    required this.defaultDateIsToday,
+  });
 
   final LedgerInput? inputToClone;
+  final bool defaultDateIsToday;
 
   @override
   State<AddLedgerScreen> createState() => _AddLedgerScreenState();
@@ -63,13 +68,26 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
     UTransactionState state = context.read<UTransactionCubit>().state;
     LedgerInput firstInput = state.entries.first;
 
-    //If dataToClone is passed in, we are cloning existing transaction, but set date to today
     if (widget.inputToClone != null) {
       BlocProvider.of<UTransactionCubit>(context)
-          .cloneFromInput(widget.inputToClone!);
-      BlocProvider.of<UTransactionCubit>(context)
-          .setDateOf(firstInput, localNow);
-      firstInput.dateTimeController.text = dateLongFormatter.format(localNow);
+          .cloneFromInputToNewEntry(widget.inputToClone!);
+
+      //If data is passed in and the default date is set to today
+      //It means it is a duplicate of existing transaction
+      if (widget.defaultDateIsToday) {
+        BlocProvider.of<UTransactionCubit>(context)
+            .setDateOf(firstInput, localNow);
+        firstInput.dateTimeController.text = dateLongFormatter.format(localNow);
+      }
+      //If data is passed in the default date is not set to today
+      //It means user has clicked on the transaction block of a particular date
+      //The data passed in will contain the date to set default date to
+      else {
+        BlocProvider.of<UTransactionCubit>(context)
+            .setDateOf(firstInput, widget.inputToClone!.data.utcDateTime);
+        firstInput.dateTimeController.text = dateLongFormatter
+            .format(widget.inputToClone!.data.utcDateTime.toLocal());
+      }
     }
 
     //Initialize the bottom sheet to null
@@ -307,7 +325,11 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
 
                 //Copy input data into the last item in entries
                 BlocProvider.of<UTransactionCubit>(context)
-                    .cloneFromInput(input);
+                    .cloneFromInputToNewEntry(input);
+
+                //Tally the currencies upon adding new item
+                BlocProvider.of<UTransactionCubit>(context)
+                    .tallyAllCurrencies();
               },
             ),
             SlidableAction(
@@ -547,7 +569,11 @@ class _AddLedgerScreenState extends State<AddLedgerScreen> {
 
                 //Copy input data into the last item in entries
                 BlocProvider.of<UTransactionCubit>(context)
-                    .cloneFromInput(input);
+                    .cloneFromInputToNewEntry(input);
+
+                //Tally currencies upon adding new item
+                BlocProvider.of<UTransactionCubit>(context)
+                    .tallyAllCurrencies();
               },
               onDeletePressed: () {
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();

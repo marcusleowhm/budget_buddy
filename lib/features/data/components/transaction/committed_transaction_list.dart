@@ -291,7 +291,7 @@ class CommittedTransactionList extends StatelessWidget {
                                 getDailyTransactionData(state).keys.length,
                             itemBuilder: (context, index) {
                               return DailyTransactionBlock(
-                                dateTime: getDailyTransactionData(state)
+                                localDateTime: getDailyTransactionData(state)
                                     .keys
                                     .elementAt(index),
                                 transactions: getDailyTransactionData(state)

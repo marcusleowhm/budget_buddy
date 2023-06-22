@@ -1,76 +1,89 @@
 import 'package:budget_buddy/features/constants/enum.dart';
+import 'package:budget_buddy/features/ledger/model/ledger_input.dart';
 import 'package:budget_buddy/features/ledger/model/transaction_data.dart';
 import 'package:budget_buddy/nav/routes.dart';
 import 'package:budget_buddy/utilities/currency_formatter.dart';
 import 'package:budget_buddy/utilities/date_utilities.dart';
+import 'package:budget_buddy/utilities/form_control_utility.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class DailyTransactionBlock extends StatelessWidget {
   const DailyTransactionBlock({
     super.key,
-    required this.dateTime,
+    required this.localDateTime,
     required this.transactions,
     required this.sum,
   });
 
-  final DateTime dateTime;
+  final DateTime localDateTime;
   final List<TransactionData> transactions;
   final Map<String, double> sum;
 
   Widget _buildFirstLine(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(10.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          //Day
-          Padding(
-            padding: const EdgeInsets.only(right: 5.0),
-            child: Text(
-              dayFormatter.format(dateTime),
-              style: const TextStyle(fontSize: 20),
-            ),
-          ),
-          //Day of the week
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                width: 1,
+    return InkWell(
+      onTap: () {
+        LedgerInput formControl = FormControlUtility.create();
+        formControl.data.utcDateTime = localDateTime.toUtc();
+        context.go(
+          '/${routes[MainRoutes.ledger]}/${routes[SubRoutes.addledger]}',
+          extra: {'data': formControl, 'defaultDateIsToday': false},
+        );
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      },
+      child: Container(
+        margin: const EdgeInsets.all(10.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            //Day
+            Padding(
+              padding: const EdgeInsets.only(right: 5.0),
+              child: Text(
+                dayFormatter.format(localDateTime),
+                style: const TextStyle(fontSize: 20),
               ),
-              borderRadius: BorderRadius.circular(3.0),
             ),
-            padding: const EdgeInsets.all(5.0),
-            child: Text(
-              dateShortDayOfWeekFormatter.format(dateTime),
+            //Day of the week
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(3.0),
+              ),
+              padding: const EdgeInsets.all(5.0),
+              child: Text(
+                dateShortDayOfWeekFormatter.format(localDateTime),
+              ),
             ),
-          ),
-          //Monthly tally
-          Flexible(
-            flex: 1,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Text(
-                  englishDisplayCurrencyFormatter.format(sum['income']),
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
+            //Monthly tally
+            Flexible(
+              flex: 1,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text(
+                    englishDisplayCurrencyFormatter.format(sum['income']),
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                    ),
                   ),
-                ),
-                Text(
-                  englishDisplayCurrencyFormatter.format(sum['expense']),
-                  style: const TextStyle(
-                    color: Colors.red,
+                  Text(
+                    englishDisplayCurrencyFormatter.format(sum['expense']),
+                    style: const TextStyle(
+                      color: Colors.red,
+                    ),
                   ),
-                ),
-                Text(
-                  englishDisplayCurrencyFormatter.format(sum['transfer']),
-                  style: const TextStyle(color: Colors.grey),
-                ),
-              ],
+                  Text(
+                    englishDisplayCurrencyFormatter.format(sum['transfer']),
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

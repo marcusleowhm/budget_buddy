@@ -559,7 +559,10 @@ class _EditLedgerScreenState extends State<EditLedgerScreen> {
                                       Navigator.pop(context);
                                       context.go(
                                         '/${routes[MainRoutes.ledger]}/${routes[SubRoutes.addledger]}',
-                                        extra: formControl,
+                                        extra: {
+                                          'data': formControl,
+                                          'defaultDateIsToday': true,
+                                        },
                                       );
                                       ScaffoldMessenger.of(context)
                                           .hideCurrentSnackBar();

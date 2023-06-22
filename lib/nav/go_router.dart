@@ -67,13 +67,17 @@ final goRouter = GoRouter(
                 parentNavigatorKey: _rootNavigatorKey,
                 path: '${routes[SubRoutes.addledger]}',
                 builder: (context, state) {
-                  var inputToClone = state.extra;
+                  //Currently used when duplicating entry from the edit ledger screen
+                  var extraData = state.extra as Map<String, dynamic>;
+                  var inputToClone = extraData['data'];
+                  var defaultDateIsToday = extraData['defaultDateIsToday'];
                   return BlocProvider(
                     create: (_) => UTransactionCubit()..addInputRow(),
                     child: AddLedgerScreen(
                       inputToClone: inputToClone != null
                           ? inputToClone as LedgerInput
                           : null,
+                      defaultDateIsToday: defaultDateIsToday as bool,
                     ),
                   );
                 }),
