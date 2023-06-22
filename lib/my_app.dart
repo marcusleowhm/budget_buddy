@@ -1,6 +1,6 @@
 import 'package:budget_buddy/env.dart';
-import 'package:budget_buddy/features/data/cubit/account_cubit.dart';
-import 'package:budget_buddy/features/data/cubit/category_cubit.dart';
+import 'package:budget_buddy/features/configuration/cubit/account_cubit.dart';
+import 'package:budget_buddy/features/configuration/cubit/category_cubit.dart';
 import 'package:budget_buddy/features/ledger/cubit/c_transaction_cubit.dart';
 import 'package:budget_buddy/nav/go_router.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +26,10 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner:
-            AppEnvironment.environment == Environment.dev ? true : false,
+            (AppEnvironment.environment == Environment.local ||
+            AppEnvironment.environment == Environment.dev)
+                ? true
+                : false,
         routerConfig: goRouter,
       ),
     );

@@ -1,6 +1,6 @@
 import 'package:budget_buddy/features/configuration/widgets/menu_group.dart';
 import 'package:budget_buddy/features/configuration/widgets/menu_group_item.dart';
-import 'package:budget_buddy/features/data/cubit/account_cubit.dart';
+import 'package:budget_buddy/features/configuration/cubit/account_cubit.dart';
 import 'package:budget_buddy/features/data/model/account.dart';
 import 'package:budget_buddy/features/data/model/account_group.dart';
 import 'package:budget_buddy/utilities/currency_formatter.dart';

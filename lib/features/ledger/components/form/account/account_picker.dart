@@ -1,4 +1,4 @@
-import 'package:budget_buddy/features/data/cubit/account_cubit.dart';
+import 'package:budget_buddy/features/configuration/cubit/account_cubit.dart';
 import 'package:budget_buddy/features/data/model/account.dart';
 import 'package:budget_buddy/features/data/model/account_group.dart';
 import 'package:flutter/material.dart';
