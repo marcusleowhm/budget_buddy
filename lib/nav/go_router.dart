@@ -1,3 +1,5 @@
+import 'package:budget_buddy/features/auth/cubit/authentication_cubit.dart';
+import 'package:budget_buddy/features/auth/screens/primary/login_screen.dart';
 import 'package:budget_buddy/features/configuration/screens/primary/more_screen.dart';
 import 'package:budget_buddy/features/configuration/screens/secondary/report_bug_screen.dart';
 import 'package:budget_buddy/features/configuration/screens/secondary/user_edit_screen.dart';
@@ -29,7 +31,15 @@ final goRouter = GoRouter(
   routes: <RouteBase>[
     ShellRoute(
       navigatorKey: _shellNavigatorKey,
-      builder: (context, state, child) => TabNavigator(child: child),
+      builder: (context, state, child) {
+        return BlocBuilder<AuthenticationCubit, AuthenticationState>(
+          builder: (context, authState) {
+            return authState.isLoggedIn
+                ? TabNavigator(child: child)
+                : const LoginScreen();
+          },
+        );
+      },
       routes: <GoRoute>[
         GoRoute(
           path: '/',
@@ -67,7 +77,7 @@ final goRouter = GoRouter(
                 parentNavigatorKey: _rootNavigatorKey,
                 path: '${routes[SubRoutes.addledger]}',
                 builder: (context, state) {
-                  //Used when 
+                  //Used when
                   //1. Duplicating entry from the edit ledger screen
                   //2. Creating new entry from clicking on date of transaction block
                   var extraData = state.extra as Map<String, dynamic>;

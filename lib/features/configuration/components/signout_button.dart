@@ -1,4 +1,7 @@
+import 'package:budget_buddy/features/auth/cubit/authentication_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class SignOutButton extends StatelessWidget {
   const SignOutButton({super.key});
@@ -8,7 +11,10 @@ class SignOutButton extends StatelessWidget {
     return ListTile(
       title: OutlinedButton(
         onPressed: () {
-          print('Implement sign out');
+          BlocProvider.of<AuthenticationCubit>(context).logout();
+
+          //Reset the navigation to dashboard upon logging out
+          context.go('/');
         },
         style: ButtonStyle(
           shape: MaterialStatePropertyAll<RoundedRectangleBorder>(

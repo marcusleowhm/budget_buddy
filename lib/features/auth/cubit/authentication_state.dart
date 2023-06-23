@@ -1,6 +1,8 @@
 part of 'authentication_cubit.dart';
 
-@immutable
-abstract class AuthenticationState {}
+class AuthenticationState {
 
-class AuthenticationInitial extends AuthenticationState {}
+  const AuthenticationState({ this.isLoggedIn = false });
+  final bool isLoggedIn;
+
+}
