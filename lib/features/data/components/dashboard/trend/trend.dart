@@ -67,7 +67,8 @@ class _TrendState extends State<Trend> {
                         ),
                         PopupMenuItem(
                           value: ChartAmountDisplayCriteria.nett,
-                          child: Text(labels[ChartAmountDisplayCriteria.nett]!),
+                          child:
+                              Text(labels[ChartAmountDisplayCriteria.nett]!),
                         ),
                       ],
                       child: TextButton.icon(

@@ -116,8 +116,8 @@ class MonthlySummary extends StatelessWidget {
                                         style: TextStyle(
                                             fontWeight: FontWeight.w600,
                                             fontSize: 16,
-                                            color:
-                                                Theme.of(context).canvasColor),
+                                            color: Theme.of(context)
+                                                .canvasColor),
                                       ),
                                     ),
                                     Row(
@@ -151,17 +151,19 @@ class MonthlySummary extends StatelessWidget {
                                               showDuration:
                                                   const Duration(seconds: 10),
                                               child: IconButton(
-                                                padding: const EdgeInsets.only(
-                                                    left: 5),
+                                                padding:
+                                                    const EdgeInsets.only(
+                                                        left: 5),
                                                 constraints:
                                                     const BoxConstraints(),
                                                 iconSize: 18,
                                                 color: Theme.of(context)
                                                     .canvasColor,
-                                                icon: const Icon(
-                                                    Icons.info_outline_rounded),
+                                                icon: const Icon(Icons
+                                                    .info_outline_rounded),
                                                 onPressed: () {
-                                                  incomeToolTipKey.currentState
+                                                  incomeToolTipKey
+                                                      .currentState
                                                       ?.ensureTooltipVisible();
                                                 },
                                               ),
@@ -188,8 +190,8 @@ class MonthlySummary extends StatelessWidget {
                                         style: TextStyle(
                                             fontWeight: FontWeight.w600,
                                             fontSize: 16,
-                                            color:
-                                                Theme.of(context).canvasColor),
+                                            color: Theme.of(context)
+                                                .canvasColor),
                                       ),
                                     ),
                                     Row(
@@ -229,8 +231,8 @@ class MonthlySummary extends StatelessWidget {
                                               constraints:
                                                   const BoxConstraints(),
                                               iconSize: 18,
-                                              color:
-                                                  Theme.of(context).canvasColor,
+                                              color: Theme.of(context)
+                                                  .canvasColor,
                                               icon: const Icon(
                                                   Icons.info_outline_rounded),
                                               onPressed: () {
@@ -263,8 +265,8 @@ class MonthlySummary extends StatelessWidget {
                                         style: TextStyle(
                                             fontWeight: FontWeight.w600,
                                             fontSize: 16,
-                                            color:
-                                                Theme.of(context).canvasColor),
+                                            color: Theme.of(context)
+                                                .canvasColor),
                                       ),
                                     ),
                                     Row(
@@ -303,12 +305,13 @@ class MonthlySummary extends StatelessWidget {
                                               constraints:
                                                   const BoxConstraints(),
                                               iconSize: 18,
-                                              color:
-                                                  Theme.of(context).canvasColor,
+                                              color: Theme.of(context)
+                                                  .canvasColor,
                                               icon: const Icon(
                                                   Icons.info_outline_rounded),
                                               onPressed: () {
-                                                transferToolTipKey.currentState
+                                                transferToolTipKey
+                                                    .currentState
                                                     ?.ensureTooltipVisible();
                                               },
                                             ),
@@ -342,8 +345,9 @@ class MonthlySummary extends StatelessWidget {
                                   Row(
                                     children: [
                                       Text(
-                                        englishDisplayCurrencyFormatter.format(
-                                            data['income']! - data['expense']!),
+                                        englishDisplayCurrencyFormatter
+                                            .format(data['income']! -
+                                                data['expense']!),
                                         style: const TextStyle(
                                           fontWeight: FontWeight.w600,
                                           fontSize: 16.0,

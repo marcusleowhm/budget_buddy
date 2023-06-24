@@ -219,8 +219,8 @@ class _LoginScreenState extends State<LoginScreen> {
       body: BlocBuilder<AuthenticationCubit, AuthenticationState>(
         builder: (context, state) {
           return Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: FractionallySizedBox(
+              widthFactor: MediaQuery.of(context).size.width >= 768 ? 0.4 : 0.9,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,

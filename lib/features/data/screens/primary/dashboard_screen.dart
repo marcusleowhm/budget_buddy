@@ -11,8 +11,8 @@ class DashboardScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('${titles[MainRoutes.dashboard]}')),
       backgroundColor: Colors.grey[200], //TODO change this color
-      body: const SingleChildScrollView(
-        child: Dashboard()
+      body: const Center(
+        child: SingleChildScrollView(child: Dashboard()),
       ),
     );
   }
